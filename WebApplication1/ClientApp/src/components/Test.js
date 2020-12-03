@@ -52,20 +52,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ej2_react_grids_1 = require("@syncfusion/ej2-react-grids");
 var ej2_react_grids_2 = require("@syncfusion/ej2-react-grids");
 var React = require("react");
-var datasource_1 = require("./datasource");
 var App = /** @class */ (function (_super) {
     __extends(App, _super);
     function App() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.pageSettings = { pageSize: 6 };
+        _this.pageSettings = { pageSize: 30 };
         _this.sortSettings = {
             columns: [
-                { field: 'employeeID', direction: 'Ascending' }
-            ]
-        };
-        _this.filterSettings = {
-            columns: [
-                { field: 'employeeID', operator: 'greaterthan', value: 2 }
+                { field: 'id', direction: 'Ascending' }
             ]
         };
         return _this;
@@ -80,26 +74,19 @@ var App = /** @class */ (function (_super) {
         //    return data;
         //}
     }
-    App.prototype.onLoad = function () {
+    App.prototype.componentDidMount = function () {
         return __awaiter(this, void 0, void 0, function () {
             var res, oobj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log(this.gridInstance);
                         if (!this.gridInstance) return [3 /*break*/, 3];
                         return [4 /*yield*/, fetch('test')];
                     case 1:
                         res = _a.sent();
-                        console.log(res);
                         return [4 /*yield*/, res.json()];
                     case 2:
                         oobj = _a.sent();
-                        console.log(oobj);
-                        console.log(typeof (oobj));
-                        console.log(datasource_1.data);
-                        console.log(typeof (datasource_1.data));
-                        debugger;
                         this.gridInstance.dataSource = oobj;
                         _a.label = 3;
                     case 3: return [2 /*return*/];
@@ -107,20 +94,19 @@ var App = /** @class */ (function (_super) {
             });
         });
     };
-    App.prototype.componentDidMount = function () {
-        this.onLoad();
-    };
     App.prototype.render = function () {
         var _this = this;
         return React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, 
             //dataSource={this.data}
             allowPaging: true, pageSettings: this.pageSettings },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'orderID', width: '100', textAlign: "Right" }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'customerID', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'employeeID', width: '100', textAlign: "Right" }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'freight', width: '100', format: "C2", textAlign: "Right" }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'shipCountry', width: '100' })),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'id', width: '100', textAlign: "Right" }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100', textAlign: "Right" }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100', textAlign: "Right" }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', width: '100' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '100' })),
             React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Filter, ej2_react_grids_2.Group] }));
     };
     return App;

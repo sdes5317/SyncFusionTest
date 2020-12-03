@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApplication1.Repository;
 
 namespace WebApplication1
 {
@@ -27,6 +28,12 @@ namespace WebApplication1
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.AddDbContext<MyContext>();
+            services.AddScoped<MsSqlRepository>();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                    );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
