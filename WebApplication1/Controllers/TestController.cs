@@ -14,40 +14,30 @@ namespace WebApplication1.Controllers
     public class TestController : ControllerBase
     {
         private readonly ILogger<TestController> _logger;
-        private readonly MsSqlRepository msSqlRepository;
+        private readonly ISqlRepository _sqlRepository;
 
         public TestController(ILogger<TestController> logger, MsSqlRepository msSqlRepository)
         {
             _logger = logger;
-            this.msSqlRepository = msSqlRepository;
+            this._sqlRepository = msSqlRepository;
         }
 
         [HttpGet]
         public IEnumerable<Customer> GetCustomer()
         {
-            return Customer.GetFakeDatas().ToList();
+            return Customer.GetFakeCustomers().ToList();
         }
-        [HttpGet]
-        public IEnumerable<Customer> GetDbCustomer()
+        [HttpPost]
+        public IEnumerable<Customer> GetDbCustomer(CustomerDto customerDto)
         {
-            return msSqlRepository._myContext.Customers.Where(c => c.Status == 1).Include(c => c.Order).ToList();
+            var result= _sqlRepository.SelectAll(customerDto);
+            return result;
         }
         
         [HttpGet]
         public void InsertOneFakeData()
         {
-            msSqlRepository._myContext.Customers.Add(new Customer()
-            {
-                Id=1.ToString(),
-                Name = "Tom",
-                Country = "Tai",
-                State = "ab",
-                Zip = "408",
-                Address = "Massachusetts Ave, Cambridge",
-                Status = 1
-                
-            });
-            msSqlRepository._myContext.SaveChanges();
+            _sqlRepository.InsertFakeData(Customer.GetFakeCustomers());
         }
     }
 }

@@ -31,13 +31,13 @@ namespace WebApplication1.Repository
             modelBuilder.Entity<Customer>(customer =>
             {
                 customer.Property(c => c.Uid).ValueGeneratedOnAdd();
-                customer.Property(c => c.Id).HasMaxLength(20);
-                customer.Property(c => c.Name).HasMaxLength(20);
-                customer.Property(c => c.Country).HasMaxLength(3);
-                customer.Property(c => c.City).HasMaxLength(50);
-                customer.Property(c => c.State).HasMaxLength(2);
-                customer.Property(c => c.Address).HasMaxLength(100);
-                customer.Property(c => c.Zip).HasMaxLength(20);
+                customer.Property(c => c.Id).HasMaxLength(20).HasColumnType("varchar");
+                customer.Property(c => c.Name).HasMaxLength(20).HasColumnType("varchar");
+                customer.Property(c => c.Country).HasMaxLength(3).HasColumnType("varchar");
+                customer.Property(c => c.City).HasMaxLength(50).HasColumnType("varchar");
+                customer.Property(c => c.State).HasMaxLength(2).HasColumnType("varchar");
+                customer.Property(c => c.Address).HasMaxLength(100).HasColumnType("varchar");
+                customer.Property(c => c.Zip).HasMaxLength(20).HasColumnType("varchar");
             });
 
             modelBuilder.Entity<Order>()
@@ -51,10 +51,10 @@ namespace WebApplication1.Repository
 
             modelBuilder.Entity<Order>(order =>
             {
-                order.Property(c => c.Id).HasMaxLength(20).ValueGeneratedOnAdd();
-                order.Property(c => c.CustomerId).HasMaxLength(20);
+                order.Property(c => c.Id).HasMaxLength(20).ValueGeneratedOnAdd().HasColumnType("varchar");
+                order.Property(c => c.CustomerId).HasMaxLength(20).HasColumnType("varchar");
                 order.Property(c => c.TotalAmount).HasPrecision(16, 2);
-                order.Property(c => c.SalesName).HasMaxLength(100);
+                order.Property(c => c.SalesName).HasMaxLength(100).HasColumnType("varchar");
             });
         }
     }

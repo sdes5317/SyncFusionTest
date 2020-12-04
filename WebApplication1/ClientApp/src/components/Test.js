@@ -76,12 +76,21 @@ var App = /** @class */ (function (_super) {
     }
     App.prototype.componentDidMount = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var res, oobj;
+            var dto, res, oobj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!this.gridInstance) return [3 /*break*/, 3];
-                        return [4 /*yield*/, fetch('test')];
+                        dto = new CustomerDto();
+                        dto.customerId = '10';
+                        return [4 /*yield*/, fetch('test/GetDbCustomer', {
+                                body: JSON.stringify(dto),
+                                method: 'POST',
+                                headers: {
+                                    'user-agent': 'Mozilla/4.0 MDN Example',
+                                    'content-type': 'application/json'
+                                }
+                            })];
                     case 1:
                         res = _a.sent();
                         return [4 /*yield*/, res.json()];
@@ -105,7 +114,7 @@ var App = /** @class */ (function (_super) {
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100', textAlign: "Right" }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100', textAlign: "Right" }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', width: '100' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'status', width: '100' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '100' })),
             React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Filter, ej2_react_grids_2.Group] }));
     };
@@ -113,4 +122,9 @@ var App = /** @class */ (function (_super) {
 }(React.Component));
 exports.default = App;
 ;
+var CustomerDto = /** @class */ (function () {
+    function CustomerDto() {
+    }
+    return CustomerDto;
+}());
 //# sourceMappingURL=Test.js.map

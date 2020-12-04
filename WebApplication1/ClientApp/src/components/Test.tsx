@@ -12,7 +12,17 @@ export default class App extends React.Component<{}, {}>{
     async componentDidMount() {
         if (this.gridInstance) {
 
-            var res = await fetch('test');
+            var dto = new CustomerDto();
+            dto.customerId ='10'
+
+            var res = await fetch('test/GetDbCustomer', {
+                body: JSON.stringify(dto),
+                method: 'POST',
+                headers: {
+                    'user-agent': 'Mozilla/4.0 MDN Example',
+                    'content-type': 'application/json'
+                }
+            });
             var oobj = await res.json();
             this.gridInstance.dataSource = oobj;
             //this.data = oobj;
@@ -37,7 +47,7 @@ export default class App extends React.Component<{}, {}>{
                 <ColumnDirective field='country' width='100' textAlign="Right" />
                 <ColumnDirective field='state' width='100' textAlign="Right" />
                 <ColumnDirective field='zip' width='100' />
-                <ColumnDirective field='city' width='100' />
+                <ColumnDirective field='status' width='100' />
                 <ColumnDirective field='address' width='100' />
             </ColumnsDirective>
             <Inject services={[Page, Sort, Filter, Group]} />
@@ -57,3 +67,12 @@ export default class App extends React.Component<{}, {}>{
     //    return data;
     //}
 };
+
+class CustomerDto {
+    customerId!: string;
+    name!: string;
+    country!: string;
+    state!: string;
+    zip!: string;
+    address!: string;
+}
