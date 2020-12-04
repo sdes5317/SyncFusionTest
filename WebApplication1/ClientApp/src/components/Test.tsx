@@ -2,31 +2,31 @@
 import { Group, Inject, Page, PageSettingsModel, Sort, SortSettingsModel } from '@syncfusion/ej2-react-grids';
 import { DataManager } from '@syncfusion/ej2-data';
 import * as React from 'react';
-import { data } from './datasource';
+import { TextBox } from '@syncfusion/ej2-inputs'
 
-export default class App extends React.Component<{}, {}>{
+export default class Test extends React.Component<{}, {}>{
 
     public gridInstance!: Grid;
-    public data!: any;
+    public state: IState;
+
+    constructor(props: any) {
+        super(props);
+        this.state = { data: [] };
+    }
 
     async componentDidMount() {
-        if (this.gridInstance) {
+        var dto = new CustomerDto();
+        dto.customerId = 'abcd'
 
-            var dto = new CustomerDto();
-            dto.customerId ='10'
-
-            var res = await fetch('test/GetDbCustomer', {
-                body: JSON.stringify(dto),
-                method: 'POST',
-                headers: {
-                    'user-agent': 'Mozilla/4.0 MDN Example',
-                    'content-type': 'application/json'
-                }
-            });
-            var oobj = await res.json();
-            this.gridInstance.dataSource = oobj;
-            //this.data = oobj;
-        }
+        var res = await fetch('test/GetDbCustomer', {
+            body: JSON.stringify(dto),
+            method: 'POST',
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            }
+        });
+        this.setState({ data: await res.json() });
     }
 
     public pageSettings: PageSettingsModel = { pageSize: 30 }
@@ -37,35 +37,40 @@ export default class App extends React.Component<{}, {}>{
     };
 
     public render() {
-        return <GridComponent
-            ref={g => this.gridInstance = g}
-            //dataSource={this.data}
-            allowPaging={true} pageSettings={this.pageSettings}>
-            <ColumnsDirective>
-                <ColumnDirective field='id' width='100' textAlign="Right" />
-                <ColumnDirective field='name' width='100' />
-                <ColumnDirective field='country' width='100' textAlign="Right" />
-                <ColumnDirective field='state' width='100' textAlign="Right" />
-                <ColumnDirective field='zip' width='100' />
-                <ColumnDirective field='status' width='100' />
-                <ColumnDirective field='address' width='100' />
-            </ColumnsDirective>
-            <Inject services={[Page, Sort, Filter, Group]} />
-        </GridComponent>
+
+        var grid = (
+            <><div id='loader'>Loading....</div><div id='container'>
+                <div className='wrap'>
+                    <div id="input-container" className="textboxes">
+
+
+                        <h4> Textbox with clear icon</h4>
+                        <input id="firstName" />
+                    </div>
+                    <div id="input-container" className="textboxes">
+                        <h4>Floating Textbox with clear icon</h4>
+                        <input id="lastName" />
+                    </div>
+                </div>
+            </div>
+                <GridComponent
+                    //ref={g => this.gridInstance = g}
+                    dataSource={this.state.data}
+                    allowPaging={true} pageSettings={this.pageSettings}>
+                    <ColumnsDirective>
+                        <ColumnDirective field='id' width='150' textAlign="Right"  />
+                        <ColumnDirective field='name' width='50' />
+                        <ColumnDirective field='country' width='50' textAlign="Right" />
+                        <ColumnDirective field='state' width='50' textAlign="Right" />
+                        <ColumnDirective field='zip' width='50' />
+                        <ColumnDirective field='address' width='200' />
+                    </ColumnsDirective>
+                    <Inject services={[Page, Sort, Filter, Group]} />
+                </GridComponent></>
+        );
+
+        return grid;
     }
-
-    //async GetFakeData() {
-    //    var res = await fetch('test');
-    //    console.log(res);
-    //    var oobj = res.json();
-    //    console.log(oobj);
-    //    return res;
-
-    //}
-
-    //public GetData(): Object[] {
-    //    return data;
-    //}
 };
 
 class CustomerDto {
@@ -75,4 +80,8 @@ class CustomerDto {
     state!: string;
     zip!: string;
     address!: string;
+}
+
+interface IState {
+    data: Object[];
 }

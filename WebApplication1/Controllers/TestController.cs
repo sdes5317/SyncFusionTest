@@ -16,7 +16,7 @@ namespace WebApplication1.Controllers
         private readonly ILogger<TestController> _logger;
         private readonly ISqlRepository _sqlRepository;
 
-        public TestController(ILogger<TestController> logger, MsSqlRepository msSqlRepository)
+        public TestController(ILogger<TestController> logger, ISqlRepository msSqlRepository)
         {
             _logger = logger;
             this._sqlRepository = msSqlRepository;
@@ -28,10 +28,9 @@ namespace WebApplication1.Controllers
             return Customer.GetFakeCustomers().ToList();
         }
         [HttpPost]
-        public IEnumerable<Customer> GetDbCustomer(CustomerDto customerDto)
+        public IEnumerable<CustomerWithThreeYearAmount> GetDbCustomer(CustomerDto customerDto)
         {
-            var result= _sqlRepository.SelectAll(customerDto);
-            return result;
+            return _sqlRepository.SelectAll(customerDto);
         }
         
         [HttpGet]

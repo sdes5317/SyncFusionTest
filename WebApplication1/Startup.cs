@@ -30,7 +30,10 @@ namespace WebApplication1
             });
 
             services.AddDbContext<MyContext>();
-            services.AddScoped<MsSqlRepository>();
+            //services.AddScoped<ISqlRepository, EfCorelRepository>();
+            //services.AddScoped<ISqlRepository,DapperRepository>();
+            services.AddScoped<ISqlRepository, AdoRepository>();
+
             services.AddControllers().AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                     );
