@@ -54,7 +54,7 @@ namespace WebApplication1.Repository
 
             if (likeCmdList is null || likeCmdList.Count == 0) throw new ArgumentNullException("請至少輸入一個模糊搜尋欄位");
 
-            var likeString = string.Join(" or ", likeCmdList);
+            var likeString = string.Join(" and ", likeCmdList);
 
             using (var con = new SqlConnection(_connectionString))
             {
