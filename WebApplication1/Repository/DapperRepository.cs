@@ -36,21 +36,44 @@ namespace WebApplication1.Repository
 
         private IEnumerable<Customer> SelectCustomers(CustomerDto customerDto)
         {
+            //todo 優化寫法
+            var selectOptions = new Customer()
+            {
+                Id = customerDto.CustomerId,
+                Name = customerDto.Name,
+                Country = customerDto.Name,
+                State = customerDto.State,
+                Address = customerDto.Address,
+                Zip = customerDto.Zip
+            };
+
+            var likeCmdList = new Dictionary<string, string>()
+            {
+                {nameof(selectOptions.Id),selectOptions.Id },
+                {nameof(selectOptions.Name),selectOptions.Name },
+                {nameof(selectOptions.Country),selectOptions.Country },
+                {nameof(selectOptions.State),selectOptions.State },
+                {nameof(selectOptions.Address),selectOptions.Address },
+                {nameof(selectOptions.Zip),selectOptions.Zip },
+            }
+            .Where(x => !string.IsNullOrEmpty(x.Value))
+            .Select(x => $"{x.Key} like '%' + @{x.Key} + '%'")
+            .ToList();
+
+            if (likeCmdList is null || likeCmdList.Count == 0) throw new ArgumentNullException("請至少輸入一個模糊搜尋欄位");
+
+            var likeString = string.Join(" or ", likeCmdList);
+
             using (var con = new SqlConnection(_connectionString))
             {
                 var cmd = new StringBuilder();
                 cmd.Append("select * from Customers where ");
                 cmd.Append($"status = 1 ");
                 cmd.Append($"and (");
-                cmd.Append($"Id like '%' + @{nameof(customerDto.CustomerId)} + '%' or ");
-                cmd.Append($"{nameof(customerDto.Name)} like '%' + @{nameof(customerDto.Name)} + '%' or ");
-                cmd.Append($"{nameof(customerDto.Country)} like '%' + @{nameof(customerDto.Country)} + '%' or ");
-                cmd.Append($"{nameof(customerDto.State)} like '%' + @{nameof(customerDto.State)} + '%' or ");
-                cmd.Append($"{nameof(customerDto.Address)} like '%' + @{nameof(customerDto.Address)} + '%' or ");
-                cmd.Append($"{nameof(customerDto.Zip)} like '%' + @{nameof(customerDto.Zip)} + '%' ");
+                cmd.Append(likeString);
                 cmd.Append($")");
-
-                return con.Query<Customer>(cmd.ToString(), customerDto);
+                Console.WriteLine(cmd.ToString());
+                return con.Query<Customer>(cmd.ToString(), selectOptions);
             }
         }
 
@@ -60,7 +83,7 @@ namespace WebApplication1.Repository
             {
                 var cmd = new StringBuilder();
                 cmd.Append("select * from Orders where ");
-                cmd.Append($"{nameof(Order.CustomerId)} =@{nameof(Order.CustomerId)}");
+                cmd.Append($"{nameof(Order.CustomerId)} = @{nameof(Order.CustomerId)}");
 
                 return con.Query<Order>(cmd.ToString(), new Order() { CustomerId = customer.Id });
             }

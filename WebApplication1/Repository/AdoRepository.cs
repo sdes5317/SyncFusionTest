@@ -36,29 +36,51 @@ namespace WebApplication1.Repository
 
         private IEnumerable<Customer> SelectCustomers(CustomerDto customerDto)
         {
+            //todo 優化寫法
+            var selectOptions = new Customer()
+            {
+                Id = customerDto.CustomerId,
+                Name = customerDto.Name,
+                Country = customerDto.Name,
+                State = customerDto.State,
+                Address = customerDto.Address,
+                Zip = customerDto.Zip
+            };
+
+            var likeCmdList = new Dictionary<string, string>()
+            {
+                {nameof(selectOptions.Id),selectOptions.Id },
+                {nameof(selectOptions.Name),selectOptions.Name },
+                {nameof(selectOptions.Country),selectOptions.Country },
+                {nameof(selectOptions.State),selectOptions.State },
+                {nameof(selectOptions.Address),selectOptions.Address },
+                {nameof(selectOptions.Zip),selectOptions.Zip },
+            }
+            .Where(x => !string.IsNullOrEmpty(x.Value))
+            .Select(x => $"{x.Key} like '%' + @{x.Key} + '%'")
+            .ToList();
+
+            if (likeCmdList is null || likeCmdList.Count == 0) throw new ArgumentNullException("請至少輸入一個模糊搜尋欄位");
+
+            var likeString = string.Join(" or ", likeCmdList);
             using (var con = new SqlConnection(_connectionString))
             {
                 var cmdString = new StringBuilder();
                 cmdString.Append("select * from Customers where ");
                 cmdString.Append($"status = 1 ");
                 cmdString.Append($"and (");
-                cmdString.Append($"Id like '%' + @{nameof(customerDto.CustomerId)} + '%' or ");
-                cmdString.Append($"{nameof(customerDto.Name)} like '%' + @{nameof(customerDto.Name)} + '%' or ");
-                cmdString.Append($"{nameof(customerDto.Country)} like '%' + @{nameof(customerDto.Country)} + '%' or ");
-                cmdString.Append($"{nameof(customerDto.State)} like '%' + @{nameof(customerDto.State)} + '%' or ");
-                cmdString.Append($"{nameof(customerDto.Address)} like '%' + @{nameof(customerDto.Address)} + '%' or ");
-                cmdString.Append($"{nameof(customerDto.Zip)} like '%' + @{nameof(customerDto.Zip)} + '%' ");
+                cmdString.Append(likeString);
                 cmdString.Append($")");
 
                 con.Open();
 
                 var sqlCmd = new SqlCommand(cmdString.ToString(), con);
-                sqlCmd.Parameters.AddWithValue($"@{nameof(customerDto.CustomerId)}", customerDto.CustomerId);
-                sqlCmd.Parameters.AddWithValue($"@{nameof(customerDto.Name)}", customerDto.Name);
-                sqlCmd.Parameters.AddWithValue($"@{nameof(customerDto.Country)}", customerDto.Country);
-                sqlCmd.Parameters.AddWithValue($"@{nameof(customerDto.State)}", customerDto.State);
-                sqlCmd.Parameters.AddWithValue($"@{nameof(customerDto.Address)}", customerDto.Address);
-                sqlCmd.Parameters.AddWithValue($"@{nameof(customerDto.Zip)}", customerDto.Zip);
+                sqlCmd.Parameters.AddWithValue($"@{nameof(selectOptions.Id)}", selectOptions.Id);
+                sqlCmd.Parameters.AddWithValue($"@{nameof(selectOptions.Name)}", selectOptions.Name);
+                sqlCmd.Parameters.AddWithValue($"@{nameof(selectOptions.Country)}", selectOptions.Country);
+                sqlCmd.Parameters.AddWithValue($"@{nameof(selectOptions.State)}", selectOptions.State);
+                sqlCmd.Parameters.AddWithValue($"@{nameof(selectOptions.Address)}", selectOptions.Address);
+                sqlCmd.Parameters.AddWithValue($"@{nameof(selectOptions.Zip)}", selectOptions.Zip);
 
                 var reader = sqlCmd.ExecuteReader();
                 while (reader.Read())
