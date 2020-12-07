@@ -32,26 +32,5 @@ namespace WebApplication1.Model
             Address = customerDto.Address;
             Zip = customerDto.Zip;
         }
-
-        public static IEnumerable<Customer> GetFakeCustomers()
-        {
-            for (int i = 1; i < 100; i++)
-            {
-                var id = "abcd" + i.ToString().PadLeft(16, '0');
-
-
-                yield return new Customer()
-                {
-                    Id = id,
-                    Name = "VINET",
-                    Country = "Tai",
-                    City = "Taichung",
-                    State = "ab",
-                    Zip = "408",
-                    Address = "Massachusetts Ave, Cambridge",
-                    Status = 1
-                };
-            }
-        }
     }
 }

@@ -36,7 +36,6 @@ namespace WebApplication1.Repository
 
         private IEnumerable<Customer> SelectCustomers(CustomerDto customerDto)
         {
-            //todo 優化寫法
             var selectOptions = new Customer(customerDto);
 
             var likeCmdList = new Dictionary<string, string>()

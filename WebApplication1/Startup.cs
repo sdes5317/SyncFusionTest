@@ -29,10 +29,10 @@ namespace WebApplication1
                 configuration.RootPath = "ClientApp/build";
             });
 
-            services.AddDbContext<MyContext>();
-            //services.AddScoped<ISqlRepository, EfCorelRepository>();
-            //services.AddScoped<ISqlRepository,DapperRepository>();
-            services.AddScoped<ISqlRepository, AdoRepository>();
+            services.AddDbContext<MyContext>()
+                    .AddScoped<ISqlRepository, EfCorelRepository>();
+            //services.AddScoped<ISqlRepository, DapperRepository>();
+            //services.AddScoped<ISqlRepository, AdoRepository>();
 
             services.AddControllers().AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore

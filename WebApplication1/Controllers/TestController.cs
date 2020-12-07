@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WebApplication1.Model;
 using WebApplication1.Repository;
+using WebApplication1.Utility;
 
 namespace WebApplication1.Controllers
 {
@@ -22,11 +23,6 @@ namespace WebApplication1.Controllers
             this._sqlRepository = msSqlRepository;
         }
 
-        [HttpGet]
-        public IEnumerable<Customer> GetCustomer()
-        {
-            return Customer.GetFakeCustomers().ToList();
-        }
         [HttpPost]
         public IEnumerable<CustomerWithThreeYearAmount> GetDbCustomer(CustomerDto customerDto)
         {
@@ -36,7 +32,9 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public void InsertOneFakeData()
         {
-            _sqlRepository.InsertFakeData(Customer.GetFakeCustomers());
+            var creater = new FakeDataCreater();
+            var customers = creater.GetFakeCustomers().ToList();
+            _sqlRepository.InsertFakeData(customers);
         }
     }
 }
