@@ -11,20 +11,18 @@ export default class Test extends React.Component<{}, {}>{
 
     constructor(props: any) {
         super(props);
-        var dto = new CustomerDto();
-        dto.name = '';
+
         this.state = {
             data: [],
             dto: new CustomerDto()
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.Search = this.Search.bind(this);
+        this.searchClick = this.searchClick.bind(this);
     }
 
     async componentDidMount() {
         var dto = new CustomerDto();
-        dto.customerId = '0001'
 
         await this.getDataByCustomer(dto);
     }
@@ -127,7 +125,7 @@ export default class Test extends React.Component<{}, {}>{
                             </div>
                         </td>
                         <td>
-                            <button onClick={this.Search}>Search</button>
+                            <button onClick={this.searchClick}>Search</button>
                         </td>
                     </tr></table>
                 <GridComponent
@@ -136,11 +134,14 @@ export default class Test extends React.Component<{}, {}>{
                     allowPaging={true} pageSettings={this.pageSettings}>
                     <ColumnsDirective>
                         <ColumnDirective field='id' width='150' textAlign="Right" />
-                        <ColumnDirective field='name' width='50' />
-                        <ColumnDirective field='country' width='50' textAlign="Right" />
-                        <ColumnDirective field='state' width='50' textAlign="Right" />
-                        <ColumnDirective field='zip' width='50' />
+                        <ColumnDirective field='name' width='100' />
+                        <ColumnDirective field='country' width='100' textAlign="Right" />
+                        <ColumnDirective field='state' width='100' textAlign="Right" />
+                        <ColumnDirective field='zip' width='100' />
                         <ColumnDirective field='address' width='200' />
+                        <ColumnDirective field='thisYear' width='80' />
+                        <ColumnDirective field='lastYear' width='80' />
+                        <ColumnDirective field='theYearBeforeLast' width='150' />
                     </ColumnsDirective>
                     <Inject services={[Page, Sort, Filter, Group]} />
                 </GridComponent>
@@ -149,7 +150,7 @@ export default class Test extends React.Component<{}, {}>{
 
         return grid;
     }
-    public Search() {
+    public searchClick() {
         console.log(123);
         this.getDataByCustomer(this.state.dto);
     }

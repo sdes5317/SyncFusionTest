@@ -62,14 +62,12 @@ var Test = /** @class */ (function (_super) {
                 { field: 'id', direction: 'Ascending' }
             ]
         };
-        var dto = new CustomerDto();
-        dto.name = '';
         _this.state = {
             data: [],
             dto: new CustomerDto()
         };
         _this.handleInputChange = _this.handleInputChange.bind(_this);
-        _this.Search = _this.Search.bind(_this);
+        _this.searchClick = _this.searchClick.bind(_this);
         return _this;
     }
     Test.prototype.componentDidMount = function () {
@@ -79,7 +77,6 @@ var Test = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         dto = new CustomerDto();
-                        dto.customerId = '0001';
                         return [4 /*yield*/, this.getDataByCustomer(dto)];
                     case 1:
                         _a.sent();
@@ -154,7 +151,7 @@ var Test = /** @class */ (function (_super) {
                             React.createElement("h4", null, "Zip"),
                             React.createElement("input", { id: "Zip", onChange: this.handleInputChange }))),
                     React.createElement("td", null,
-                        React.createElement("button", { onClick: this.Search }, "Search")))),
+                        React.createElement("button", { onClick: this.searchClick }, "Search")))),
             React.createElement(ej2_react_grids_1.GridComponent
             //ref={g => this.gridInstance = g}
             , { 
@@ -162,15 +159,18 @@ var Test = /** @class */ (function (_super) {
                 dataSource: this.state.data, allowPaging: true, pageSettings: this.pageSettings },
                 React.createElement(ej2_react_grids_1.ColumnsDirective, null,
                     React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'id', width: '150', textAlign: "Right" }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '50' }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '50', textAlign: "Right" }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '50', textAlign: "Right" }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '50' }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '200' })),
+                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100' }),
+                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100', textAlign: "Right" }),
+                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100', textAlign: "Right" }),
+                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100' }),
+                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '200' }),
+                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', width: '80' }),
+                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', width: '80' }),
+                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', width: '150' })),
                 React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Filter, ej2_react_grids_2.Group] }))));
         return grid;
     };
-    Test.prototype.Search = function () {
+    Test.prototype.searchClick = function () {
         console.log(123);
         this.getDataByCustomer(this.state.dto);
     };
