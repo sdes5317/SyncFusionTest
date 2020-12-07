@@ -1,4 +1,4 @@
-﻿import { ColumnDirective, ColumnsDirective, Filter, FilterSettingsModel, Grid, GridComponent } from '@syncfusion/ej2-react-grids';
+﻿import { ColumnDirective, ColumnsDirective, Filter, FilterSettingsModel, Freeze, Grid, GridComponent } from '@syncfusion/ej2-react-grids';
 import { Group, Inject, Page, PageSettingsModel, Sort, SortSettingsModel } from '@syncfusion/ej2-react-grids';
 import { DataManager } from '@syncfusion/ej2-data';
 import * as React from 'react';
@@ -97,6 +97,8 @@ export default class Test extends React.Component<{}, {}>{
                                 />
                             </div>
                         </td>
+                    </tr>
+                    <tr>
                         <td>
                             <div id="input-container" className="textboxes">
                                 <h4>City</h4>
@@ -127,23 +129,31 @@ export default class Test extends React.Component<{}, {}>{
                         <td>
                             <button onClick={this.searchClick}>Search</button>
                         </td>
-                    </tr></table>
+                    </tr>
+                </table>
                 <GridComponent
                     //ref={g => this.gridInstance = g}
                     dataSource={this.state.data}
-                    allowPaging={true} pageSettings={this.pageSettings}>
+                    allowPaging={true}
+                    pageSettings={this.pageSettings}
+                    allowTextWrap={true}
+                    frozenRows={0}
+                    frozenColumns={2}
+                    height="600"
+                    allowSelection={false} enableHover={false}
+                >
                     <ColumnsDirective>
-                        <ColumnDirective field='id' width='150' textAlign="Right" />
+                        <ColumnDirective field='id' width='100' textAlign="Right" />
                         <ColumnDirective field='name' width='100' />
                         <ColumnDirective field='country' width='100' textAlign="Right" />
                         <ColumnDirective field='state' width='100' textAlign="Right" />
                         <ColumnDirective field='zip' width='100' />
-                        <ColumnDirective field='address' width='200' />
-                        <ColumnDirective field='thisYear' width='80' />
-                        <ColumnDirective field='lastYear' width='80' />
-                        <ColumnDirective field='theYearBeforeLast' width='150' />
+                        <ColumnDirective field='address' width='100' />
+                        <ColumnDirective field='thisYear' width='100' />
+                        <ColumnDirective field='lastYear' width='100' />
+                        <ColumnDirective field='theYearBeforeLast' width='100' />
                     </ColumnsDirective>
-                    <Inject services={[Page, Sort, Filter, Group]} />
+                    <Inject services={[Page, Sort, Freeze]} />
                 </GridComponent>
             </>
         );
@@ -151,7 +161,6 @@ export default class Test extends React.Component<{}, {}>{
         return grid;
     }
     public searchClick() {
-        console.log(123);
         this.getDataByCustomer(this.state.dto);
     }
 };
