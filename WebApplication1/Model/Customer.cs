@@ -19,12 +19,26 @@ namespace WebApplication1.Model
 
         public List<Order> Order { get; set; }
 
+        public Customer()
+        {
+
+        }
+        public Customer(CustomerDto customerDto)
+        {
+            Id = customerDto.CustomerId;
+            Name = customerDto.Name;
+            Country = customerDto.Name;
+            State = customerDto.State;
+            Address = customerDto.Address;
+            Zip = customerDto.Zip;
+        }
+
         public static IEnumerable<Customer> GetFakeCustomers()
         {
             for (int i = 1; i < 100; i++)
             {
-                var id = "abcd" + i.ToString().PadLeft(16,'0');
-                
+                var id = "abcd" + i.ToString().PadLeft(16, '0');
+
 
                 yield return new Customer()
                 {
