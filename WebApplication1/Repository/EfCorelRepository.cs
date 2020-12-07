@@ -22,12 +22,12 @@ namespace WebApplication1.Repository
         {
             var customers= _myContext.Customers
                 .Where(c => c.Status == 1 &&
-                        (c.Id.Contains(customerDto.CustomerId) ||
-                         c.Name.Contains(customerDto.Name) ||
-                         c.Country.Contains(customerDto.Country) ||
-                         c.State.Contains(customerDto.State) ||
-                         c.Address.Contains(customerDto.Address) ||
-                         c.Zip.Contains(customerDto.Zip)))
+                        ((!string.IsNullOrEmpty(customerDto.CustomerId) && c.Id.Contains(customerDto.CustomerId)) ||
+                         (!string.IsNullOrEmpty(customerDto.Name) && c.Name.Contains(customerDto.Name)) ||
+                         (!string.IsNullOrEmpty(customerDto.Country) && c.Country.Contains(customerDto.Country)) ||
+                         (!string.IsNullOrEmpty(customerDto.State) && c.State.Contains(customerDto.State)) ||
+                         (!string.IsNullOrEmpty(customerDto.Address) && c.Address.Contains(customerDto.Address)) ||
+                         (!string.IsNullOrEmpty(customerDto.Zip) && c.Zip.Contains(customerDto.Zip))))
                 .Include(c => c.Order).ToList();
 
             foreach (var customer in customers)
