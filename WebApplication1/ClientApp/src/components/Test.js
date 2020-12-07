@@ -62,26 +62,46 @@ var Test = /** @class */ (function (_super) {
                 { field: 'id', direction: 'Ascending' }
             ]
         };
-        _this.state = { data: [] };
+        var dto = new CustomerDto();
+        dto.name = '';
+        _this.state = {
+            data: [],
+            dto: new CustomerDto()
+        };
+        _this.handleInputChange = _this.handleInputChange.bind(_this);
+        _this.Search = _this.Search.bind(_this);
         return _this;
     }
     Test.prototype.componentDidMount = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var dto, res, _a;
+            var dto;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dto = new CustomerDto();
+                        dto.customerId = '0001';
+                        return [4 /*yield*/, this.getDataByCustomer(dto)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Test.prototype.getDataByCustomer = function (dto) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, _a;
             var _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0:
-                        dto = new CustomerDto();
-                        dto.customerId = 'abcd';
-                        return [4 /*yield*/, fetch('test/GetDbCustomer', {
-                                body: JSON.stringify(dto),
-                                method: 'POST',
-                                headers: {
-                                    'user-agent': 'Mozilla/4.0 MDN Example',
-                                    'content-type': 'application/json'
-                                }
-                            })];
+                    case 0: return [4 /*yield*/, fetch('test/GetDbCustomer', {
+                            body: JSON.stringify(dto),
+                            method: 'POST',
+                            headers: {
+                                'user-agent': 'Mozilla/4.0 MDN Example',
+                                'content-type': 'application/json'
+                            }
+                        })];
                     case 1:
                         res = _c.sent();
                         _a = this.setState;
@@ -94,17 +114,47 @@ var Test = /** @class */ (function (_super) {
             });
         });
     };
+    Test.prototype.handleInputChange = function (event) {
+        var name = event.target.id;
+        var value = event.target.value;
+        var dto = this.state.dto;
+        dto[name.toString()] = value;
+        this.setState({ dto: dto });
+    };
     Test.prototype.render = function () {
         var grid = (React.createElement(React.Fragment, null,
-            React.createElement("div", { id: 'loader' }, "Loading...."),
-            React.createElement("div", { id: 'container' },
-                React.createElement("div", { className: 'wrap' },
-                    React.createElement("div", { id: "input-container", className: "textboxes" },
-                        React.createElement("h4", null, " Textbox with clear icon"),
-                        React.createElement("input", { id: "firstName" })),
-                    React.createElement("div", { id: "input-container", className: "textboxes" },
-                        React.createElement("h4", null, "Floating Textbox with clear icon"),
-                        React.createElement("input", { id: "lastName" })))),
+            React.createElement("table", null,
+                React.createElement("tr", null,
+                    React.createElement("td", null,
+                        React.createElement("div", { id: "input-container", className: "textboxes" },
+                            React.createElement("h4", null, "CustomerId"),
+                            React.createElement("input", { id: "CustomerId", onChange: this.handleInputChange }))),
+                    React.createElement("td", null,
+                        React.createElement("div", { id: "input-container", className: "textboxes" },
+                            React.createElement("h4", null, "Name"),
+                            React.createElement("input", { id: "Name", onChange: this.handleInputChange }))),
+                    React.createElement("td", null,
+                        React.createElement("div", { id: "input-container", className: "textboxes" },
+                            React.createElement("h4", null, "Country"),
+                            React.createElement("input", { id: "Country", onChange: this.handleInputChange }))),
+                    React.createElement("td", null,
+                        React.createElement("div", { id: "input-container", className: "textboxes" },
+                            React.createElement("h4", null, "State"),
+                            React.createElement("input", { id: "State", onChange: this.handleInputChange }))),
+                    React.createElement("td", null,
+                        React.createElement("div", { id: "input-container", className: "textboxes" },
+                            React.createElement("h4", null, "City"),
+                            React.createElement("input", { id: "City", onChange: this.handleInputChange }))),
+                    React.createElement("td", null,
+                        React.createElement("div", { id: "input-container", className: "textboxes" },
+                            React.createElement("h4", null, "Address"),
+                            React.createElement("input", { id: "Address", onChange: this.handleInputChange }))),
+                    React.createElement("td", null,
+                        React.createElement("div", { id: "input-container", className: "textboxes" },
+                            React.createElement("h4", null, "Zip"),
+                            React.createElement("input", { id: "Zip", onChange: this.handleInputChange }))),
+                    React.createElement("td", null,
+                        React.createElement("button", { onClick: this.Search }, "Search")))),
             React.createElement(ej2_react_grids_1.GridComponent
             //ref={g => this.gridInstance = g}
             , { 
@@ -119,6 +169,10 @@ var Test = /** @class */ (function (_super) {
                     React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '200' })),
                 React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Filter, ej2_react_grids_2.Group] }))));
         return grid;
+    };
+    Test.prototype.Search = function () {
+        console.log(123);
+        this.getDataByCustomer(this.state.dto);
     };
     return Test;
 }(React.Component));
