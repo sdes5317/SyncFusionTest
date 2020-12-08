@@ -22,9 +22,7 @@ export default class Test extends React.Component<{}, {}>{
     }
 
     async componentDidMount() {
-        var dto = new CustomerDto();
-
-        await this.getAllCustomers(dto);
+        await this.getAllCustomers();
     }
 
     public pageSettings: PageSettingsModel = { pageSize: 30 }
@@ -45,13 +43,11 @@ export default class Test extends React.Component<{}, {}>{
         });
         this.setState({ data: await res.json() });
     }
-    private async getAllCustomers(dto: CustomerDto) {
+    private async getAllCustomers() {
         var res = await fetch('test/GetAllCustomers', {
-            body: JSON.stringify(dto),
             method: 'POST',
             headers: {
                 'user-agent': 'Mozilla/4.0 MDN Example',
-                'content-type': 'application/json'
             }
         });
         this.setState({ data: await res.json() });
@@ -70,78 +66,60 @@ export default class Test extends React.Component<{}, {}>{
 
         var grid = (
             <>
-                <table>
-                    <tr>
-                        <td>
-                            <div id="input-container" className="textboxes">
-                                <h4>CustomerId</h4>
-                                <input
-                                    id="CustomerId"
-                                    onChange={this.handleInputChange}
-                                />
-                            </div>
-                        </td>
-                        <td>
-                            <div id="input-container" className="textboxes">
-                                <h4>Name</h4>
-                                <input
-                                    id="Name"
-                                    onChange={this.handleInputChange}
-                                />
-                            </div>
-                        </td>
-                        <td>
-                            <div id="input-container" className="textboxes">
-                                <h4>Country</h4>
-                                <input
-                                    id="Country"
-                                    onChange={this.handleInputChange}
-                                />
-                            </div>
-                        </td>
-                        <td>
-                            <div id="input-container" className="textboxes">
-                                <h4>State</h4>
-                                <input
-                                    id="State"
-                                    onChange={this.handleInputChange}
-                                />
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div id="input-container" className="textboxes">
-                                <h4>City</h4>
-                                <input
-                                    id="City"
-                                    onChange={this.handleInputChange}
-                                />
-                            </div>
-                        </td>
-                        <td>
-                            <div id="input-container" className="textboxes">
-                                <h4>Address</h4>
-                                <input
-                                    id="Address"
-                                    onChange={this.handleInputChange}
-                                />
-                            </div>
-                        </td>
-                        <td>
-                            <div id="input-container" className="textboxes">
-                                <h4>Zip</h4>
-                                <input
-                                    id="Zip"
-                                    onChange={this.handleInputChange}
-                                />
-                            </div>
-                        </td>
-                        <td>
-                            <button onClick={this.searchClick}>Search</button>
-                        </td>
-                    </tr>
-                </table>
+                <div className="container-fluid">
+                    <div className="row">
+                        <div id="input-container" className="textboxes">
+                            <h4>CustomerId</h4>
+                            <input
+                                id="customerId"
+                                onChange={this.handleInputChange}
+                            />
+                        </div>
+                        <div id="input-container" className="textboxes">
+                            <h4>Name</h4>
+                            <input
+                                id="name"
+                                onChange={this.handleInputChange}
+                            />
+                        </div>
+                        <div id="input-container" className="textboxes">
+                            <h4>Country</h4>
+                            <input
+                                id="country"
+                                onChange={this.handleInputChange}
+                            />
+                        </div>
+                        <div id="input-container" className="textboxes">
+                            <h4>State</h4>
+                            <input
+                                id="state"
+                                onChange={this.handleInputChange}
+                            />
+                        </div>
+                        <div id="input-container" className="textboxes">
+                            <h4>City</h4>
+                            <input
+                                id="city"
+                                onChange={this.handleInputChange}
+                            />
+                        </div>
+                        <div id="input-container" className="textboxes">
+                            <h4>Address</h4>
+                            <input
+                                id="address"
+                                onChange={this.handleInputChange}
+                            />
+                        </div>
+                        <div id="input-container" className="textboxes">
+                            <h4>Zip</h4>
+                            <input
+                                id="zip"
+                                onChange={this.handleInputChange}
+                            />
+                        </div>
+                        <button onClick={this.searchClick}>Search</button>
+                    </div>
+                </div>
                 <GridComponent
                     //ref={g => this.gridInstance = g}
                     dataSource={this.state.data}
@@ -173,7 +151,25 @@ export default class Test extends React.Component<{}, {}>{
         return grid;
     }
     public searchClick() {
-        this.getSelectCustomers(this.state.dto);
+        const dto = this.state.dto;
+        console.log(dto);
+        const check =
+            (dto.address == null || dto.address == "") &&
+            (dto.city == null || dto.city == "") &&
+            (dto.country == null || dto.country == "") &&
+            (dto.customerId == null || dto.customerId == "") &&
+            (dto.name == null || dto.name == "") &&
+            (dto.state == null || dto.state == "") &&
+            (dto.zip == null || dto.zip == "");
+        console.log(dto.country);
+        console.log(check);
+        console.log(typeof (check));
+        if (check) {
+            this.getAllCustomers();
+        }
+        else {
+            this.getSelectCustomers(this.state.dto);
+        }
     }
 };
 

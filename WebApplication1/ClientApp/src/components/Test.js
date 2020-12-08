@@ -72,12 +72,9 @@ var Test = /** @class */ (function (_super) {
     }
     Test.prototype.componentDidMount = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var dto;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        dto = new CustomerDto();
-                        return [4 /*yield*/, this.getAllCustomers(dto)];
+                    case 0: return [4 /*yield*/, this.getAllCustomers()];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -111,18 +108,16 @@ var Test = /** @class */ (function (_super) {
             });
         });
     };
-    Test.prototype.getAllCustomers = function (dto) {
+    Test.prototype.getAllCustomers = function () {
         return __awaiter(this, void 0, void 0, function () {
             var res, _a;
             var _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0: return [4 /*yield*/, fetch('test/GetAllCustomers', {
-                            body: JSON.stringify(dto),
                             method: 'POST',
                             headers: {
                                 'user-agent': 'Mozilla/4.0 MDN Example',
-                                'content-type': 'application/json'
                             }
                         })];
                     case 1:
@@ -146,39 +141,30 @@ var Test = /** @class */ (function (_super) {
     };
     Test.prototype.render = function () {
         var grid = (React.createElement(React.Fragment, null,
-            React.createElement("table", null,
-                React.createElement("tr", null,
-                    React.createElement("td", null,
-                        React.createElement("div", { id: "input-container", className: "textboxes" },
-                            React.createElement("h4", null, "CustomerId"),
-                            React.createElement("input", { id: "CustomerId", onChange: this.handleInputChange }))),
-                    React.createElement("td", null,
-                        React.createElement("div", { id: "input-container", className: "textboxes" },
-                            React.createElement("h4", null, "Name"),
-                            React.createElement("input", { id: "Name", onChange: this.handleInputChange }))),
-                    React.createElement("td", null,
-                        React.createElement("div", { id: "input-container", className: "textboxes" },
-                            React.createElement("h4", null, "Country"),
-                            React.createElement("input", { id: "Country", onChange: this.handleInputChange }))),
-                    React.createElement("td", null,
-                        React.createElement("div", { id: "input-container", className: "textboxes" },
-                            React.createElement("h4", null, "State"),
-                            React.createElement("input", { id: "State", onChange: this.handleInputChange })))),
-                React.createElement("tr", null,
-                    React.createElement("td", null,
-                        React.createElement("div", { id: "input-container", className: "textboxes" },
-                            React.createElement("h4", null, "City"),
-                            React.createElement("input", { id: "City", onChange: this.handleInputChange }))),
-                    React.createElement("td", null,
-                        React.createElement("div", { id: "input-container", className: "textboxes" },
-                            React.createElement("h4", null, "Address"),
-                            React.createElement("input", { id: "Address", onChange: this.handleInputChange }))),
-                    React.createElement("td", null,
-                        React.createElement("div", { id: "input-container", className: "textboxes" },
-                            React.createElement("h4", null, "Zip"),
-                            React.createElement("input", { id: "Zip", onChange: this.handleInputChange }))),
-                    React.createElement("td", null,
-                        React.createElement("button", { onClick: this.searchClick }, "Search")))),
+            React.createElement("div", { className: "container-fluid" },
+                React.createElement("div", { className: "row" },
+                    React.createElement("div", { id: "input-container", className: "textboxes" },
+                        React.createElement("h4", null, "CustomerId"),
+                        React.createElement("input", { id: "customerId", onChange: this.handleInputChange })),
+                    React.createElement("div", { id: "input-container", className: "textboxes" },
+                        React.createElement("h4", null, "Name"),
+                        React.createElement("input", { id: "name", onChange: this.handleInputChange })),
+                    React.createElement("div", { id: "input-container", className: "textboxes" },
+                        React.createElement("h4", null, "Country"),
+                        React.createElement("input", { id: "country", onChange: this.handleInputChange })),
+                    React.createElement("div", { id: "input-container", className: "textboxes" },
+                        React.createElement("h4", null, "State"),
+                        React.createElement("input", { id: "state", onChange: this.handleInputChange })),
+                    React.createElement("div", { id: "input-container", className: "textboxes" },
+                        React.createElement("h4", null, "City"),
+                        React.createElement("input", { id: "city", onChange: this.handleInputChange })),
+                    React.createElement("div", { id: "input-container", className: "textboxes" },
+                        React.createElement("h4", null, "Address"),
+                        React.createElement("input", { id: "address", onChange: this.handleInputChange })),
+                    React.createElement("div", { id: "input-container", className: "textboxes" },
+                        React.createElement("h4", null, "Zip"),
+                        React.createElement("input", { id: "zip", onChange: this.handleInputChange })),
+                    React.createElement("button", { onClick: this.searchClick }, "Search"))),
             React.createElement(ej2_react_grids_1.GridComponent
             //ref={g => this.gridInstance = g}
             , { 
@@ -199,7 +185,24 @@ var Test = /** @class */ (function (_super) {
         return grid;
     };
     Test.prototype.searchClick = function () {
-        this.getSelectCustomers(this.state.dto);
+        var dto = this.state.dto;
+        console.log(dto);
+        var check = (dto.address == null || dto.address == "") &&
+            (dto.city == null || dto.city == "") &&
+            (dto.country == null || dto.country == "") &&
+            (dto.customerId == null || dto.customerId == "") &&
+            (dto.name == null || dto.name == "") &&
+            (dto.state == null || dto.state == "") &&
+            (dto.zip == null || dto.zip == "");
+        console.log(dto.country);
+        console.log(check);
+        console.log(typeof (check));
+        if (check) {
+            this.getAllCustomers();
+        }
+        else {
+            this.getSelectCustomers(this.state.dto);
+        }
     };
     return Test;
 }(React.Component));
