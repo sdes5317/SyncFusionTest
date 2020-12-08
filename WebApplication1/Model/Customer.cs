@@ -27,9 +27,10 @@ namespace WebApplication1.Model
         {
             Id = customerDto.CustomerId;
             Name = customerDto.Name;
-            Country = customerDto.Name;
+            Country = customerDto.Country;
             State = customerDto.State;
             Address = customerDto.Address;
+            City = customerDto.City;
             Zip = customerDto.Zip;
         }
     }

@@ -29,9 +29,9 @@ namespace WebApplication1
                 configuration.RootPath = "ClientApp/build";
             });
 
-            services.AddDbContext<MyContext>()
-                    .AddScoped<ISqlRepository, EfCorelRepository>();
-            //services.AddScoped<ISqlRepository, DapperRepository>();
+            //services.AddDbContext<MyContext>()
+            //        .AddScoped<ISqlRepository, EfCorelRepository>();
+            services.AddScoped<ISqlRepository, DapperRepository>();
             //services.AddScoped<ISqlRepository, AdoRepository>();
 
             services.AddControllers().AddNewtonsoftJson(options =>

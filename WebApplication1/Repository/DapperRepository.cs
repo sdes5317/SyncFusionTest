@@ -23,9 +23,20 @@ namespace WebApplication1.Repository
             throw new System.NotImplementedException();
         }
 
-        public IEnumerable<CustomerWithThreeYearAmount> SelectAll(CustomerDto customerDto)
+        public IEnumerable<CustomerWithThreeYearAmount> SelectCustomers(CustomerDto customerDto)
         {
-            var customers = SelectCustomers(customerDto);
+            var customers = SelectCustomersByOptions(customerDto);
+
+            foreach (var customer in customers)
+            {
+                customer.Order = SelectOrders(customer).ToList();
+                yield return new CustomerWithThreeYearAmount(customer);
+            }
+        }
+        
+        public IEnumerable<CustomerWithThreeYearAmount> SelectAllCustomers()
+        {
+            var customers = SelectAll();
 
             foreach (var customer in customers)
             {
@@ -34,7 +45,7 @@ namespace WebApplication1.Repository
             }
         }
 
-        private IEnumerable<Customer> SelectCustomers(CustomerDto customerDto)
+        private IEnumerable<Customer> SelectCustomersByOptions(CustomerDto customerDto)
         {
             var selectOptions = new Customer(customerDto);
 
@@ -45,6 +56,7 @@ namespace WebApplication1.Repository
                 {nameof(selectOptions.Country),selectOptions.Country },
                 {nameof(selectOptions.State),selectOptions.State },
                 {nameof(selectOptions.Address),selectOptions.Address },
+                {nameof(selectOptions.City),selectOptions.City },
                 {nameof(selectOptions.Zip),selectOptions.Zip },
             }
             .Where(x => !string.IsNullOrEmpty(x.Value))
@@ -65,6 +77,13 @@ namespace WebApplication1.Repository
                 cmd.Append($")");
                 Console.WriteLine(cmd.ToString());
                 return con.Query<Customer>(cmd.ToString(), selectOptions);
+            }
+        }
+        private IEnumerable<Customer> SelectAll()
+        {
+            using (var con = new SqlConnection(_connectionString))
+            {
+                return con.Query<Customer>("select * from Customers where status = 1");
             }
         }
 

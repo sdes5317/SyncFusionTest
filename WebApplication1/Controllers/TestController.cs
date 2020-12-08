@@ -24,9 +24,14 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public IEnumerable<CustomerWithThreeYearAmount> GetDbCustomer(CustomerDto customerDto)
+        public IEnumerable<CustomerWithThreeYearAmount> GetCustomers(CustomerDto customerDto)
         {
-            return _sqlRepository.SelectAll(customerDto);
+            return _sqlRepository.SelectCustomers(customerDto);
+        }
+        [HttpPost]
+        public IEnumerable<CustomerWithThreeYearAmount> GetAllCustomers()
+        {
+            return _sqlRepository.SelectAllCustomers();
         }
         
         [HttpGet]

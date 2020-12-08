@@ -77,7 +77,7 @@ var Test = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         dto = new CustomerDto();
-                        return [4 /*yield*/, this.getDataByCustomer(dto)];
+                        return [4 /*yield*/, this.getAllCustomers(dto)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -85,13 +85,39 @@ var Test = /** @class */ (function (_super) {
             });
         });
     };
-    Test.prototype.getDataByCustomer = function (dto) {
+    Test.prototype.getSelectCustomers = function (dto) {
         return __awaiter(this, void 0, void 0, function () {
             var res, _a;
             var _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, fetch('test/GetDbCustomer', {
+                    case 0: return [4 /*yield*/, fetch('test/GetCustomers', {
+                            body: JSON.stringify(dto),
+                            method: 'POST',
+                            headers: {
+                                'user-agent': 'Mozilla/4.0 MDN Example',
+                                'content-type': 'application/json'
+                            }
+                        })];
+                    case 1:
+                        res = _c.sent();
+                        _a = this.setState;
+                        _b = {};
+                        return [4 /*yield*/, res.json()];
+                    case 2:
+                        _a.apply(this, [(_b.data = _c.sent(), _b)]);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Test.prototype.getAllCustomers = function (dto) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res, _a;
+            var _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4 /*yield*/, fetch('test/GetAllCustomers', {
                             body: JSON.stringify(dto),
                             method: 'POST',
                             headers: {
@@ -164,6 +190,7 @@ var Test = /** @class */ (function (_super) {
                     React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100', textAlign: "Right" }),
                     React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100', textAlign: "Right" }),
                     React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100' }),
+                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', width: '100' }),
                     React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '100' }),
                     React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', width: '100' }),
                     React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', width: '100' }),
@@ -172,7 +199,7 @@ var Test = /** @class */ (function (_super) {
         return grid;
     };
     Test.prototype.searchClick = function () {
-        this.getDataByCustomer(this.state.dto);
+        this.getSelectCustomers(this.state.dto);
     };
     return Test;
 }(React.Component));

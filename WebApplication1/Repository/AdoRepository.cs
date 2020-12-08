@@ -23,9 +23,19 @@ namespace WebApplication1.Repository
             throw new System.NotImplementedException();
         }
 
-        public IEnumerable<CustomerWithThreeYearAmount> SelectAll(CustomerDto customerDto)
+        public IEnumerable<CustomerWithThreeYearAmount> SelectCustomers(CustomerDto customerDto)
         {
-            var customers = SelectCustomers(customerDto);
+            var customers = SelectCustomersByOptions(customerDto);
+
+            foreach (var customer in customers)
+            {
+                customer.Order = SelectOrders(customer).ToList();
+                yield return new CustomerWithThreeYearAmount(customer);
+            }
+        }
+        public IEnumerable<CustomerWithThreeYearAmount> SelectAllCustomers()
+        {
+            var customers = SelectAll();
 
             foreach (var customer in customers)
             {
@@ -34,7 +44,7 @@ namespace WebApplication1.Repository
             }
         }
 
-        private IEnumerable<Customer> SelectCustomers(CustomerDto customerDto)
+        private IEnumerable<Customer> SelectCustomersByOptions(CustomerDto customerDto)
         {
             var selectOptions = new Customer(customerDto);
             
@@ -45,6 +55,7 @@ namespace WebApplication1.Repository
                 {nameof(selectOptions.Country),selectOptions.Country },
                 {nameof(selectOptions.State),selectOptions.State },
                 {nameof(selectOptions.Address),selectOptions.Address },
+                {nameof(selectOptions.City),selectOptions.City },
                 {nameof(selectOptions.Zip),selectOptions.Zip },
             }
             .Where(x => !string.IsNullOrEmpty(x.Value))
@@ -71,6 +82,7 @@ namespace WebApplication1.Repository
                 sqlCmd.Parameters.AddWithValue($"@{nameof(selectOptions.Country)}", selectOptions.Country);
                 sqlCmd.Parameters.AddWithValue($"@{nameof(selectOptions.State)}", selectOptions.State);
                 sqlCmd.Parameters.AddWithValue($"@{nameof(selectOptions.Address)}", selectOptions.Address);
+                sqlCmd.Parameters.AddWithValue($"@{nameof(selectOptions.City)}", selectOptions.City);
                 sqlCmd.Parameters.AddWithValue($"@{nameof(selectOptions.Zip)}", selectOptions.Zip);
 
                 var reader = sqlCmd.ExecuteReader();
@@ -83,6 +95,34 @@ namespace WebApplication1.Repository
                         Country = reader[nameof(Customer.Country)].ToString(),
                         State = reader[nameof(Customer.State)].ToString(),
                         Address = reader[nameof(Customer.Address)].ToString(),
+                        City = reader[nameof(Customer.City)].ToString(),
+                        Zip = reader[nameof(Customer.Zip)].ToString()
+                    };
+                }
+            }
+        }
+        private IEnumerable<Customer> SelectAll()
+        {
+            
+            using (var con = new SqlConnection(_connectionString))
+            {
+                var cmdString = "select * from Customers where status = 1";
+
+                con.Open();
+
+                var sqlCmd = new SqlCommand(cmdString.ToString(), con);
+                
+                var reader = sqlCmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    yield return new Customer()
+                    {
+                        Id = reader[nameof(Customer.Id)].ToString(),
+                        Name = reader[nameof(Customer.Name)].ToString(),
+                        Country = reader[nameof(Customer.Country)].ToString(),
+                        State = reader[nameof(Customer.State)].ToString(),
+                        Address = reader[nameof(Customer.Address)].ToString(),
+                        City = reader[nameof(Customer.City)].ToString(),
                         Zip = reader[nameof(Customer.Zip)].ToString()
                     };
                 }

@@ -24,7 +24,7 @@ export default class Test extends React.Component<{}, {}>{
     async componentDidMount() {
         var dto = new CustomerDto();
 
-        await this.getDataByCustomer(dto);
+        await this.getAllCustomers(dto);
     }
 
     public pageSettings: PageSettingsModel = { pageSize: 30 }
@@ -34,8 +34,19 @@ export default class Test extends React.Component<{}, {}>{
         ]
     };
 
-    private async getDataByCustomer(dto: CustomerDto) {
-        var res = await fetch('test/GetDbCustomer', {
+    private async getSelectCustomers(dto: CustomerDto) {
+        var res = await fetch('test/GetCustomers', {
+            body: JSON.stringify(dto),
+            method: 'POST',
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            }
+        });
+        this.setState({ data: await res.json() });
+    }
+    private async getAllCustomers(dto: CustomerDto) {
+        var res = await fetch('test/GetAllCustomers', {
             body: JSON.stringify(dto),
             method: 'POST',
             headers: {
@@ -148,6 +159,7 @@ export default class Test extends React.Component<{}, {}>{
                         <ColumnDirective field='country' width='100' textAlign="Right" />
                         <ColumnDirective field='state' width='100' textAlign="Right" />
                         <ColumnDirective field='zip' width='100' />
+                        <ColumnDirective field='city' width='100' />
                         <ColumnDirective field='address' width='100' />
                         <ColumnDirective field='thisYear' width='100' />
                         <ColumnDirective field='lastYear' width='100' />
@@ -161,7 +173,7 @@ export default class Test extends React.Component<{}, {}>{
         return grid;
     }
     public searchClick() {
-        this.getDataByCustomer(this.state.dto);
+        this.getSelectCustomers(this.state.dto);
     }
 };
 
@@ -171,6 +183,7 @@ class CustomerDto {
     country!: string;
     state!: string;
     zip!: string;
+    city!: string;
     address!: string;
     [index: string]: string;
 }

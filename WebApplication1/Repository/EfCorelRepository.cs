@@ -18,7 +18,7 @@ namespace WebApplication1.Repository
             _myContext.Database.EnsureCreated();
         }
 
-        public IEnumerable<CustomerWithThreeYearAmount> SelectAll(CustomerDto customerDto)
+        private IEnumerable<CustomerWithThreeYearAmount> SelectCustomersByOptions(CustomerDto customerDto)
         {
             var customers= _myContext.Customers
                 .Where(c => c.Status == 1 &&
@@ -27,6 +27,7 @@ namespace WebApplication1.Repository
                          (c.Country.Contains(customerDto.Country)) &&
                          (c.State.Contains(customerDto.State)) &&
                          (c.Address.Contains(customerDto.Address)) &&
+                         (c.City.Contains(customerDto.City)) &&
                          (c.Zip.Contains(customerDto.Zip))))
                 .Include(c => c.Order).ToList();
 
@@ -46,5 +47,11 @@ namespace WebApplication1.Repository
             }
             _myContext.SaveChanges();
         }
+
+        public IEnumerable<CustomerWithThreeYearAmount> SelectAllCustomers()
+            => SelectCustomersByOptions(new CustomerDto());
+
+        public IEnumerable<CustomerWithThreeYearAmount> SelectCustomers(CustomerDto customerDto)
+            => SelectCustomersByOptions(customerDto);
     }
 }
