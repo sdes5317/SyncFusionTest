@@ -64,91 +64,95 @@ export default class Test extends React.Component<{}, {}>{
 
     public render() {
 
-        var grid = (
-            <>
-                <div className="container-fluid">
-                    <div className="row">
-                        <div id="input-container" className="textboxes">
-                            <h4>CustomerId</h4>
-                            <input
-                                id="customerId"
-                                onChange={this.handleInputChange}
-                            />
-                        </div>
-                        <div id="input-container" className="textboxes">
-                            <h4>Name</h4>
-                            <input
-                                id="name"
-                                onChange={this.handleInputChange}
-                            />
-                        </div>
-                        <div id="input-container" className="textboxes">
-                            <h4>Country</h4>
-                            <input
-                                id="country"
-                                onChange={this.handleInputChange}
-                            />
-                        </div>
-                        <div id="input-container" className="textboxes">
-                            <h4>State</h4>
-                            <input
-                                id="state"
-                                onChange={this.handleInputChange}
-                            />
-                        </div>
-                        <div id="input-container" className="textboxes">
-                            <h4>City</h4>
-                            <input
-                                id="city"
-                                onChange={this.handleInputChange}
-                            />
-                        </div>
-                        <div id="input-container" className="textboxes">
-                            <h4>Address</h4>
-                            <input
-                                id="address"
-                                onChange={this.handleInputChange}
-                            />
-                        </div>
-                        <div id="input-container" className="textboxes">
-                            <h4>Zip</h4>
-                            <input
-                                id="zip"
-                                onChange={this.handleInputChange}
-                            />
-                        </div>
-                        <button onClick={this.searchClick}>Search</button>
+        var inputTexts = (
+            <div className="container-fluid">
+                <div className="row">
+                    <div id="input-container" className="textboxes">
+                        <h4>CustomerId</h4>
+                        <input
+                            id="customerId"
+                            onChange={this.handleInputChange}
+                        />
                     </div>
+                    <div id="input-container" className="textboxes">
+                        <h4>Name</h4>
+                        <input
+                            id="name"
+                            onChange={this.handleInputChange}
+                        />
+                    </div>
+                    <div id="input-container" className="textboxes">
+                        <h4>Country</h4>
+                        <input
+                            id="country"
+                            onChange={this.handleInputChange}
+                        />
+                    </div>
+                    <div id="input-container" className="textboxes">
+                        <h4>State</h4>
+                        <input
+                            id="state"
+                            onChange={this.handleInputChange}
+                        />
+                    </div>
+                    <div id="input-container" className="textboxes">
+                        <h4>City</h4>
+                        <input
+                            id="city"
+                            onChange={this.handleInputChange}
+                        />
+                    </div>
+                    <div id="input-container" className="textboxes">
+                        <h4>Address</h4>
+                        <input
+                            id="address"
+                            onChange={this.handleInputChange}
+                        />
+                    </div>
+                    <div id="input-container" className="textboxes">
+                        <h4>Zip</h4>
+                        <input
+                            id="zip"
+                            onChange={this.handleInputChange}
+                        />
+                    </div>
+                    <button onClick={this.searchClick}>Search</button>
                 </div>
-                <GridComponent
-                    //ref={g => this.gridInstance = g}
-                    dataSource={this.state.data}
-                    allowPaging={true}
-                    pageSettings={this.pageSettings}
-                    allowTextWrap={true}
-                    frozenRows={0}
-                    frozenColumns={2}
-                    height="600"
-                    allowSelection={false} enableHover={false}
-                >
-                    <ColumnsDirective>
-                        <ColumnDirective field='id' width='100' textAlign="Right" />
-                        <ColumnDirective field='name' width='100' />
-                        <ColumnDirective field='country' width='100' textAlign="Right" />
-                        <ColumnDirective field='state' width='100' textAlign="Right" />
-                        <ColumnDirective field='zip' width='100' />
-                        <ColumnDirective field='city' width='100' />
-                        <ColumnDirective field='address' width='100' />
-                        <ColumnDirective field='thisYear' width='100' />
-                        <ColumnDirective field='lastYear' width='100' />
-                        <ColumnDirective field='theYearBeforeLast' width='100' />
-                    </ColumnsDirective>
-                    <Inject services={[Page, Sort, Freeze]} />
-                </GridComponent>
-            </>
+            </div>
         );
 
-        return grid;
+        var grid = (
+            <GridComponent
+                //ref={g => this.gridInstance = g}
+                dataSource={this.state.data}
+                allowPaging={true}
+                pageSettings={this.pageSettings}
+                allowTextWrap={true}
+                frozenRows={0}
+                frozenColumns={2}
+                height="600"
+                allowSelection={false} enableHover={false}
+            >
+                <ColumnsDirective>
+                    <ColumnDirective field='id' width='100' textAlign="Right" />
+                    <ColumnDirective field='name' width='100' />
+                    <ColumnDirective field='country' width='100' textAlign="Right" />
+                    <ColumnDirective field='state' width='100' textAlign="Right" />
+                    <ColumnDirective field='zip' width='100' />
+                    <ColumnDirective field='city' width='100' />
+                    <ColumnDirective field='address' width='100' />
+                    <ColumnDirective field='thisYear' width='100' />
+                    <ColumnDirective field='lastYear' width='100' />
+                    <ColumnDirective field='theYearBeforeLast' width='100' />
+                </ColumnsDirective>
+                <Inject services={[Page, Sort, Freeze]} />
+            </GridComponent>
+
+        );
+
+        const elements = [inputTexts, grid];
+
+        return elements;
     }
     public searchClick() {
         const dto = this.state.dto;

@@ -140,49 +140,49 @@ var Test = /** @class */ (function (_super) {
         this.setState({ dto: dto });
     };
     Test.prototype.render = function () {
-        var grid = (React.createElement(React.Fragment, null,
-            React.createElement("div", { className: "container-fluid" },
-                React.createElement("div", { className: "row" },
-                    React.createElement("div", { id: "input-container", className: "textboxes" },
-                        React.createElement("h4", null, "CustomerId"),
-                        React.createElement("input", { id: "customerId", onChange: this.handleInputChange })),
-                    React.createElement("div", { id: "input-container", className: "textboxes" },
-                        React.createElement("h4", null, "Name"),
-                        React.createElement("input", { id: "name", onChange: this.handleInputChange })),
-                    React.createElement("div", { id: "input-container", className: "textboxes" },
-                        React.createElement("h4", null, "Country"),
-                        React.createElement("input", { id: "country", onChange: this.handleInputChange })),
-                    React.createElement("div", { id: "input-container", className: "textboxes" },
-                        React.createElement("h4", null, "State"),
-                        React.createElement("input", { id: "state", onChange: this.handleInputChange })),
-                    React.createElement("div", { id: "input-container", className: "textboxes" },
-                        React.createElement("h4", null, "City"),
-                        React.createElement("input", { id: "city", onChange: this.handleInputChange })),
-                    React.createElement("div", { id: "input-container", className: "textboxes" },
-                        React.createElement("h4", null, "Address"),
-                        React.createElement("input", { id: "address", onChange: this.handleInputChange })),
-                    React.createElement("div", { id: "input-container", className: "textboxes" },
-                        React.createElement("h4", null, "Zip"),
-                        React.createElement("input", { id: "zip", onChange: this.handleInputChange })),
-                    React.createElement("button", { onClick: this.searchClick }, "Search"))),
-            React.createElement(ej2_react_grids_1.GridComponent
+        var inputTexts = (React.createElement("div", { className: "container-fluid" },
+            React.createElement("div", { className: "row" },
+                React.createElement("div", { id: "input-container", className: "textboxes" },
+                    React.createElement("h4", null, "CustomerId"),
+                    React.createElement("input", { id: "customerId", onChange: this.handleInputChange })),
+                React.createElement("div", { id: "input-container", className: "textboxes" },
+                    React.createElement("h4", null, "Name"),
+                    React.createElement("input", { id: "name", onChange: this.handleInputChange })),
+                React.createElement("div", { id: "input-container", className: "textboxes" },
+                    React.createElement("h4", null, "Country"),
+                    React.createElement("input", { id: "country", onChange: this.handleInputChange })),
+                React.createElement("div", { id: "input-container", className: "textboxes" },
+                    React.createElement("h4", null, "State"),
+                    React.createElement("input", { id: "state", onChange: this.handleInputChange })),
+                React.createElement("div", { id: "input-container", className: "textboxes" },
+                    React.createElement("h4", null, "City"),
+                    React.createElement("input", { id: "city", onChange: this.handleInputChange })),
+                React.createElement("div", { id: "input-container", className: "textboxes" },
+                    React.createElement("h4", null, "Address"),
+                    React.createElement("input", { id: "address", onChange: this.handleInputChange })),
+                React.createElement("div", { id: "input-container", className: "textboxes" },
+                    React.createElement("h4", null, "Zip"),
+                    React.createElement("input", { id: "zip", onChange: this.handleInputChange })),
+                React.createElement("button", { onClick: this.searchClick }, "Search"))));
+        var grid = (React.createElement(ej2_react_grids_1.GridComponent
+        //ref={g => this.gridInstance = g}
+        , { 
             //ref={g => this.gridInstance = g}
-            , { 
-                //ref={g => this.gridInstance = g}
-                dataSource: this.state.data, allowPaging: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, height: "600", allowSelection: false, enableHover: false },
-                React.createElement(ej2_react_grids_1.ColumnsDirective, null,
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'id', width: '100', textAlign: "Right" }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100' }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100', textAlign: "Right" }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100', textAlign: "Right" }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100' }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', width: '100' }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '100' }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', width: '100' }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', width: '100' }),
-                    React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', width: '100' })),
-                React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Freeze] }))));
-        return grid;
+            dataSource: this.state.data, allowPaging: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, height: "600", allowSelection: false, enableHover: false },
+            React.createElement(ej2_react_grids_1.ColumnsDirective, null,
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'id', width: '100', textAlign: "Right" }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100', textAlign: "Right" }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100', textAlign: "Right" }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', width: '100' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '100' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', width: '100' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', width: '100' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', width: '100' })),
+            React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Freeze] })));
+        var elements = [inputTexts, grid];
+        return elements;
     };
     Test.prototype.searchClick = function () {
         var dto = this.state.dto;
