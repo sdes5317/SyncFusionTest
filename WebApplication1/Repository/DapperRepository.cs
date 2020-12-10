@@ -25,28 +25,47 @@ namespace WebApplication1.Repository
 
         public IEnumerable<CustomerWithThreeYearAmount> SelectCustomers(CustomerDto customerDto)
         {
-            var customers = SelectCustomersByOptions(customerDto);
-
-            foreach (var customer in customers)
-            {
-                customer.Order = SelectOrders(customer).ToList();
-                yield return new CustomerWithThreeYearAmount(customer);
-            }
+            return SelectCustomersByOptions(customerDto);
         }
-        
+
         public IEnumerable<CustomerWithThreeYearAmount> SelectAllCustomers()
         {
-            var customers = SelectAll();
-
-            foreach (var customer in customers)
-            {
-                customer.Order = SelectOrders(customer).ToList();
-                yield return new CustomerWithThreeYearAmount(customer);
-            }
+            return SelectAll2();
         }
-
-        private IEnumerable<Customer> SelectCustomersByOptions(CustomerDto customerDto)
+        /// <summary>
+        ///SELECT Customers.Id, 
+        ///       NAME, 
+        ///       Country, 
+        ///       State, 
+        ///       Zip, 
+        ///       City, 
+        ///       Address, 
+        ///       CustomerId, 
+        ///       Isnull([2018], 0) AS TheYearBeforeLast, 
+        ///       Isnull([2019], 0) AS LastYear, 
+        ///       Isnull([2020], 0) AS ThisYear 
+        ///FROM   (SELECT CustomerId, 
+        ///               Sum(Orders.TotalAmount) AS total, 
+        ///               Year(Orders.OrderDate)  AS year 
+        ///        FROM   Orders 
+        ///        GROUP  BY Year(Orders.OrderDate), 
+        ///                  CustomerId) AS raw 
+        ///       PIVOT (Sum(raw.total) 
+        ///             FOR raw.year IN ([2018], 
+        ///                              [2019], 
+        ///                              [2020]) ) AS pvt 
+        ///       INNER JOIN Customers 
+        ///               ON Customers.Id = pvt.customerid 
+        ///WHERE  Customers.Status = 1 
+        /// </summary>
+        /// <param name="customerDto"></param>
+        /// <returns></returns>
+        private IEnumerable<CustomerWithThreeYearAmount> SelectCustomersByOptions(CustomerDto customerDto)
         {
+            var thisYear = DateTime.Now.Year.ToString();
+            var lastYear = DateTime.Now.AddYears(-1).Year.ToString();
+            var theYearBeforeLast = DateTime.Now.AddYears(-2).Year.ToString();
+
             var selectOptions = new Customer(customerDto);
 
             var likeCmdList = new Dictionary<string, string>()
@@ -70,32 +89,130 @@ namespace WebApplication1.Repository
             using (var con = new SqlConnection(_connectionString))
             {
                 var cmd = new StringBuilder();
-                cmd.Append("select * from Customers where ");
-                cmd.Append($"status = 1 ");
+                cmd.Append($@"SELECT Customers.Id, 
+                                    NAME, 
+                                    Country, 
+                                    State, 
+                                    Zip, 
+                                    City, 
+                                    Address, 
+                                    CustomerId, 
+                                    Isnull([{theYearBeforeLast}], 0) AS TheYearBeforeLast, 
+                                    Isnull([{lastYear}], 0) AS LastYear, 
+                                    Isnull([{thisYear}], 0) AS ThisYear 
+                             FROM   (SELECT CustomerId, 
+                                            Sum(Orders.TotalAmount) AS total, 
+                                            Year(Orders.OrderDate)  AS year 
+                                     FROM   Orders 
+                                     GROUP  BY Year(Orders.OrderDate), 
+                                               CustomerId) AS raw 
+                                    PIVOT (Sum(raw.total) 
+                                          FOR raw.year IN ([{theYearBeforeLast}], 
+                                                           [{lastYear}], 
+                                                           [{thisYear}]) ) AS pvt 
+                                    INNER JOIN Customers 
+                                            ON Customers.Id = pvt.customerid 
+                             WHERE  Customers.Status = 1 ");
                 cmd.Append($"and (");
                 cmd.Append(likeString);
                 cmd.Append($")");
-                Console.WriteLine(cmd.ToString());
-                return con.Query<Customer>(cmd.ToString(), selectOptions);
+
+                return con.Query<CustomerWithThreeYearAmount>(cmd.ToString(), selectOptions);
             }
         }
-        private IEnumerable<Customer> SelectAll()
+        private IEnumerable<CustomerWithThreeYearAmount> SelectAll()
         {
+            var thisYear = DateTime.Now.Year.ToString();
+            var lastYear = DateTime.Now.AddYears(-1).Year.ToString();
+            var theYearBeforeLast = DateTime.Now.AddYears(-2).Year.ToString();
+
             using (var con = new SqlConnection(_connectionString))
             {
-                return con.Query<Customer>("select * from Customers where status = 1");
+                var cmd = $@"SELECT Customers.Id, 
+                                    NAME, 
+                                    Country, 
+                                    State, 
+                                    Zip, 
+                                    City, 
+                                    Address, 
+                                    CustomerId, 
+                                    Isnull([{theYearBeforeLast}], 0) AS TheYearBeforeLast, 
+                                    Isnull([{lastYear}], 0) AS LastYear, 
+                                    Isnull([{thisYear}], 0) AS ThisYear 
+                             FROM   (SELECT CustomerId, 
+                                            Sum(Orders.TotalAmount) AS total, 
+                                            Year(Orders.OrderDate)  AS year 
+                                     FROM   Orders 
+                                     GROUP  BY Year(Orders.OrderDate), 
+                                               CustomerId) AS raw 
+                                    PIVOT (Sum(raw.total) 
+                                          FOR raw.year IN ([{theYearBeforeLast}],
+                                                           [{lastYear}], 
+                                                           [{thisYear}]) ) AS pvt 
+                                    INNER JOIN Customers 
+                                            ON Customers.Id = pvt.customerid 
+                             WHERE  Customers.Status = 1 ";
+                return con.Query<CustomerWithThreeYearAmount>(cmd);
             }
         }
-
-        private IEnumerable<Order> SelectOrders(Customer customer)
+        private IEnumerable<CustomerWithThreeYearAmount> SelectAll2()
         {
+            var thisYear = DateTime.Now.Year.ToString();
+            var lastYear = DateTime.Now.AddYears(-1).Year.ToString();
+            var theYearBeforeLast = DateTime.Now.AddYears(-2).Year.ToString();
+
             using (var con = new SqlConnection(_connectionString))
             {
-                var cmd = new StringBuilder();
-                cmd.Append("select * from Orders where ");
-                cmd.Append($"{nameof(Order.CustomerId)} = @{nameof(Order.CustomerId)}");
+                var cmd = $@"select 
+                            	  Customers.Id
+                            	  ,YEAR(OrderDate) as Year
+                                  ,Name
+                                  ,Country
+                                  ,State
+                                  ,Zip
+                                  ,City
+                                  ,Address
+                            	  ,CustomerId
+                            	  ,SUM(TotalAmount) as Total
+                            from Customers 
+                            inner join Orders on Orders.CustomerId = Customers.Id
+                            where Customers.Status=1
+                            group by Customers.Id,YEAR(OrderDate),Name
+                                  ,Country
+                                  ,State
+                                  ,Zip
+                                  ,City
+                                  ,Address
+                            	  ,CustomerId
+                            order by Id";
+                var results = con.Query<CustomerTemp>(cmd);
+                var dic = results.ToDictionary(x => $"{x.CustomerId}:{x.Year}");
+                var keys = new HashSet<string>(results.Select(x => x.CustomerId));
 
-                return con.Query<Order>(cmd.ToString(), new Order() { CustomerId = customer.Id });
+                var customers = new Dictionary<string, CustomerWithThreeYearAmount>();
+
+                foreach (var res in results)
+                {
+                    string id = res.CustomerId;
+                    if (!customers.ContainsKey(id))
+                    {
+                        customers.Add(id, new CustomerWithThreeYearAmount()
+                        {
+                            Id = id,
+                            Address = res.Address,
+                            City = res.City,
+                            Country = res.Country,
+                            Name = res.Name,
+                            State = res.State,
+                            Zip = res.Zip,
+                            ThisYear = dic.TryGetValue($"{id}:{thisYear}", out var thisyear) ? thisyear.Total : 0,
+                            LastYear = dic.TryGetValue($"{id}:{lastYear}", out var lastyear) ? lastyear.Total : 0,
+                            TheYearBeforeLast = dic.TryGetValue($"{id}:{theYearBeforeLast}", out var theyearbeforeyear) ? theyearbeforeyear.Total : 0
+                        });
+                    }
+                }
+
+                return customers.Select(x => x.Value);
             }
         }
     }

@@ -29,5 +29,9 @@ namespace WebApplication1.Model
             this.LastYear = customer.Order.Where(o => o.OrderDate.Year == DateTime.Now.AddYears(-1).Year).Sum(o => o.TotalAmount); ;
             this.TheYearBeforeLast = customer.Order.Where(o => o.OrderDate.Year == DateTime.Now.AddYears(-2).Year).Sum(o => o.TotalAmount); ;
         }
+
+        public CustomerWithThreeYearAmount()
+        {
+        }
     }
 }
