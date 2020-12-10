@@ -6,7 +6,7 @@ import { TextBox } from '@syncfusion/ej2-inputs'
 
 export default class Test extends React.Component<{}, {}>{
 
-    public gridInstance!: Grid;
+    public gridInstance: Grid | null = null;
     public state: IState;
 
     constructor(props: any) {
@@ -14,15 +14,18 @@ export default class Test extends React.Component<{}, {}>{
 
         this.state = {
             data: [],
-            dto: new CustomerDto()
+            dto: new CustomerDto(),
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.searchClick = this.searchClick.bind(this);
+        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
     async componentDidMount() {
         await this.getAllCustomers();
+        this.updateWindowDimensions();
+        window.addEventListener('resize', this.updateWindowDimensions);
     }
 
     public pageSettings: PageSettingsModel = { pageSize: 30 }
@@ -123,14 +126,13 @@ export default class Test extends React.Component<{}, {}>{
 
         var grid = (
             <GridComponent
-                //ref={g => this.gridInstance = g}
+                ref={g => this.gridInstance = g}
                 dataSource={this.state.data}
                 allowPaging={true}
                 pageSettings={this.pageSettings}
                 allowTextWrap={true}
                 frozenRows={0}
                 frozenColumns={2}
-                height="600"
                 allowSelection={false} enableHover={false}
             >
                 <ColumnsDirective>
@@ -147,7 +149,6 @@ export default class Test extends React.Component<{}, {}>{
                 </ColumnsDirective>
                 <Inject services={[Page, Sort, Freeze]} />
             </GridComponent>
-
         );
 
         const elements = [inputTexts, grid];
@@ -175,6 +176,16 @@ export default class Test extends React.Component<{}, {}>{
             this.getSelectCustomers(this.state.dto);
         }
     }
+    //元件被回收時刪除訂閱事件，切換頁面時才不會留著
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateWindowDimensions);
+    }
+
+    updateWindowDimensions() {
+        if (this.gridInstance) {
+            this.gridInstance.height = window.innerHeight - 300;
+        }
+    }
 };
 
 class CustomerDto {
@@ -190,5 +201,5 @@ class CustomerDto {
 
 interface IState {
     data: Object[];
-    dto: CustomerDto
+    dto: CustomerDto;
 }

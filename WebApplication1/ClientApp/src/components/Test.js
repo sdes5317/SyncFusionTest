@@ -56,6 +56,7 @@ var Test = /** @class */ (function (_super) {
     __extends(Test, _super);
     function Test(props) {
         var _this = _super.call(this, props) || this;
+        _this.gridInstance = null;
         _this.pageSettings = { pageSize: 30 };
         _this.sortSettings = {
             columns: [
@@ -64,10 +65,11 @@ var Test = /** @class */ (function (_super) {
         };
         _this.state = {
             data: [],
-            dto: new CustomerDto()
+            dto: new CustomerDto(),
         };
         _this.handleInputChange = _this.handleInputChange.bind(_this);
         _this.searchClick = _this.searchClick.bind(_this);
+        _this.updateWindowDimensions = _this.updateWindowDimensions.bind(_this);
         return _this;
     }
     Test.prototype.componentDidMount = function () {
@@ -77,6 +79,8 @@ var Test = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, this.getAllCustomers()];
                     case 1:
                         _a.sent();
+                        this.updateWindowDimensions();
+                        window.addEventListener('resize', this.updateWindowDimensions);
                         return [2 /*return*/];
                 }
             });
@@ -140,6 +144,7 @@ var Test = /** @class */ (function (_super) {
         this.setState({ dto: dto });
     };
     Test.prototype.render = function () {
+        var _this = this;
         var inputTexts = (React.createElement("div", { className: "container-fluid" },
             React.createElement("div", { className: "row" },
                 React.createElement("div", { id: "input-container", className: "textboxes" },
@@ -164,11 +169,7 @@ var Test = /** @class */ (function (_super) {
                     React.createElement("h4", null, "Zip"),
                     React.createElement("input", { id: "zip", onChange: this.handleInputChange })),
                 React.createElement("button", { onClick: this.searchClick }, "Search"))));
-        var grid = (React.createElement(ej2_react_grids_1.GridComponent
-        //ref={g => this.gridInstance = g}
-        , { 
-            //ref={g => this.gridInstance = g}
-            dataSource: this.state.data, allowPaging: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, height: "600", allowSelection: false, enableHover: false },
+        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, allowPaging: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, allowSelection: false, enableHover: false },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'id', width: '100', textAlign: "Right" }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100' }),
@@ -202,6 +203,15 @@ var Test = /** @class */ (function (_super) {
         }
         else {
             this.getSelectCustomers(this.state.dto);
+        }
+    };
+    //元件被回收時刪除訂閱事件，切換頁面時才不會留著
+    Test.prototype.componentWillUnmount = function () {
+        window.removeEventListener('resize', this.updateWindowDimensions);
+    };
+    Test.prototype.updateWindowDimensions = function () {
+        if (this.gridInstance) {
+            this.gridInstance.height = window.innerHeight - 300;
         }
     };
     return Test;
