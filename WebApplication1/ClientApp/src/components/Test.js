@@ -57,6 +57,16 @@ var Test = /** @class */ (function (_super) {
     function Test(props) {
         var _this = _super.call(this, props) || this;
         _this.gridInstance = null;
+        _this.toolbarOptions = [
+            { type: 'Input', template: "<input placeholder='customerId' id='customerId'></input>", align: 'Left' },
+            { type: 'Input', template: "<input placeholder='name' id='name'></input>", align: 'Left' },
+            { type: 'Input', template: "<input placeholder='country' id='country'></input>", align: 'Left' },
+            { type: 'Input', template: "<input placeholder='state' id='state'></input>", align: 'Left' },
+            { type: 'Input', template: "<input placeholder='city' id='city'></input>", align: 'Left' },
+            { type: 'Input', template: "<input placeholder='address' id='address'></input>", align: 'Left' },
+            { type: 'Input', template: "<input placeholder='zip' id='zip'></input>", align: 'Left' },
+            { type: 'Button', template: "<button id='search'>Search</button>", align: 'Left' },
+        ];
         _this.pageSettings = { pageSize: 30 };
         _this.sortSettings = {
             columns: [
@@ -73,14 +83,17 @@ var Test = /** @class */ (function (_super) {
         return _this;
     }
     Test.prototype.componentDidMount = function () {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0: return [4 /*yield*/, this.getAllCustomers()];
                     case 1:
-                        _a.sent();
+                        _b.sent();
                         this.updateWindowDimensions();
                         window.addEventListener('resize', this.updateWindowDimensions);
+                        window.addEventListener('input', this.handleInputChange);
+                        (_a = document.getElementById('search')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', this.searchClick);
                         return [2 /*return*/];
                 }
             });
@@ -144,50 +157,25 @@ var Test = /** @class */ (function (_super) {
         this.setState({ dto: dto });
     };
     Test.prototype.render = function () {
+        //<button onClick={this.searchClick}>Search</button>
         var _this = this;
-        var inputTexts = (React.createElement("div", { className: "container-fluid" },
-            React.createElement("div", { className: "row" },
-                React.createElement("div", { id: "input-container", className: "textboxes" },
-                    React.createElement("h4", null, "CustomerId"),
-                    React.createElement("input", { id: "customerId", onChange: this.handleInputChange })),
-                React.createElement("div", { id: "input-container", className: "textboxes" },
-                    React.createElement("h4", null, "Name"),
-                    React.createElement("input", { id: "name", onChange: this.handleInputChange })),
-                React.createElement("div", { id: "input-container", className: "textboxes" },
-                    React.createElement("h4", null, "Country"),
-                    React.createElement("input", { id: "country", onChange: this.handleInputChange })),
-                React.createElement("div", { id: "input-container", className: "textboxes" },
-                    React.createElement("h4", null, "State"),
-                    React.createElement("input", { id: "state", onChange: this.handleInputChange })),
-                React.createElement("div", { id: "input-container", className: "textboxes" },
-                    React.createElement("h4", null, "City"),
-                    React.createElement("input", { id: "city", onChange: this.handleInputChange })),
-                React.createElement("div", { id: "input-container", className: "textboxes" },
-                    React.createElement("h4", null, "Address"),
-                    React.createElement("input", { id: "address", onChange: this.handleInputChange })),
-                React.createElement("div", { id: "input-container", className: "textboxes" },
-                    React.createElement("h4", null, "Zip"),
-                    React.createElement("input", { id: "zip", onChange: this.handleInputChange })),
-                React.createElement("button", { onClick: this.searchClick }, "Search"))));
-        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, allowPaging: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, allowSelection: false, enableHover: false },
+        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, allowPaging: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, allowSelection: false, enableHover: false, toolbar: this.toolbarOptions },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'id', width: '100', textAlign: "Right" }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'id', width: '100' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100', textAlign: "Right" }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100', textAlign: "Right" }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', width: '100' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '100' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', width: '100' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', width: '100' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', width: '100' })),
-            React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Freeze] })));
-        var elements = [inputTexts, grid];
-        return elements;
+            React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Freeze, ej2_react_grids_1.Toolbar] })));
+        return grid;
     };
     Test.prototype.searchClick = function () {
         var dto = this.state.dto;
-        console.log(dto);
         var check = (dto.address == null || dto.address == "") &&
             (dto.city == null || dto.city == "") &&
             (dto.country == null || dto.country == "") &&
@@ -195,9 +183,6 @@ var Test = /** @class */ (function (_super) {
             (dto.name == null || dto.name == "") &&
             (dto.state == null || dto.state == "") &&
             (dto.zip == null || dto.zip == "");
-        console.log(dto.country);
-        console.log(check);
-        console.log(typeof (check));
         if (check) {
             this.getAllCustomers();
         }
@@ -208,10 +193,11 @@ var Test = /** @class */ (function (_super) {
     //元件被回收時刪除訂閱事件，切換頁面時才不會留著
     Test.prototype.componentWillUnmount = function () {
         window.removeEventListener('resize', this.updateWindowDimensions);
+        window.removeEventListener('input', this.handleInputChange);
     };
     Test.prototype.updateWindowDimensions = function () {
         if (this.gridInstance) {
-            this.gridInstance.height = window.innerHeight - 300;
+            this.gridInstance.height = window.innerHeight - 240;
         }
     };
     return Test;
@@ -223,4 +209,7 @@ var CustomerDto = /** @class */ (function () {
     }
     return CustomerDto;
 }());
+function createInputText(prop) {
+    return (React.createElement("input", { placeholder: prop.name, id: prop.name }));
+}
 //# sourceMappingURL=Test.js.map

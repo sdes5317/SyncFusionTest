@@ -207,7 +207,7 @@ namespace WebApplication1.Repository
                             Zip = res.Zip,
                             ThisYear = dic.TryGetValue($"{id}:{thisYear}", out var thisyear) ? thisyear.Total : 0,
                             LastYear = dic.TryGetValue($"{id}:{lastYear}", out var lastyear) ? lastyear.Total : 0,
-                            TheYearBeforeLast = dic.TryGetValue($"{id}:{theYearBeforeLast}", out var theyearbeforeyear) ? theyearbeforeyear.Total : 0
+                            TheYearBeforeLast = dic.TryGetValue($"{id}:{theYearBeforeLast}", out var theyearbeforelast) ? theyearbeforelast.Total : 0
                         });
                     }
                 }
