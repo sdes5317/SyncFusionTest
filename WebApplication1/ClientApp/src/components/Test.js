@@ -57,6 +57,7 @@ var Test = /** @class */ (function (_super) {
     function Test(props) {
         var _this = _super.call(this, props) || this;
         _this.gridInstance = null;
+        //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
         _this.toolbarOptions = [
             { type: 'Input', template: "<input placeholder='customerId' id='customerId'></input>", align: 'Left' },
             { type: 'Input', template: "<input placeholder='name' id='name'></input>", align: 'Left' },
@@ -157,20 +158,19 @@ var Test = /** @class */ (function (_super) {
         this.setState({ dto: dto });
     };
     Test.prototype.render = function () {
-        //<button onClick={this.searchClick}>Search</button>
         var _this = this;
         var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, allowPaging: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, allowSelection: false, enableHover: false, toolbar: this.toolbarOptions },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'id', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', width: '100' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', width: '100' })),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'id', width: '100', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', width: '100', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '100', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', width: '100', textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', width: '100', textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', width: '100', textAlign: 'Right' })),
             React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Freeze, ej2_react_grids_1.Toolbar] })));
         return grid;
     };

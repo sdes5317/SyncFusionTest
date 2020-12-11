@@ -30,7 +30,7 @@ export default class Test extends React.Component<{}, {}>{
         window.addEventListener('input', this.handleInputChange);
         document.getElementById('search')?.addEventListener('click', this.searchClick);
     }
-
+    //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
     public toolbarOptions: ToolbarItems[] | ItemModel[] = [
         { type: 'Input', template:"<input placeholder='customerId' id='customerId'></input>", align: 'Left' },
         { type: 'Input', template:"<input placeholder='name' id='name'></input>", align: 'Left' },
@@ -78,7 +78,6 @@ export default class Test extends React.Component<{}, {}>{
     }
 
     public render() {
-        //<button onClick={this.searchClick}>Search</button>
 
         var grid = (
             <GridComponent
@@ -93,16 +92,16 @@ export default class Test extends React.Component<{}, {}>{
                 toolbar={this.toolbarOptions}
             >
                 <ColumnsDirective>
-                    <ColumnDirective field='id' width='100' />
-                    <ColumnDirective field='name' width='100' />
-                    <ColumnDirective field='country' width='100' />
-                    <ColumnDirective field='state' width='100' />
-                    <ColumnDirective field='zip' width='100' />
-                    <ColumnDirective field='city' width='100' />
-                    <ColumnDirective field='address' width='100' />
-                    <ColumnDirective field='thisYear' width='100' />
-                    <ColumnDirective field='lastYear' width='100' />
-                    <ColumnDirective field='theYearBeforeLast' width='100' />
+                    <ColumnDirective field='id' width='100' textAlign='Left' />
+                    <ColumnDirective field='name' width='100' textAlign='Left'/>
+                    <ColumnDirective field='country' width='100' textAlign='Left'/>
+                    <ColumnDirective field='state' width='100' textAlign='Left'/>
+                    <ColumnDirective field='zip' width='100' textAlign='Left'/>
+                    <ColumnDirective field='city' width='100' textAlign='Left'/>
+                    <ColumnDirective field='address' width='100' textAlign='Left'/>
+                    <ColumnDirective field='thisYear' width='100' textAlign='Right'/>
+                    <ColumnDirective field='lastYear' width='100' textAlign='Right'/>
+                    <ColumnDirective field='theYearBeforeLast' width='100' textAlign='Right'/>
                 </ColumnsDirective>
                 <Inject services={[Page, Sort, Freeze, Toolbar]} />
             </GridComponent>
