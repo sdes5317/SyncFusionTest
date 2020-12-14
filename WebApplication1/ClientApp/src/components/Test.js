@@ -59,13 +59,13 @@ var Test = /** @class */ (function (_super) {
         _this.gridInstance = null;
         //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
         _this.toolbarOptions = [
-            { type: 'Input', template: "<input placeholder='customerId' id='customerId'></input>", align: 'Left' },
-            { type: 'Input', template: "<input placeholder='name' id='name'></input>", align: 'Left' },
-            { type: 'Input', template: "<input placeholder='country' id='country'></input>", align: 'Left' },
-            { type: 'Input', template: "<input placeholder='state' id='state'></input>", align: 'Left' },
-            { type: 'Input', template: "<input placeholder='city' id='city'></input>", align: 'Left' },
-            { type: 'Input', template: "<input placeholder='address' id='address'></input>", align: 'Left' },
-            { type: 'Input', template: "<input placeholder='zip' id='zip'></input>", align: 'Left' },
+            { type: 'Input', template: "<div>customerId</div><input placeholder='customerId' id='customerId' />", align: 'Left' },
+            { type: 'Input', template: "<div>name</div><input placeholder='name' id='name' />", align: 'Left' },
+            { type: 'Input', template: "<div>conutry</div><input placeholder='country' id='country' />", align: 'Left' },
+            { type: 'Input', template: "<div>state</div><input placeholder='state' id='state' />", align: 'Left' },
+            { type: 'Input', template: "<div>city</div><input placeholder='city' id='city' />", align: 'Left' },
+            { type: 'Input', template: "<div>address</div><input placeholder='address' id='address' />", align: 'Left' },
+            { type: 'Input', template: "<div>zip</div><input placeholder='zip' id='zip' />", align: 'Left' },
             { type: 'Button', template: "<button id='search'>Search</button>", align: 'Left' },
         ];
         _this.pageSettings = { pageSize: 30 };
@@ -209,7 +209,4 @@ var CustomerDto = /** @class */ (function () {
     }
     return CustomerDto;
 }());
-function createInputText(prop) {
-    return (React.createElement("input", { placeholder: prop.name, id: prop.name }));
-}
 //# sourceMappingURL=Test.js.map

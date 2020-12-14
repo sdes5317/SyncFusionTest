@@ -32,14 +32,14 @@ export default class Test extends React.Component<{}, {}>{
     }
     //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
     public toolbarOptions: ToolbarItems[] | ItemModel[] = [
-        { type: 'Input', template:"<input placeholder='customerId' id='customerId'></input>", align: 'Left' },
-        { type: 'Input', template:"<input placeholder='name' id='name'></input>", align: 'Left' },
-        { type: 'Input', template:"<input placeholder='country' id='country'></input>", align: 'Left' },
-        { type: 'Input', template:"<input placeholder='state' id='state'></input>", align: 'Left' },
-        { type: 'Input', template:"<input placeholder='city' id='city'></input>", align: 'Left' },
-        { type: 'Input', template:"<input placeholder='address' id='address'></input>", align: 'Left' },
-        { type: 'Input', template:"<input placeholder='zip' id='zip'></input>", align: 'Left' },
-        { type: 'Button', template:"<button id='search'>Search</button>", align: 'Left' },
+        { type: 'Input', template: "<div>customerId</div><input placeholder='customerId' id='customerId' />", align: 'Left' },
+        { type: 'Input', template: "<div>name</div><input placeholder='name' id='name' />", align: 'Left' },
+        { type: 'Input', template: "<div>conutry</div><input placeholder='country' id='country' />", align: 'Left' },
+        { type: 'Input', template: "<div>state</div><input placeholder='state' id='state' />", align: 'Left' },
+        { type: 'Input', template: "<div>city</div><input placeholder='city' id='city' />", align: 'Left' },
+        { type: 'Input', template: "<div>address</div><input placeholder='address' id='address' />", align: 'Left' },
+        { type: 'Input', template: "<div>zip</div><input placeholder='zip' id='zip' />", align: 'Left' },
+        { type: 'Button', template: "<button id='search'>Search</button>", align: 'Left' },
     ];
     public pageSettings: PageSettingsModel = { pageSize: 30 };
     public sortSettings: SortSettingsModel = {
@@ -93,15 +93,15 @@ export default class Test extends React.Component<{}, {}>{
             >
                 <ColumnsDirective>
                     <ColumnDirective field='id' width='100' textAlign='Left' />
-                    <ColumnDirective field='name' width='100' textAlign='Left'/>
-                    <ColumnDirective field='country' width='100' textAlign='Left'/>
-                    <ColumnDirective field='state' width='100' textAlign='Left'/>
-                    <ColumnDirective field='zip' width='100' textAlign='Left'/>
-                    <ColumnDirective field='city' width='100' textAlign='Left'/>
-                    <ColumnDirective field='address' width='100' textAlign='Left'/>
-                    <ColumnDirective field='thisYear' width='100' textAlign='Right'/>
-                    <ColumnDirective field='lastYear' width='100' textAlign='Right'/>
-                    <ColumnDirective field='theYearBeforeLast' width='100' textAlign='Right'/>
+                    <ColumnDirective field='name' width='100' textAlign='Left' />
+                    <ColumnDirective field='country' width='100' textAlign='Left' />
+                    <ColumnDirective field='state' width='100' textAlign='Left' />
+                    <ColumnDirective field='zip' width='100' textAlign='Left' />
+                    <ColumnDirective field='city' width='100' textAlign='Left' />
+                    <ColumnDirective field='address' width='100' textAlign='Left' />
+                    <ColumnDirective field='thisYear' width='100' textAlign='Right' />
+                    <ColumnDirective field='lastYear' width='100' textAlign='Right' />
+                    <ColumnDirective field='theYearBeforeLast' width='100' textAlign='Right' />
                 </ColumnsDirective>
                 <Inject services={[Page, Sort, Freeze, Toolbar]} />
             </GridComponent>
@@ -153,8 +153,4 @@ class CustomerDto {
 interface IState {
     data: Object[];
     dto: CustomerDto;
-}
-
-function createInputText(prop: any): JSX.Element {
-    return (<input placeholder={prop.name} id={prop.name}></input>);
 }
