@@ -82,7 +82,6 @@ var Test = /** @class */ (function (_super) {
         _this.handleInputChange = _this.handleInputChange.bind(_this);
         _this.searchClick = _this.searchClick.bind(_this);
         _this.clearClick = _this.clearClick.bind(_this);
-        _this.updateWindowDimensions = _this.updateWindowDimensions.bind(_this);
         return _this;
     }
     Test.prototype.componentDidMount = function () {
@@ -92,8 +91,6 @@ var Test = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, this.getAllCustomers()];
                     case 1:
                         _a.sent();
-                        this.updateWindowDimensions();
-                        window.addEventListener('resize', this.updateWindowDimensions);
                         return [2 /*return*/];
                 }
             });
@@ -207,15 +204,6 @@ var Test = /** @class */ (function (_super) {
             this.getSelectCustomers(this.state.dto);
         }
     };
-    //元件被回收時刪除訂閱事件，切換頁面時才不會留著
-    Test.prototype.componentWillUnmount = function () {
-        window.removeEventListener('resize', this.updateWindowDimensions);
-    };
-    Test.prototype.updateWindowDimensions = function () {
-        if (this.gridInstance) {
-            //this.gridInstance.height = window.innerHeight - 240;
-        }
-    };
     Test.prototype.clearClick = function (a) {
         //Ok
         //var dto = { ...this.state.dto };
@@ -225,6 +213,7 @@ var Test = /** @class */ (function (_super) {
         var dto = new CustomerDto;
         this.setState({ dto: dto });
         console.log(dto);
+        this.searchClick();
         //Ok
         //this.setState(prevState => {
         //    let dto = { ...prevState.dto };

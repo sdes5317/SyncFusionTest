@@ -146,10 +146,6 @@ export default class Test extends React.Component<{}, IState>{
             this.getSelectCustomers(this.state.dto);
         }
     }
-    //元件被回收時刪除訂閱事件，切換頁面時才不會留著
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.updateWindowDimensions);
-    }
 
     public clearClick(a: ClickEventArgs | undefined) {
         //Ok
@@ -161,6 +157,8 @@ export default class Test extends React.Component<{}, IState>{
         var dto = new CustomerDto;
         this.setState({ dto: dto });
         console.log(dto);
+
+        this.searchClick();
 
         //Ok
         //this.setState(prevState => {
