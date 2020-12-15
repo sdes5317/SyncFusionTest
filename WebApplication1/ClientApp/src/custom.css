@@ -1,14 +1,38 @@
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #0366d6;
 }
 
 code {
-  color: #E01A76;
+    color: #E01A76;
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+html, body {
+    height: 100%;
+}
+
+#root {
+    height: 100%;
+}
+
+header {
+    height: 10%;
+}
+
+.height {
+    height: 90%;
+}
+
+#height2 {
+    height: 100%;
+}
+
+container-fluid {
+    height: 90%;
 }

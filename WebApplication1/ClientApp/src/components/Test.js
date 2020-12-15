@@ -59,14 +59,15 @@ var Test = /** @class */ (function (_super) {
         _this.gridInstance = null;
         //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
         _this.toolbarOptions = [
-            { type: 'Input', template: "<div>customerId</div><input placeholder='customerId' id='customerId' />", align: 'Left' },
-            { type: 'Input', template: "<div>name</div><input placeholder='name' id='name' />", align: 'Left' },
-            { type: 'Input', template: "<div>conutry</div><input placeholder='country' id='country' />", align: 'Left' },
-            { type: 'Input', template: "<div>state</div><input placeholder='state' id='state' />", align: 'Left' },
-            { type: 'Input', template: "<div>city</div><input placeholder='city' id='city' />", align: 'Left' },
-            { type: 'Input', template: "<div>address</div><input placeholder='address' id='address' />", align: 'Left' },
-            { type: 'Input', template: "<div>zip</div><input placeholder='zip' id='zip' />", align: 'Left' },
-            { type: 'Button', template: "<button id='search'>Search</button>", align: 'Left' },
+            { type: 'Input', template: "#customerId", align: 'Left' },
+            { type: 'Input', template: "#name", align: 'Left' },
+            { type: 'Input', template: "#country", align: 'Left' },
+            { type: 'Input', template: "#state", align: 'Left' },
+            { type: 'Input', template: "#city", align: 'Left' },
+            { type: 'Input', template: "#address", align: 'Left' },
+            { type: 'Input', template: "#zip", align: 'Left' },
+            { type: 'Button', text: "Search ", click: function (e) { return _this.searchClick(); }, align: 'Left' },
+            { type: 'Button', text: "Clear", click: function (e) { return _this.clearClick(e); }, align: 'Left' },
         ];
         _this.pageSettings = { pageSize: 30 };
         _this.sortSettings = {
@@ -80,21 +81,19 @@ var Test = /** @class */ (function (_super) {
         };
         _this.handleInputChange = _this.handleInputChange.bind(_this);
         _this.searchClick = _this.searchClick.bind(_this);
+        _this.clearClick = _this.clearClick.bind(_this);
         _this.updateWindowDimensions = _this.updateWindowDimensions.bind(_this);
         return _this;
     }
     Test.prototype.componentDidMount = function () {
-        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getAllCustomers()];
                     case 1:
-                        _b.sent();
+                        _a.sent();
                         this.updateWindowDimensions();
                         window.addEventListener('resize', this.updateWindowDimensions);
-                        window.addEventListener('input', this.handleInputChange);
-                        (_a = document.getElementById('search')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', this.searchClick);
                         return [2 /*return*/];
                 }
             });
@@ -150,16 +149,31 @@ var Test = /** @class */ (function (_super) {
             });
         });
     };
-    Test.prototype.handleInputChange = function (event) {
-        var name = event.target.id;
-        var value = event.target.value;
-        var dto = this.state.dto;
-        dto[name.toString()] = value;
-        this.setState({ dto: dto });
+    Test.prototype.inputRender = function (name, data) {
+        return (React.createElement("div", { id: name },
+            React.createElement("span", null, name),
+            React.createElement("input", { placeholder: name, name: name, value: data, onChange: this.handleInputChange })));
+    };
+    Test.prototype.handleInputChange = function (e) {
+        if (e) {
+            var name_1 = e.target.name;
+            var value = e.target.value;
+            var dto = this.state.dto;
+            dto[name_1.toString()] = value;
+            this.setState({ dto: dto });
+        }
     };
     Test.prototype.render = function () {
         var _this = this;
-        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, allowPaging: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, allowSelection: false, enableHover: false, toolbar: this.toolbarOptions },
+        var input = (React.createElement(React.Fragment, null,
+            this.inputRender("customerId", this.state.dto.customerId),
+            this.inputRender("name", this.state.dto.name),
+            this.inputRender("country", this.state.dto.country),
+            this.inputRender("state", this.state.dto.state),
+            this.inputRender("zip", this.state.dto.zip),
+            this.inputRender("city", this.state.dto.city),
+            this.inputRender("address", this.state.dto.address)));
+        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, allowPaging: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, allowSelection: false, enableHover: false, toolbar: this.toolbarOptions, height: "100%" },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'id', width: '100', textAlign: 'Left' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100', textAlign: 'Left' }),
@@ -172,7 +186,10 @@ var Test = /** @class */ (function (_super) {
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', width: '100', textAlign: 'Right' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', width: '100', textAlign: 'Right' })),
             React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Freeze, ej2_react_grids_1.Toolbar] })));
-        return grid;
+        //return [input, grid];
+        return React.createElement("div", { className: "height" },
+            input,
+            grid);
     };
     Test.prototype.searchClick = function () {
         var dto = this.state.dto;
@@ -193,12 +210,38 @@ var Test = /** @class */ (function (_super) {
     //元件被回收時刪除訂閱事件，切換頁面時才不會留著
     Test.prototype.componentWillUnmount = function () {
         window.removeEventListener('resize', this.updateWindowDimensions);
-        window.removeEventListener('input', this.handleInputChange);
     };
     Test.prototype.updateWindowDimensions = function () {
         if (this.gridInstance) {
-            this.gridInstance.height = window.innerHeight - 240;
+            //this.gridInstance.height = window.innerHeight - 240;
         }
+    };
+    Test.prototype.clearClick = function (a) {
+        //Ok
+        //var dto = { ...this.state.dto };
+        //this.setState({ dto: dto });
+        //console.log(dto);
+        //Ok
+        var dto = new CustomerDto;
+        this.setState({ dto: dto });
+        console.log(dto);
+        //Ok
+        //this.setState(prevState => {
+        //    let dto = { ...prevState.dto };
+        //    dto.customerId = '';
+        //    dto.name = '';
+        //    dto.country = '';
+        //    dto.city = '';
+        //    dto.address = '';
+        //    dto.state = '';
+        //    dto.zip = '';
+        //    return { dto, };
+        //});
+        //Ok
+        //this.setState(prevState => {
+        //let dto = new CustomerDto;
+        //    return { dto, };
+        //});
     };
     return Test;
 }(React.Component));
@@ -206,6 +249,13 @@ exports.default = Test;
 ;
 var CustomerDto = /** @class */ (function () {
     function CustomerDto() {
+        this.customerId = "";
+        this.name = "";
+        this.country = "";
+        this.state = "";
+        this.zip = "";
+        this.city = "";
+        this.address = "";
     }
     return CustomerDto;
 }());

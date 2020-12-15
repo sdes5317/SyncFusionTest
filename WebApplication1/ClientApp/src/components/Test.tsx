@@ -2,10 +2,11 @@
 import { Group, Inject, Page, PageSettingsModel, Sort, SortSettingsModel } from '@syncfusion/ej2-react-grids';
 import { DataManager } from '@syncfusion/ej2-data';
 import * as React from 'react';
-import { ItemModel } from '@syncfusion/ej2-navigations';
+import { ItemModel, ClickEventArgs } from '@syncfusion/ej2-navigations';
 import { InputEventArgs, TextBox, TextBoxModel } from '@syncfusion/ej2-react-inputs';
+import { EmitType } from '@syncfusion/ej2-base'
 
-export default class Test extends React.Component<{}, {}>{
+export default class Test extends React.Component<{}, IState>{
 
     public gridInstance: Grid | null = null;
     public state: IState;
@@ -20,26 +21,23 @@ export default class Test extends React.Component<{}, {}>{
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.searchClick = this.searchClick.bind(this);
-        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+        this.clearClick = this.clearClick.bind(this);
     }
 
     async componentDidMount() {
         await this.getAllCustomers();
-        this.updateWindowDimensions();
-        window.addEventListener('resize', this.updateWindowDimensions);
-        window.addEventListener('input', this.handleInputChange);
-        document.getElementById('search')?.addEventListener('click', this.searchClick);
     }
     //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
     public toolbarOptions: ToolbarItems[] | ItemModel[] = [
-        { type: 'Input', template: "<div>customerId</div><input placeholder='customerId' id='customerId' />", align: 'Left' },
-        { type: 'Input', template: "<div>name</div><input placeholder='name' id='name' />", align: 'Left' },
-        { type: 'Input', template: "<div>conutry</div><input placeholder='country' id='country' />", align: 'Left' },
-        { type: 'Input', template: "<div>state</div><input placeholder='state' id='state' />", align: 'Left' },
-        { type: 'Input', template: "<div>city</div><input placeholder='city' id='city' />", align: 'Left' },
-        { type: 'Input', template: "<div>address</div><input placeholder='address' id='address' />", align: 'Left' },
-        { type: 'Input', template: "<div>zip</div><input placeholder='zip' id='zip' />", align: 'Left' },
-        { type: 'Button', template: "<button id='search'>Search</button>", align: 'Left' },
+        { type: 'Input', template: "#customerId", align: 'Left' },
+        { type: 'Input', template: "#name", align: 'Left' },
+        { type: 'Input', template: "#country", align: 'Left' },
+        { type: 'Input', template: "#state", align: 'Left' },
+        { type: 'Input', template: "#city", align: 'Left' },
+        { type: 'Input', template: "#address", align: 'Left' },
+        { type: 'Input', template: "#zip", align: 'Left' },
+        { type: 'Button', text: "Search ", click: e => this.searchClick(), align: 'Left' },//text裡的search多一個空格避免使用內建的search
+        { type: 'Button', text: "Clear", click: e => this.clearClick(e), align: 'Left' },
     ];
     public pageSettings: PageSettingsModel = { pageSize: 30 };
     public sortSettings: SortSettingsModel = {
@@ -69,15 +67,32 @@ export default class Test extends React.Component<{}, {}>{
         this.setState({ data: await res.json() });
     }
 
-    handleInputChange(event: any) {
-        const name = event.target.id;
-        const value = event.target.value;
-        const dto: CustomerDto = this.state.dto;
-        dto[name.toString()] = value;
-        this.setState({ dto: dto });
+    private inputRender(name: string, data: string) {
+        return (<div id={name}><span>{name}</span><input placeholder={name} name={name} value={data} onChange={this.handleInputChange} /></div>);
+    }
+
+    handleInputChange(e: React.ChangeEvent<HTMLInputElement> | undefined) {
+        if (e) {
+            const name = e.target.name;
+            const value = e.target.value;
+            const dto: CustomerDto = this.state.dto;
+            dto[name.toString()] = value;
+            this.setState({ dto: dto });
+        }
     }
 
     public render() {
+        var input = (
+            <>
+                { this.inputRender("customerId", this.state.dto.customerId)}
+                { this.inputRender("name", this.state.dto.name)}
+                { this.inputRender("country", this.state.dto.country)}
+                { this.inputRender("state", this.state.dto.state)}
+                { this.inputRender("zip", this.state.dto.zip)}
+                { this.inputRender("city", this.state.dto.city)}
+                { this.inputRender("address", this.state.dto.address)}
+            </>
+        );
 
         var grid = (
             <GridComponent
@@ -90,6 +105,7 @@ export default class Test extends React.Component<{}, {}>{
                 frozenColumns={2}
                 allowSelection={false} enableHover={false}
                 toolbar={this.toolbarOptions}
+                height="100%"
             >
                 <ColumnsDirective>
                     <ColumnDirective field='id' width='100' textAlign='Left' />
@@ -107,7 +123,11 @@ export default class Test extends React.Component<{}, {}>{
             </GridComponent>
         );
 
-        return grid;
+        //return [input, grid];
+        return <div className="height">
+            {input}
+            {grid}
+        </div>
     }
     public searchClick() {
         const dto = this.state.dto;
@@ -129,24 +149,48 @@ export default class Test extends React.Component<{}, {}>{
     //元件被回收時刪除訂閱事件，切換頁面時才不會留著
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateWindowDimensions);
-        window.removeEventListener('input', this.handleInputChange);
     }
 
-    updateWindowDimensions() {
-        if (this.gridInstance) {
-            this.gridInstance.height = window.innerHeight - 240;
-        }
+    public clearClick(a: ClickEventArgs | undefined) {
+        //Ok
+        //var dto = { ...this.state.dto };
+        //this.setState({ dto: dto });
+        //console.log(dto);
+
+        //Ok
+        var dto = new CustomerDto;
+        this.setState({ dto: dto });
+        console.log(dto);
+
+        //Ok
+        //this.setState(prevState => {
+        //    let dto = { ...prevState.dto };
+        //    dto.customerId = '';
+        //    dto.name = '';
+        //    dto.country = '';
+        //    dto.city = '';
+        //    dto.address = '';
+        //    dto.state = '';
+        //    dto.zip = '';
+        //    return { dto, };
+        //});
+
+        //Ok
+        //this.setState(prevState => {
+        //let dto = new CustomerDto;
+        //    return { dto, };
+        //});
     }
 };
 
 class CustomerDto {
-    customerId!: string;
-    name!: string;
-    country!: string;
-    state!: string;
-    zip!: string;
-    city!: string;
-    address!: string;
+    customerId: string = "";
+    name: string = "";
+    country: string = "";
+    state: string = "";
+    zip: string = "";
+    city: string = "";
+    address: string = "";
     [index: string]: string;
 }
 
