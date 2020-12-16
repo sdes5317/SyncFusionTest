@@ -39,7 +39,6 @@ namespace WebApplication1.Repository
 
         public void InsertFakeData(IEnumerable<Customer> customers)
         {
-            //var orders = Order.GetFakeOrders(customers);
             _myContext.Customers.AddRange(customers);
             foreach (var customer in customers)
             {
