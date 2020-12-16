@@ -4,6 +4,7 @@
 # 使用說明
 第一次使用因為需要自動產生資料庫及假資料  
 請先將Starup裡面的ISqlRepository改為EfCorelRepository  
+appsettings.json裡面的sql字串改為自己的環境  
 (其他沒有實作這部分)  
 ```
 services.AddDbContext<MyContext>()
