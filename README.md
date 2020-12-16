@@ -11,7 +11,7 @@ services.AddDbContext<MyContext>()
 //services.AddScoped<ISqlRepository, DapperRepository>();
 //services.AddScoped<ISqlRepository, AdoRepository>();
 ```
-然後佈署網站，打開swagger先呼叫一次GET /Test/InsertOneFakeData
+然後佈署網站，打開swagger先呼叫一次GET /Test/InsertOneFakeData  
 後續可以改為Dapper的版本運行
 ```
 //services.AddDbContext<MyContext>()
