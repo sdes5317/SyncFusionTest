@@ -63,16 +63,16 @@ var Test = /** @class */ (function (_super) {
             { type: 'Input', template: "#name", align: 'Left' },
             { type: 'Input', template: "#country", align: 'Left' },
             { type: 'Input', template: "#state", align: 'Left' },
+            { type: 'Input', template: "#zip", align: 'Left' },
             { type: 'Input', template: "#city", align: 'Left' },
             { type: 'Input', template: "#address", align: 'Left' },
-            { type: 'Input', template: "#zip", align: 'Left' },
             { type: 'Button', text: "Search ", click: function (e) { return _this.searchClick(); }, align: 'Left' },
             { type: 'Button', text: "Clear", click: function (e) { return _this.clearClick(e); }, align: 'Left' },
         ];
         _this.pageSettings = { pageSize: 30 };
         _this.sortSettings = {
             columns: [
-                { field: 'id', direction: 'Ascending' }
+                { field: 'customerId', direction: 'Ascending' }
             ]
         };
         _this.state = {
@@ -170,9 +170,9 @@ var Test = /** @class */ (function (_super) {
             this.inputRender("zip", this.state.dto.zip),
             this.inputRender("city", this.state.dto.city),
             this.inputRender("address", this.state.dto.address)));
-        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, allowPaging: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, allowSelection: false, enableHover: false, toolbar: this.toolbarOptions, height: "100%" },
+        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, allowPaging: true, allowSorting: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, allowSelection: false, enableHover: false, toolbar: this.toolbarOptions, height: "100%" },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'id', width: '100', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'customerId', width: '100', textAlign: 'Left' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100', textAlign: 'Left' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100', textAlign: 'Left' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100', textAlign: 'Left' }),

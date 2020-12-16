@@ -5,7 +5,7 @@ namespace WebApplication1.Model
 {
     public class CustomerWithThreeYearAmount
     {
-        public string Id { get; set; }
+        public string CustomerId { get; set; }
         public string Name { get; set; }
         public string Country { get; set; }
         public string State { get; set; }
@@ -18,7 +18,7 @@ namespace WebApplication1.Model
 
         public CustomerWithThreeYearAmount(Customer customer)
         {
-            this.Id = customer.Id;
+            this.CustomerId = customer.Id;
             this.Name = customer.Name;
             this.Country = customer.Country;
             this.State = customer.State;

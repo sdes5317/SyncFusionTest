@@ -33,16 +33,16 @@ export default class Test extends React.Component<{}, IState>{
         { type: 'Input', template: "#name", align: 'Left' },
         { type: 'Input', template: "#country", align: 'Left' },
         { type: 'Input', template: "#state", align: 'Left' },
+        { type: 'Input', template: "#zip", align: 'Left' },
         { type: 'Input', template: "#city", align: 'Left' },
         { type: 'Input', template: "#address", align: 'Left' },
-        { type: 'Input', template: "#zip", align: 'Left' },
         { type: 'Button', text: "Search ", click: e => this.searchClick(), align: 'Left' },//text裡的search多一個空格避免使用內建的search
         { type: 'Button', text: "Clear", click: e => this.clearClick(e), align: 'Left' },
     ];
     public pageSettings: PageSettingsModel = { pageSize: 30 };
     public sortSettings: SortSettingsModel = {
         columns: [
-            { field: 'id', direction: 'Ascending' }
+            { field: 'customerId', direction: 'Ascending' }
         ]
     };
 
@@ -99,6 +99,7 @@ export default class Test extends React.Component<{}, IState>{
                 ref={g => this.gridInstance = g}
                 dataSource={this.state.data}
                 allowPaging={true}
+                allowSorting={true}
                 pageSettings={this.pageSettings}
                 allowTextWrap={true}
                 frozenRows={0}
@@ -108,7 +109,7 @@ export default class Test extends React.Component<{}, IState>{
                 height="100%"
             >
                 <ColumnsDirective>
-                    <ColumnDirective field='id' width='100' textAlign='Left' />
+                    <ColumnDirective field='customerId' width='100' textAlign='Left' />
                     <ColumnDirective field='name' width='100' textAlign='Left' />
                     <ColumnDirective field='country' width='100' textAlign='Left' />
                     <ColumnDirective field='state' width='100' textAlign='Left' />

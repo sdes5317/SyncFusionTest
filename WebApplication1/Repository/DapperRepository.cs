@@ -30,7 +30,7 @@ namespace WebApplication1.Repository
 
         public IEnumerable<CustomerWithThreeYearAmount> SelectAllCustomers()
         {
-            return SelectAll2();
+            return SelectAll();
         }
         /// <summary>
         ///SELECT Customers.Id, 
@@ -198,7 +198,7 @@ namespace WebApplication1.Repository
                     {
                         customers.Add(id, new CustomerWithThreeYearAmount()
                         {
-                            Id = id,
+                            CustomerId = id,
                             Address = res.Address,
                             City = res.City,
                             Country = res.Country,
