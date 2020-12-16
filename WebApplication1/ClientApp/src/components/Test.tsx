@@ -124,8 +124,7 @@ export default class Test extends React.Component<{}, IState>{
             </GridComponent>
         );
 
-        //return [input, grid];
-        return <div className="height">
+        return <div className="height90">
             {input}
             {grid}
         </div>
@@ -155,7 +154,11 @@ export default class Test extends React.Component<{}, IState>{
         //console.log(dto);
 
         //Ok
+
+
         var dto = new CustomerDto;
+        console.log(dto);
+        console.log({ ...dto});
         this.setState({ dto: dto });
         console.log(dto);
 

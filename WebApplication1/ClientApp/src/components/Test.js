@@ -183,8 +183,7 @@ var Test = /** @class */ (function (_super) {
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', width: '100', textAlign: 'Right' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', width: '100', textAlign: 'Right' })),
             React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Freeze, ej2_react_grids_1.Toolbar] })));
-        //return [input, grid];
-        return React.createElement("div", { className: "height" },
+        return React.createElement("div", { className: "height90" },
             input,
             grid);
     };
