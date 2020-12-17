@@ -52,6 +52,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ej2_react_grids_1 = require("@syncfusion/ej2-react-grids");
 var ej2_react_grids_2 = require("@syncfusion/ej2-react-grids");
 var React = require("react");
+var ej2_react_inputs_1 = require("@syncfusion/ej2-react-inputs");
+var ej2_react_buttons_1 = require("@syncfusion/ej2-react-buttons");
 var Test = /** @class */ (function (_super) {
     __extends(Test, _super);
     function Test(props) {
@@ -66,10 +68,13 @@ var Test = /** @class */ (function (_super) {
             { type: 'Input', template: "#zip", align: 'Left' },
             { type: 'Input', template: "#city", align: 'Left' },
             { type: 'Input', template: "#address", align: 'Left' },
-            { type: 'Button', text: "Search ", click: function (e) { return _this.searchClick(); }, align: 'Left' },
-            { type: 'Button', text: "Clear", click: function (e) { return _this.clearClick(e); }, align: 'Left' },
+            { type: 'Button', template: "#search ", align: 'Left' },
+            { type: 'Button', template: "#clear", align: 'Left' },
         ];
-        _this.pageSettings = { pageSize: 30 };
+        _this.pageSettings = {
+            pageSize: 30,
+            pageSizes: [5, 10, 15, 20, 25, 30, 50, 75, 100]
+        };
         _this.sortSettings = {
             columns: [
                 { field: 'customerId', direction: 'Ascending' }
@@ -82,6 +87,7 @@ var Test = /** @class */ (function (_super) {
         _this.handleInputChange = _this.handleInputChange.bind(_this);
         _this.searchClick = _this.searchClick.bind(_this);
         _this.clearClick = _this.clearClick.bind(_this);
+        _this.clickNewPage = _this.clickNewPage.bind(_this);
         return _this;
     }
     Test.prototype.componentDidMount = function () {
@@ -98,10 +104,9 @@ var Test = /** @class */ (function (_super) {
     };
     Test.prototype.getSelectCustomers = function (dto) {
         return __awaiter(this, void 0, void 0, function () {
-            var res, _a;
-            var _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var res, results;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0: return [4 /*yield*/, fetch('test/GetCustomers', {
                             body: JSON.stringify(dto),
                             method: 'POST',
@@ -111,12 +116,12 @@ var Test = /** @class */ (function (_super) {
                             }
                         })];
                     case 1:
-                        res = _c.sent();
-                        _a = this.setState;
-                        _b = {};
+                        res = _a.sent();
                         return [4 /*yield*/, res.json()];
                     case 2:
-                        _a.apply(this, [(_b.data = _c.sent(), _b)]);
+                        results = (_a.sent());
+                        this.dollarFormatUpdate(results);
+                        this.setState({ data: results });
                         return [2 /*return*/];
                 }
             });
@@ -124,10 +129,9 @@ var Test = /** @class */ (function (_super) {
     };
     Test.prototype.getAllCustomers = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var res, _a;
-            var _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var res, results;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0: return [4 /*yield*/, fetch('test/GetAllCustomers', {
                             method: 'POST',
                             headers: {
@@ -135,29 +139,32 @@ var Test = /** @class */ (function (_super) {
                             }
                         })];
                     case 1:
-                        res = _c.sent();
-                        _a = this.setState;
-                        _b = {};
+                        res = _a.sent();
                         return [4 /*yield*/, res.json()];
                     case 2:
-                        _a.apply(this, [(_b.data = _c.sent(), _b)]);
+                        results = (_a.sent());
+                        this.dollarFormatUpdate(results);
+                        this.setState({ data: results });
                         return [2 /*return*/];
                 }
             });
         });
     };
     Test.prototype.inputRender = function (name, data) {
+        var _this = this;
         return (React.createElement("div", { id: name },
-            React.createElement("span", null, name),
-            React.createElement("input", { placeholder: name, name: name, value: data, onChange: this.handleInputChange })));
+            React.createElement(ej2_react_inputs_1.TextBoxComponent, { floatLabelType: "Auto", placeholder: name, name: name, value: data, input: function (e) { return _this.handleInputChange(e); } })));
     };
     Test.prototype.handleInputChange = function (e) {
+        var _a;
         if (e) {
-            var name_1 = e.target.name;
-            var value = e.target.value;
+            var name_1 = ((_a = e.event) === null || _a === void 0 ? void 0 : _a.target).name;
+            var value = e.value;
             var dto = this.state.dto;
-            dto[name_1.toString()] = value;
-            this.setState({ dto: dto });
+            if (name_1 && value) {
+                dto[name_1] = value;
+                this.setState({ dto: dto });
+            }
         }
     };
     Test.prototype.render = function () {
@@ -167,17 +174,19 @@ var Test = /** @class */ (function (_super) {
             this.inputRender("name", this.state.dto.name),
             this.inputRender("country", this.state.dto.country),
             this.inputRender("state", this.state.dto.state),
-            this.inputRender("zip", this.state.dto.zip),
             this.inputRender("city", this.state.dto.city),
-            this.inputRender("address", this.state.dto.address)));
-        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, allowPaging: true, allowSorting: true, pageSettings: this.pageSettings, allowTextWrap: true, frozenRows: 0, frozenColumns: 2, allowSelection: false, enableHover: false, toolbar: this.toolbarOptions, height: "100%" },
+            this.inputRender("zip", this.state.dto.zip),
+            this.inputRender("address", this.state.dto.address),
+            React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "search", content: "Search", onClick: this.searchClick }),
+            React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "clear", content: "Clear", onClick: this.clearClick })));
+        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, allowPaging: true, allowSorting: true, pageSettings: this.pageSettings, frozenRows: 0, frozenColumns: 2, allowSelection: false, enableHover: false, toolbar: this.toolbarOptions, height: "100%", onClick: this.clickNewPage },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'customerId', width: '100', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'customerId', width: '200', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '120', textAlign: 'Left' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '100', textAlign: 'Left' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '100', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100', textAlign: 'Left' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', width: '100', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100', textAlign: 'Left' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '100', textAlign: 'Left' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', width: '100', textAlign: 'Right' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', width: '100', textAlign: 'Right' }),
@@ -188,48 +197,68 @@ var Test = /** @class */ (function (_super) {
             grid);
     };
     Test.prototype.searchClick = function () {
-        var dto = this.state.dto;
-        var check = (dto.address == null || dto.address == "") &&
-            (dto.city == null || dto.city == "") &&
-            (dto.country == null || dto.country == "") &&
-            (dto.customerId == null || dto.customerId == "") &&
-            (dto.name == null || dto.name == "") &&
-            (dto.state == null || dto.state == "") &&
-            (dto.zip == null || dto.zip == "");
-        if (check) {
-            this.getAllCustomers();
-        }
-        else {
-            this.getSelectCustomers(this.state.dto);
-        }
+        return __awaiter(this, void 0, void 0, function () {
+            var dto, check;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dto = this.state.dto;
+                        console.log(dto);
+                        check = (dto.address === null || dto.address === "") &&
+                            (dto.city === null || dto.city === "") &&
+                            (dto.country === null || dto.country === "") &&
+                            (dto.customerId === null || dto.customerId === "") &&
+                            (dto.name === null || dto.name === "") &&
+                            (dto.state === null || dto.state === "") &&
+                            (dto.zip === null || dto.zip === "");
+                        if (!check) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.getAllCustomers()];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.getSelectCustomers(this.state.dto)];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
     };
-    Test.prototype.clearClick = function (a) {
-        //Ok
-        //var dto = { ...this.state.dto };
-        //this.setState({ dto: dto });
-        //console.log(dto);
-        //Ok
-        var dto = new CustomerDto;
-        this.setState({ dto: dto });
-        console.log(dto);
-        this.searchClick();
-        //Ok
-        //this.setState(prevState => {
-        //    let dto = { ...prevState.dto };
-        //    dto.customerId = '';
-        //    dto.name = '';
-        //    dto.country = '';
-        //    dto.city = '';
-        //    dto.address = '';
-        //    dto.state = '';
-        //    dto.zip = '';
-        //    return { dto, };
-        //});
-        //Ok
-        //this.setState(prevState => {
-        //let dto = new CustomerDto;
-        //    return { dto, };
-        //});
+    Test.prototype.clearClick = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var dto;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dto = new CustomerDto;
+                        return [4 /*yield*/, this.setState({ dto: dto }, function () { return _this.searchClick(); })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Test.prototype.clickNewPage = function (e) {
+        console.log(e.target);
+        console.log(e.type);
+        console.log(e.detail);
+        console.log(e);
+        console.log(this.state.data[0]);
+    };
+    Test.prototype.dollarFormatUpdate = function (customers) {
+        var formater = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2
+        });
+        for (var i = 0; i < customers.length; i++) {
+            customers[i].thisYear = formater.format(+customers[i].thisYear).toString();
+            customers[i].lastYear = formater.format(+customers[i].lastYear).toString();
+            customers[i].theYearBeforeLast = formater.format(+customers[i].theYearBeforeLast).toString();
+        }
     };
     return Test;
 }(React.Component));
@@ -246,5 +275,20 @@ var CustomerDto = /** @class */ (function () {
         this.address = "";
     }
     return CustomerDto;
+}());
+var Customer = /** @class */ (function () {
+    function Customer() {
+        this.customerId = "";
+        this.name = "";
+        this.country = "";
+        this.state = "";
+        this.zip = "";
+        this.city = "";
+        this.address = "";
+        this.thisYear = "";
+        this.lastYear = "";
+        this.theYearBeforeLast = "";
+    }
+    return Customer;
 }());
 //# sourceMappingURL=Test.js.map

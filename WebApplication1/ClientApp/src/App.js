@@ -16,6 +16,7 @@ import '../node_modules/@syncfusion/ej2-popups/styles/material.css';
 import '../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css';
 import "../node_modules/@syncfusion/ej2-react-grids/styles/material.css";
 import Test from './components/Test';
+import ByVender from './components/ByVender/ByVender';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -27,6 +28,7 @@ export default class App extends Component {
         <Route path='/counter' component={Counter} />
         <Route path='/fetch-data' component={FetchData} />
         <Route path='/test' component={Test} />
+        <Route path='/by-vender' component={ByVender} />
       </Layout>
     );
   }

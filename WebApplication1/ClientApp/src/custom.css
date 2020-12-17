@@ -36,3 +36,9 @@ header {
 container-fluid {
     height: 90%;
 }
+
+.button1{
+    border-color:blue;
+    border-bottom-color:blue;
+    border-top-color:blue;
+}
