@@ -1,4 +1,4 @@
-﻿import { click, ColumnDirective, ColumnsDirective, Filter, FilterSettingsModel, Freeze, Grid, GridComponent, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
+﻿import { click, ColumnDirective, ColumnModel, ColumnsDirective, DetailDataBoundEventArgs, Filter, FilterSettingsModel, Freeze, Grid, GridComponent, RowDataBoundEventArgs, SelectionSettingsModel, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
 import { Group, Inject, Page, PageSettingsModel, Sort, SortSettingsModel } from '@syncfusion/ej2-react-grids';
 import { DataManager } from '@syncfusion/ej2-data';
 import * as React from 'react';
@@ -18,17 +18,21 @@ export default class Test extends React.Component<{}, IState>{
         this.state = {
             data: [],
             dto: new CustomerDto(),
+            dropDownList: ["123", "456"]
         };
+
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.searchClick = this.searchClick.bind(this);
         this.clearClick = this.clearClick.bind(this);
         this.clickNewPage = this.clickNewPage.bind(this);
+        this.dataBound = this.dataBound.bind(this);
     }
 
     async componentDidMount() {
         await this.getAllCustomers();
     }
+
     //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
     public toolbarOptions: ToolbarItems[] | ItemModel[] = [
         { type: 'Input', template: "#customerId", align: 'Left' },
@@ -83,7 +87,9 @@ export default class Test extends React.Component<{}, IState>{
     private inputRender(name: string, data: string) {
         return (
             <div id={name}>
-                <TextBoxComponent floatLabelType="Auto" placeholder={name} name={name} value={data} input={e => this.handleInputChange(e)} />
+                <label>{name + ': '}
+                    <TextBoxComponent name={name} value={data} input={e => this.handleInputChange(e)} width='100' />
+                </label>
             </div>);
     }
 
@@ -119,21 +125,24 @@ export default class Test extends React.Component<{}, IState>{
             <GridComponent
                 ref={g => this.gridInstance = g}
                 dataSource={this.state.data}
+                pageSettings={this.pageSettings}
+                toolbar={this.toolbarOptions}
                 allowPaging={true}
                 allowSorting={true}
-                pageSettings={this.pageSettings}
                 frozenRows={0}
-                frozenColumns={2}
-                allowSelection={false} enableHover={false}
-                toolbar={this.toolbarOptions}
+                frozenColumns={3}
+                enableHover={false}
                 height="100%"
                 onClick={this.clickNewPage}
+                dataBound={this.dataBound}
+                beforeDataBound={e=>this.dataBound()}
             >
                 <ColumnsDirective>
+                    <ColumnDirective field='rowNumber' width='130' textAlign="Right" valueAccessor={this.rowNumerCal.bind(this)} />
                     <ColumnDirective field='customerId' width='200' textAlign='Left' />
-                    <ColumnDirective field='name' width='120' textAlign='Left' />
-                    <ColumnDirective field='country' width='100' textAlign='Left' />
-                    <ColumnDirective field='state' width='100' textAlign='Left' />
+                    <ColumnDirective field='name' width='100' textAlign='Left' />
+                    <ColumnDirective field='country' width='50' textAlign='Left' />
+                    <ColumnDirective field='state' width='50' textAlign='Left' />
                     <ColumnDirective field='city' width='100' textAlign='Left' />
                     <ColumnDirective field='zip' width='100' textAlign='Left' />
                     <ColumnDirective field='address' width='100' textAlign='Left' />
@@ -151,6 +160,7 @@ export default class Test extends React.Component<{}, IState>{
         </div>
     }
     public async searchClick() {
+        this.pageInitial();
         const dto = this.state.dto;
         console.log(dto);
         const check =
@@ -170,46 +180,45 @@ export default class Test extends React.Component<{}, IState>{
     }
 
     public async clearClick() {
-        //Ok
-        //var dto = { ...this.state.dto };
-        //this.setState({ dto: dto });
-        //console.log(dto);
+        /*
+        Ok
+        var dto = { ...this.state.dto };
+        this.setState({ dto: dto });
+        console.log(dto);
 
-        //Ok
+        Ok
+        this.setState(prevState => {
+            let dto = { ...prevState.dto };
+            dto.customerId = '';
+            dto.name = '';
+            dto.country = '';
+            dto.city = '';
+            dto.address = '';
+            dto.state = '';
+            dto.zip = '';
+            return { dto, };
+        });
 
+        Ok
+        this.setState(prevState => {
+        let dto = new CustomerDto;
+            return { dto, };
+        });
+         */
 
+        this.pageInitial();
         var dto = new CustomerDto;
-        await this.setState(
+        this.setState(
             { dto: dto },
             () => this.searchClick());
-
-
-        //Ok
-        //this.setState(prevState => {
-        //    let dto = { ...prevState.dto };
-        //    dto.customerId = '';
-        //    dto.name = '';
-        //    dto.country = '';
-        //    dto.city = '';
-        //    dto.address = '';
-        //    dto.state = '';
-        //    dto.zip = '';
-        //    return { dto, };
-        //});
-
-        //Ok
-        //this.setState(prevState => {
-        //let dto = new CustomerDto;
-        //    return { dto, };
-        //});
     }
 
     clickNewPage(e: React.MouseEvent<Element, MouseEvent>) {
-        console.log(e.target);
-        console.log(e.type);
-        console.log(e.detail);
-        console.log(e);
-        console.log(this.state.data[0]);
+        //console.log(e.target);
+        //console.log(e.type);
+        //console.log(e.detail);
+        //console.log(e);
+        //console.log(this.state.data[0]);
     }
 
     dollarFormatUpdate(customers: Customer[]): void {
@@ -225,6 +234,30 @@ export default class Test extends React.Component<{}, IState>{
             customers[i].theYearBeforeLast = formater.format(+customers[i].theYearBeforeLast).toString();
         }
     }
+    indexVal: number = 1;
+    //https://www.syncfusion.com/forums/158252/row-number-after-filtering
+    // Grid’s dataBound event handler 
+    // Value accessor method 
+    rowNumerCal(field: string, data: Object, column: ColumnModel) {
+        console.log("start" + this.indexVal);
+        return this.indexVal++;
+    }
+    dataBound() {
+        // 先取得page 在取得筆數
+        // 計算初始值
+
+        var pageNow = this.gridInstance.pagerModule.pagerObj.currentPage;
+        var pageCount = this.gridInstance.pagerModule.pagerObj.pageSize;
+
+        console.log(pageNow);
+        console.log(pageCount);
+        
+        this.indexVal = (pageNow - 1) * pageCount + 1;
+        //this.gridInstance.refresh();
+    }
+    pageInitial() {
+        this.gridInstance.goToPage(1);
+    }
 };
 
 class CustomerDto {
@@ -239,6 +272,7 @@ class CustomerDto {
 }
 
 class Customer {
+    rowNumber: number = 0;
     customerId: string = "";
     name: string = "";
     country: string = "";
@@ -249,10 +283,11 @@ class Customer {
     thisYear: string = "";
     lastYear: string = "";
     theYearBeforeLast: string = "";
-    [index: string]: string;
+    [index: string]: string | number;
 }
 
 interface IState {
     data: Customer[];
     dto: CustomerDto;
+    dropDownList: string[]
 }
