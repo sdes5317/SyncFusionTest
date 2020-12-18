@@ -15,6 +15,9 @@ namespace WebApplication1.Model
         public decimal ThisYear { get; set; }
         public decimal LastYear { get; set; }
         public decimal TheYearBeforeLast { get; set; }
+        public decimal Number1 { get; set; }
+        public decimal Number2 { get; set; }
+        public decimal Number3 { get; set; }
 
         public CustomerWithThreeYearAmount(Customer customer)
         {
@@ -28,6 +31,9 @@ namespace WebApplication1.Model
             this.ThisYear = customer.Order.Where(o => o.OrderDate.Year == DateTime.Now.Year).Sum(o => o.TotalAmount);
             this.LastYear = customer.Order.Where(o => o.OrderDate.Year == DateTime.Now.AddYears(-1).Year).Sum(o => o.TotalAmount); ;
             this.TheYearBeforeLast = customer.Order.Where(o => o.OrderDate.Year == DateTime.Now.AddYears(-2).Year).Sum(o => o.TotalAmount); ;
+            this.Number1 = customer.Number1;
+            this.Number2 = customer.Number2;
+            this.Number3 = customer.Number3;
         }
 
         public CustomerWithThreeYearAmount()

@@ -1,9 +1,9 @@
-﻿import { click, ColumnDirective, ColumnModel, ColumnsDirective, DetailDataBoundEventArgs, Filter, FilterSettingsModel, Freeze, Grid, GridComponent, RowDataBoundEventArgs, SelectionSettingsModel, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
+﻿import { CellSelectEventArgs, click, ColumnDirective, ColumnModel, ColumnsDirective, DetailDataBoundEventArgs, Filter, FilterSettingsModel, Freeze, Grid, GridComponent, ResizeArgs, RowDataBoundEventArgs, RowDeselectEventArgs, RowSelectEventArgs, RowSelectingEventArgs, SelectionSettingsModel, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
 import { Group, Inject, Page, PageSettingsModel, Sort, SortSettingsModel } from '@syncfusion/ej2-react-grids';
 import { DataManager } from '@syncfusion/ej2-data';
 import * as React from 'react';
 import { ItemModel, ClickEventArgs } from '@syncfusion/ej2-navigations';
-import { InputEventArgs, TextBox, TextBoxComponent, TextBoxModel } from '@syncfusion/ej2-react-inputs';
+import { InputEventArgs, SelectedEventArgs, TextBox, TextBoxComponent, TextBoxModel } from '@syncfusion/ej2-react-inputs';
 import { EmitType } from '@syncfusion/ej2-base'
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 
@@ -27,10 +27,12 @@ export default class Test extends React.Component<{}, IState>{
         this.clearClick = this.clearClick.bind(this);
         this.clickNewPage = this.clickNewPage.bind(this);
         this.dataBound = this.dataBound.bind(this);
+        this.resizeHandle = this.resizeHandle.bind(this);
     }
 
     async componentDidMount() {
         await this.getAllCustomers();
+        window.addEventListener("resize", this.resizeHandle);
     }
 
     //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
@@ -54,6 +56,10 @@ export default class Test extends React.Component<{}, IState>{
             { field: 'customerId', direction: 'Ascending' }
         ]
     };
+    public selectSettings: SelectionSettingsModel = {
+        enableSimpleMultiRowSelection: true,
+        type: 'Multiple'
+    };
 
     private async getSelectCustomers(dto: CustomerDto) {
         var res = await fetch('test/GetCustomers', {
@@ -66,7 +72,7 @@ export default class Test extends React.Component<{}, IState>{
         });
 
         const results = (await res.json()) as Customer[];
-        this.dollarFormatUpdate(results);
+        this.formatUpdate(results);
 
         this.setState({ data: results });
     }
@@ -79,7 +85,7 @@ export default class Test extends React.Component<{}, IState>{
         });
 
         const results = (await res.json()) as Customer[];
-        this.dollarFormatUpdate(results);
+        this.formatUpdate(results);
 
         this.setState({ data: results });
     }
@@ -127,6 +133,7 @@ export default class Test extends React.Component<{}, IState>{
                 dataSource={this.state.data}
                 pageSettings={this.pageSettings}
                 toolbar={this.toolbarOptions}
+                selectionSettings={this.selectSettings}
                 allowPaging={true}
                 allowSorting={true}
                 frozenRows={0}
@@ -135,20 +142,26 @@ export default class Test extends React.Component<{}, IState>{
                 height="100%"
                 onClick={this.clickNewPage}
                 dataBound={this.dataBound}
-                beforeDataBound={e=>this.dataBound()}
+                beforeDataBound={e => this.dataBound()}
+                resizing={e => this.resizeHandle()}
+                rowSelected={e => this.rowSelected(e)}
+                rowDeselected={e => this.rowDeSelected(e)}
             >
                 <ColumnsDirective>
                     <ColumnDirective field='rowNumber' width='130' textAlign="Right" valueAccessor={this.rowNumerCal.bind(this)} />
                     <ColumnDirective field='customerId' width='200' textAlign='Left' />
                     <ColumnDirective field='name' width='100' textAlign='Left' />
-                    <ColumnDirective field='country' width='50' textAlign='Left' />
-                    <ColumnDirective field='state' width='50' textAlign='Left' />
-                    <ColumnDirective field='city' width='100' textAlign='Left' />
-                    <ColumnDirective field='zip' width='100' textAlign='Left' />
-                    <ColumnDirective field='address' width='100' textAlign='Left' />
-                    <ColumnDirective field='thisYear' width='100' textAlign='Right' />
-                    <ColumnDirective field='lastYear' width='100' textAlign='Right' />
+                    <ColumnDirective field='country' textAlign='Left' />
+                    <ColumnDirective field='state' textAlign='Left' />
+                    <ColumnDirective field='city' textAlign='Left' />
+                    <ColumnDirective field='zip' textAlign='Left' />
+                    <ColumnDirective field='address' textAlign='Left' />
+                    <ColumnDirective field='thisYear' textAlign='Right' />
+                    <ColumnDirective field='lastYear' textAlign='Right' />
                     <ColumnDirective field='theYearBeforeLast' width='100' textAlign='Right' />
+                    <ColumnDirective field='number1' textAlign='Right' />
+                    <ColumnDirective field='number2' textAlign='Right' />
+                    <ColumnDirective field='number3' textAlign='Right' />
                 </ColumnsDirective>
                 <Inject services={[Page, Sort, Freeze, Toolbar]} />
             </GridComponent>
@@ -158,6 +171,24 @@ export default class Test extends React.Component<{}, IState>{
             {input}
             {grid}
         </div>
+    }
+    rowDeSelected(e: any): void {
+        if (e && (e.row || e.row.classList || e.mRow || e.mRow.classList)) {
+            if (e.row && e.row.classList && e.row.classList.contains('highLight')) {
+                e.row.classList.remove('highLight');
+            }
+            console.log(e);
+            if (e.mRow[0] && e.mRow[0].classList && e.mRow[0].classList.contains('highLight')) {
+                e.mRow[0].classList.remove('highLight');
+            }
+        }
+    }
+    rowSelected(e: any): void {
+        console.log(e);
+        if (e) {
+            e.row.classList.add('highLight');
+            e.mRow.classList.add('highLight');
+        }
     }
     public async searchClick() {
         this.pageInitial();
@@ -221,12 +252,19 @@ export default class Test extends React.Component<{}, IState>{
         //console.log(this.state.data[0]);
     }
 
+    formatUpdate(customers: Customer[]): void {
+        this.dollarFormatUpdate(customers);
+        this.formatTestUpdate1(customers);
+        this.formatTestUpdate2(customers);
+        this.formatTestUpdate3(customers);
+    }
+
     dollarFormatUpdate(customers: Customer[]): void {
         const formater = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
             minimumFractionDigits: 2
-        });
+        } as Intl.NumberFormatOptions);
 
         for (var i = 0; i < customers.length; i++) {
             customers[i].thisYear = formater.format(+customers[i].thisYear).toString();
@@ -234,14 +272,46 @@ export default class Test extends React.Component<{}, IState>{
             customers[i].theYearBeforeLast = formater.format(+customers[i].theYearBeforeLast).toString();
         }
     }
+    formatTestUpdate1(customers: Customer[]): void {
+        const formater = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0
+        } as Intl.NumberFormatOptions);
+
+        for (var i = 0; i < customers.length; i++) {
+            customers[i].number1 = formater.format(+customers[i].number1).toString();
+        }
+    }
+    formatTestUpdate2(customers: Customer[]): void {
+        const formater = new Intl.NumberFormat('en-US', {
+            style: 'percent',
+            minimumFractionDigits: 2
+        } as Intl.NumberFormatOptions);
+
+        for (var i = 0; i < customers.length; i++) {
+            customers[i].number2 = formater.format(+customers[i].number2 / 100).toString();
+        }
+    }
+    formatTestUpdate3(customers: Customer[]): void {
+        const formater = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2
+        } as Intl.NumberFormatOptions);
+
+        for (var i = 0; i < customers.length; i++) {
+            customers[i].number3 = formater.format(+customers[i].number3).toString();
+        }
+    }
     indexVal: number = 1;
     //https://www.syncfusion.com/forums/158252/row-number-after-filtering
     // Grid’s dataBound event handler 
     // Value accessor method 
     rowNumerCal(field: string, data: Object, column: ColumnModel) {
-        console.log("start" + this.indexVal);
         return this.indexVal++;
     }
+    ///每次換頁或是排列，重新計算當下的index
     dataBound() {
         // 先取得page 在取得筆數
         // 計算初始值
@@ -249,14 +319,13 @@ export default class Test extends React.Component<{}, IState>{
         var pageNow = this.gridInstance.pagerModule.pagerObj.currentPage;
         var pageCount = this.gridInstance.pagerModule.pagerObj.pageSize;
 
-        console.log(pageNow);
-        console.log(pageCount);
-        
         this.indexVal = (pageNow - 1) * pageCount + 1;
-        //this.gridInstance.refresh();
     }
     pageInitial() {
         this.gridInstance.goToPage(1);
+    }
+    resizeHandle() {
+        this.gridInstance.freezeRefresh();
     }
 };
 
@@ -283,6 +352,9 @@ class Customer {
     thisYear: string = "";
     lastYear: string = "";
     theYearBeforeLast: string = "";
+    number1: string = "";
+    number2: string = "";
+    number3: string = "";
     [index: string]: string | number;
 }
 

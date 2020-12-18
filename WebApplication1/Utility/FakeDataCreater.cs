@@ -33,7 +33,10 @@ namespace WebApplication1.Utility
                         .RuleFor(c => c.Address, f => f.Address.StreetAddress())
                         .RuleFor(c => c.Zip, f => f.Address.ZipCode())
                         .RuleFor(c => c.Status, f => f.Random.Number(1))
-                        .RuleFor(c => c.Order, f => testOrders.Generate(10).ToList());
+                        .RuleFor(c => c.Order, f => testOrders.Generate(10).ToList())
+                        .RuleFor(c => c.Number1, f => f.Random.Int(1000, 9999))
+                        .RuleFor(c => c.Number2, f => f.Random.Decimal(0.01m, 0.99m))
+                        .RuleFor(c => c.Number3, f => f.Random.Decimal(1000.01m, 9999.99m));
             for (int i = 0; i < 500; i++)
             {
                 yield return testCustomer.Generate();

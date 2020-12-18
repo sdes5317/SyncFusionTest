@@ -16,6 +16,9 @@ namespace WebApplication1.Model
         public string City { get; set; }
         public string Address { get; set; }
         public int Status { get; set; }
+        public decimal Number1 { get; set; }
+        public decimal Number2 { get; set; }
+        public decimal Number3 { get; set; }
 
         public List<Order> Order { get; set; }
 

@@ -99,7 +99,10 @@ namespace WebApplication1.Repository
                                     CustomerId, 
                                     Isnull([{theYearBeforeLast}], 0) AS TheYearBeforeLast, 
                                     Isnull([{lastYear}], 0) AS LastYear, 
-                                    Isnull([{thisYear}], 0) AS ThisYear 
+                                    Isnull([{thisYear}], 0) AS ThisYear, 
+                                    Number1,
+                                    Number2,
+                                    Number3 
                              FROM   (SELECT CustomerId, 
                                             Sum(Orders.TotalAmount) AS total, 
                                             Year(Orders.OrderDate)  AS year 
@@ -138,7 +141,10 @@ namespace WebApplication1.Repository
                                     CustomerId, 
                                     Isnull([{theYearBeforeLast}], 0) AS TheYearBeforeLast, 
                                     Isnull([{lastYear}], 0) AS LastYear, 
-                                    Isnull([{thisYear}], 0) AS ThisYear 
+                                    Isnull([{thisYear}], 0) AS ThisYear, 
+                                    Number1,
+                                    Number2,
+                                    Number3 
                              FROM   (SELECT CustomerId, 
                                             Sum(Orders.TotalAmount) AS total, 
                                             Year(Orders.OrderDate)  AS year 
@@ -174,6 +180,9 @@ namespace WebApplication1.Repository
                                   ,Address
                             	  ,CustomerId
                             	  ,SUM(TotalAmount) as Total
+                                  ,Number1
+                                  ,Number2
+                                  ,Number3 
                             from Customers 
                             inner join Orders on Orders.CustomerId = Customers.Id
                             where Customers.Status=1
@@ -184,6 +193,9 @@ namespace WebApplication1.Repository
                                   ,City
                                   ,Address
                             	  ,CustomerId
+                                  ,Number1
+                                  ,Number2
+                                  ,Number3 
                             order by Id";
                 var results = con.Query<CustomerTemp>(cmd);
                 var dic = results.ToDictionary(x => $"{x.CustomerId}:{x.Year}");

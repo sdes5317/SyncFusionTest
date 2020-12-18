@@ -38,6 +38,9 @@ namespace WebApplication1.Repository
                 customer.Property(c => c.State).HasMaxLength(2).HasColumnType("varchar");
                 customer.Property(c => c.Address).HasMaxLength(100).HasColumnType("varchar");
                 customer.Property(c => c.Zip).HasMaxLength(20).HasColumnType("varchar");
+                customer.Property(c => c.Number1).HasPrecision(16, 2);
+                customer.Property(c => c.Number1).HasPrecision(16, 2);
+                customer.Property(c => c.Number1).HasPrecision(16, 2);
             });
 
             modelBuilder.Entity<Order>()

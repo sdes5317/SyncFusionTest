@@ -59,15 +59,6 @@ var Test = /** @class */ (function (_super) {
     function Test(props) {
         var _this = _super.call(this, props) || this;
         _this.gridInstance = null;
-        _this.columnData = [
-            { field: 'EmployeeID', label: 'EmployeeID', type: 'number' },
-            { field: 'FirstName', label: 'FirstName', type: 'string' },
-            { field: 'TitleOfCourtesy', label: 'Title Of Courtesy', type: 'boolean', values: ['Mr.', 'Mrs.'] },
-            { field: 'Title', label: 'Title', type: 'string' },
-            { field: 'HireDate', label: 'HireDate', type: 'date', format: 'dd/MM/yyyy' },
-            { field: 'Country', label: 'Country', type: 'string' },
-            { field: 'City', label: 'City', type: 'string' }
-        ];
         //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
         _this.toolbarOptions = [
             { type: 'Input', template: "#customerId", align: 'Left' },
@@ -89,7 +80,10 @@ var Test = /** @class */ (function (_super) {
                 { field: 'customerId', direction: 'Ascending' }
             ]
         };
-        _this.selectSettings = { type: 'Single', mode: 'Both' };
+        _this.selectSettings = {
+            enableSimpleMultiRowSelection: true,
+            type: 'Multiple'
+        };
         _this.indexVal = 1;
         _this.state = {
             data: [],
@@ -101,6 +95,7 @@ var Test = /** @class */ (function (_super) {
         _this.clearClick = _this.clearClick.bind(_this);
         _this.clickNewPage = _this.clickNewPage.bind(_this);
         _this.dataBound = _this.dataBound.bind(_this);
+        _this.resizeHandle = _this.resizeHandle.bind(_this);
         return _this;
     }
     Test.prototype.componentDidMount = function () {
@@ -110,6 +105,7 @@ var Test = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, this.getAllCustomers()];
                     case 1:
                         _a.sent();
+                        window.addEventListener("resize", this.resizeHandle);
                         return [2 /*return*/];
                 }
             });
@@ -133,7 +129,7 @@ var Test = /** @class */ (function (_super) {
                         return [4 /*yield*/, res.json()];
                     case 2:
                         results = (_a.sent());
-                        this.dollarFormatUpdate(results);
+                        this.formatUpdate(results);
                         this.setState({ data: results });
                         return [2 /*return*/];
                 }
@@ -156,7 +152,7 @@ var Test = /** @class */ (function (_super) {
                         return [4 /*yield*/, res.json()];
                     case 2:
                         results = (_a.sent());
-                        this.dollarFormatUpdate(results);
+                        this.formatUpdate(results);
                         this.setState({ data: results });
                         return [2 /*return*/];
                 }
@@ -194,23 +190,44 @@ var Test = /** @class */ (function (_super) {
             this.inputRender("address", this.state.dto.address),
             React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "search", content: "Search", onClick: this.searchClick }),
             React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "clear", content: "Clear", onClick: this.clearClick })));
-        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, selectionSettings: this.selectSettings, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, allowPaging: true, allowSorting: true, frozenRows: 0, frozenColumns: 3, enableHover: false, height: "100%", onClick: this.clickNewPage, dataBound: this.dataBound, beforeDataBound: function (e) { return _this.dataBound(); } },
+        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, selectionSettings: this.selectSettings, allowPaging: true, allowSorting: true, frozenRows: 0, frozenColumns: 3, enableHover: false, height: "100%", onClick: this.clickNewPage, dataBound: this.dataBound, beforeDataBound: function (e) { return _this.dataBound(); }, resizing: function (e) { return _this.resizeHandle(); }, rowSelected: function (e) { return _this.rowSelected(e); }, rowDeselected: function (e) { return _this.rowDeSelected(e); } },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'rowNumber', width: '130', textAlign: "Right", valueAccessor: this.rowNumerCal.bind(this) }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'customerId', width: '200', textAlign: 'Left' }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', width: '50', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', width: '50', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', width: '100', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', width: '100', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', width: '100', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', width: '100', textAlign: 'Right' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', width: '100', textAlign: 'Right' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', width: '100', textAlign: 'Right' })),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', width: '100', textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'number1', textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'number2', textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'number3', textAlign: 'Right' })),
             React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Freeze, ej2_react_grids_1.Toolbar] })));
         return React.createElement("div", { className: "height90" },
             input,
             grid);
+    };
+    Test.prototype.rowDeSelected = function (e) {
+        if (e && (e.row || e.row.classList || e.mRow || e.mRow.classList)) {
+            if (e.row && e.row.classList && e.row.classList.contains('highLight')) {
+                e.row.classList.remove('highLight');
+            }
+            console.log(e);
+            if (e.mRow[0] && e.mRow[0].classList && e.mRow[0].classList.contains('highLight')) {
+                e.mRow[0].classList.remove('highLight');
+            }
+        }
+    };
+    Test.prototype.rowSelected = function (e) {
+        console.log(e);
+        if (e) {
+            e.row.classList.add('highLight');
+            e.mRow.classList.add('highLight');
+        }
     };
     Test.prototype.searchClick = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -286,6 +303,12 @@ var Test = /** @class */ (function (_super) {
         //console.log(e);
         //console.log(this.state.data[0]);
     };
+    Test.prototype.formatUpdate = function (customers) {
+        this.dollarFormatUpdate(customers);
+        this.formatTestUpdate1(customers);
+        this.formatTestUpdate2(customers);
+        this.formatTestUpdate3(customers);
+    };
     Test.prototype.dollarFormatUpdate = function (customers) {
         var formater = new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -298,25 +321,54 @@ var Test = /** @class */ (function (_super) {
             customers[i].theYearBeforeLast = formater.format(+customers[i].theYearBeforeLast).toString();
         }
     };
+    Test.prototype.formatTestUpdate1 = function (customers) {
+        var formater = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0
+        });
+        for (var i = 0; i < customers.length; i++) {
+            customers[i].number1 = formater.format(+customers[i].number1).toString();
+        }
+    };
+    Test.prototype.formatTestUpdate2 = function (customers) {
+        var formater = new Intl.NumberFormat('en-US', {
+            style: 'percent',
+            minimumFractionDigits: 2
+        });
+        for (var i = 0; i < customers.length; i++) {
+            customers[i].number2 = formater.format(+customers[i].number2 / 100).toString();
+        }
+    };
+    Test.prototype.formatTestUpdate3 = function (customers) {
+        var formater = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2
+        });
+        for (var i = 0; i < customers.length; i++) {
+            customers[i].number3 = formater.format(+customers[i].number3).toString();
+        }
+    };
     //https://www.syncfusion.com/forums/158252/row-number-after-filtering
     // Grid’s dataBound event handler 
     // Value accessor method 
     Test.prototype.rowNumerCal = function (field, data, column) {
-        console.log("start" + this.indexVal);
         return this.indexVal++;
     };
+    ///每次換頁或是排列，重新計算當下的index
     Test.prototype.dataBound = function () {
         // 先取得page 在取得筆數
         // 計算初始值
         var pageNow = this.gridInstance.pagerModule.pagerObj.currentPage;
         var pageCount = this.gridInstance.pagerModule.pagerObj.pageSize;
-        console.log(pageNow);
-        console.log(pageCount);
         this.indexVal = (pageNow - 1) * pageCount + 1;
-        //this.gridInstance.refresh();
     };
     Test.prototype.pageInitial = function () {
         this.gridInstance.goToPage(1);
+    };
+    Test.prototype.resizeHandle = function () {
+        this.gridInstance.freezeRefresh();
     };
     return Test;
 }(React.Component));
@@ -347,6 +399,9 @@ var Customer = /** @class */ (function () {
         this.thisYear = "";
         this.lastYear = "";
         this.theYearBeforeLast = "";
+        this.number1 = "";
+        this.number2 = "";
+        this.number3 = "";
     }
     return Customer;
 }());

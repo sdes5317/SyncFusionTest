@@ -42,3 +42,7 @@ container-fluid {
     border-bottom-color:blue;
     border-top-color:blue;
 }
+
+.highLight{
+    background-color:blue;
+}
