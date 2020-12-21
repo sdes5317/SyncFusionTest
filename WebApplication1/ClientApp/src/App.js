@@ -16,7 +16,7 @@ import '../node_modules/@syncfusion/ej2-popups/styles/material.css';
 import '../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css';
 import "../node_modules/@syncfusion/ej2-react-grids/styles/material.css";
 import "../node_modules/@syncfusion/ej2-querybuilder/styles/material.css";
-import Test from './components/Test';
+import Test from './components/Test/Test';
 import ByVender from './components/ByVender/ByVender';
 
 export default class App extends Component {

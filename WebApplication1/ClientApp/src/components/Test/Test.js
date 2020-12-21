@@ -54,11 +54,14 @@ var ej2_react_grids_2 = require("@syncfusion/ej2-react-grids");
 var React = require("react");
 var ej2_react_inputs_1 = require("@syncfusion/ej2-react-inputs");
 var ej2_react_buttons_1 = require("@syncfusion/ej2-react-buttons");
+var CustomerDto_1 = require("./CustomerDto");
+var DropDownListHelper_1 = require("./DropDownListHelper");
 var Test = /** @class */ (function (_super) {
     __extends(Test, _super);
     function Test(props) {
         var _this = _super.call(this, props) || this;
         _this.gridInstance = null;
+        _this.helper = new DropDownListHelper_1.DropDownListHelper;
         //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
         _this.toolbarOptions = [
             { type: 'Input', template: "#customerId", align: 'Left' },
@@ -87,7 +90,7 @@ var Test = /** @class */ (function (_super) {
         _this.indexVal = 1;
         _this.state = {
             data: [],
-            dto: new CustomerDto(),
+            dto: new CustomerDto_1.CustomerDto(),
             dropDownList: ["123", "456"]
         };
         _this.handleInputChange = _this.handleInputChange.bind(_this);
@@ -290,7 +293,7 @@ var Test = /** @class */ (function (_super) {
                 });
                  */
                 this.pageInitial();
-                dto = new CustomerDto;
+                dto = new CustomerDto_1.CustomerDto;
                 this.setState({ dto: dto }, function () { return _this.searchClick(); });
                 return [2 /*return*/];
             });
@@ -380,35 +383,4 @@ var Test = /** @class */ (function (_super) {
 }(React.Component));
 exports.default = Test;
 ;
-var CustomerDto = /** @class */ (function () {
-    function CustomerDto() {
-        this.customerId = "";
-        this.name = "";
-        this.country = "";
-        this.state = "";
-        this.zip = "";
-        this.city = "";
-        this.address = "";
-    }
-    return CustomerDto;
-}());
-var Customer = /** @class */ (function () {
-    function Customer() {
-        this.rowNumber = 0;
-        this.customerId = "";
-        this.name = "";
-        this.country = "";
-        this.state = "";
-        this.zip = "";
-        this.city = "";
-        this.address = "";
-        this.thisYear = "";
-        this.lastYear = "";
-        this.theYearBeforeLast = "";
-        this.number1 = "";
-        this.number2 = "";
-        this.number3 = "";
-    }
-    return Customer;
-}());
 //# sourceMappingURL=Test.js.map

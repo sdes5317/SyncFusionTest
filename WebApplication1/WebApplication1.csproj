@@ -37,7 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\src\components\Test.tsx" />
+    <TypeScriptCompile Remove="ClientApp\src\components\Test\Customer.tsx" />
+    <TypeScriptCompile Remove="ClientApp\src\components\Test\CustomerDto.tsx" />
+    <TypeScriptCompile Remove="ClientApp\src\components\Test\DropDownListHelper.tsx" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

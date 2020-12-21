@@ -6,11 +6,21 @@ import { ItemModel, ClickEventArgs } from '@syncfusion/ej2-navigations';
 import { InputEventArgs, SelectedEventArgs, TextBox, TextBoxComponent, TextBoxModel } from '@syncfusion/ej2-react-inputs';
 import { EmitType } from '@syncfusion/ej2-base'
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
+import { CustomerDto } from './CustomerDto';
+import { Customer } from './Customer';
+import { DropDownListHelper } from './DropDownListHelper';
+
+interface IState {
+    data: Customer[];
+    dto: CustomerDto;
+    dropDownList: string[]
+}
 
 export default class Test extends React.Component<{}, IState>{
 
     public gridInstance: Grid | null = null;
     public state: IState;
+    private helper: DropDownListHelper = new DropDownListHelper;
 
     constructor(props: any) {
         super(props);
@@ -334,38 +344,3 @@ export default class Test extends React.Component<{}, IState>{
         }
     }
 };
-
-class CustomerDto {
-    customerId: string = "";
-    name: string = "";
-    country: string = "";
-    state: string = "";
-    zip: string = "";
-    city: string = "";
-    address: string = "";
-    [index: string]: string;
-}
-
-class Customer {
-    rowNumber: number = 0;
-    customerId: string = "";
-    name: string = "";
-    country: string = "";
-    state: string = "";
-    zip: string = "";
-    city: string = "";
-    address: string = "";
-    thisYear: string = "";
-    lastYear: string = "";
-    theYearBeforeLast: string = "";
-    number1: string = "";
-    number2: string = "";
-    number3: string = "";
-    [index: string]: string | number;
-}
-
-interface IState {
-    data: Customer[];
-    dto: CustomerDto;
-    dropDownList: string[]
-}
