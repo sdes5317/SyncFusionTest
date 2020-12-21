@@ -316,16 +316,22 @@ export default class Test extends React.Component<{}, IState>{
         // 先取得page 在取得筆數
         // 計算初始值
 
-        var pageNow = this.gridInstance.pagerModule.pagerObj.currentPage;
-        var pageCount = this.gridInstance.pagerModule.pagerObj.pageSize;
+        if (this.gridInstance) {
+            var pageNow = this.gridInstance.pagerModule.pagerObj.currentPage;
+            var pageCount = this.gridInstance.pagerModule.pagerObj.pageSize;
 
-        this.indexVal = (pageNow - 1) * pageCount + 1;
+            this.indexVal = (pageNow - 1) * pageCount + 1;
+        }
     }
     pageInitial() {
-        this.gridInstance.goToPage(1);
+        if (this.gridInstance) {
+            this.gridInstance.goToPage(1);
+        }
     }
     resizeHandle() {
-        this.gridInstance.freezeRefresh();
+        if (this.gridInstance) {
+            this.gridInstance.freezeRefresh();
+        }
     }
 };
 

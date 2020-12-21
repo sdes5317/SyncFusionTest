@@ -360,15 +360,21 @@ var Test = /** @class */ (function (_super) {
     Test.prototype.dataBound = function () {
         // 先取得page 在取得筆數
         // 計算初始值
-        var pageNow = this.gridInstance.pagerModule.pagerObj.currentPage;
-        var pageCount = this.gridInstance.pagerModule.pagerObj.pageSize;
-        this.indexVal = (pageNow - 1) * pageCount + 1;
+        if (this.gridInstance) {
+            var pageNow = this.gridInstance.pagerModule.pagerObj.currentPage;
+            var pageCount = this.gridInstance.pagerModule.pagerObj.pageSize;
+            this.indexVal = (pageNow - 1) * pageCount + 1;
+        }
     };
     Test.prototype.pageInitial = function () {
-        this.gridInstance.goToPage(1);
+        if (this.gridInstance) {
+            this.gridInstance.goToPage(1);
+        }
     };
     Test.prototype.resizeHandle = function () {
-        this.gridInstance.freezeRefresh();
+        if (this.gridInstance) {
+            this.gridInstance.freezeRefresh();
+        }
     };
     return Test;
 }(React.Component));
