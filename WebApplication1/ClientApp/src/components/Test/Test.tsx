@@ -1,4 +1,4 @@
-﻿import { CellSelectEventArgs, click, ColumnDirective, ColumnModel, ColumnsDirective, DetailDataBoundEventArgs, Filter, FilterSettingsModel, Freeze, Grid, GridComponent, ResizeArgs, RowDataBoundEventArgs, RowSelectingEventArgs, SelectionSettingsModel, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
+﻿import { CellSelectEventArgs, click, ColumnDirective, ColumnModel, ColumnsDirective, DetailDataBoundEventArgs, Filter, FilterSettingsModel, Freeze, Grid, GridComponent, RecordDoubleClickEventArgs, ResizeArgs, RowDataBoundEventArgs, RowSelectingEventArgs, SelectionSettingsModel, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
 import { Group, Inject, Page, PageSettingsModel, Sort, SortSettingsModel } from '@syncfusion/ej2-react-grids';
 import { DataManager } from '@syncfusion/ej2-data';
 import * as React from 'react';
@@ -76,7 +76,7 @@ export default class Test extends React.Component<{}, IState>{
         ]
     };
     public selectSettings: SelectionSettingsModel = {
-        enableSimpleMultiRowSelection: true,
+        enableSimpleMultiRowSelection: false,
         type: 'Multiple'
     };
 
@@ -250,8 +250,7 @@ export default class Test extends React.Component<{}, IState>{
                 onClick={this.clickNewPage}
                 beforeDataBound={e => this.beforeDataBoundHandle()}
                 resizing={e => this.resizeHandle()}
-                rowSelected={e => this.hightHelper.rowSelected(e)}
-                rowDeselected={e => this.hightHelper.rowDeSelected(e)}
+                recordDoubleClick={e => this.doubleClick(e)}
             >
                 <ColumnsDirective>
                     <ColumnDirective field='rowNumber' width='130' textAlign="Right" valueAccessor={this.rowNumerCal.bind(this)} />
@@ -277,6 +276,17 @@ export default class Test extends React.Component<{}, IState>{
             {input}
             {grid}
         </div>
+    }
+    doubleClick(e: RecordDoubleClickEventArgs | undefined): void {
+        if (e && e.rowIndex) {
+            if (this.gridInstance.getFrozenRowByIndex(e.rowIndex).classList.contains('highLight')) {
+                this.gridInstance.getFrozenRowByIndex(e.rowIndex).classList.remove("highLight");
+                this.gridInstance.getMovableRowByIndex(e.rowIndex).classList.remove("highLight");
+            } else {
+                this.gridInstance.getFrozenRowByIndex(e.rowIndex).classList.add("highLight");
+                this.gridInstance.getMovableRowByIndex(e.rowIndex).classList.add("highLight");
+            }
+        }
     }
     
     public async searchClick() {
@@ -310,7 +320,6 @@ export default class Test extends React.Component<{}, IState>{
                 dropDownEnum: enums
             },
             () => {
-                console.log({ ...this.state.dto });
                 this.searchClick();
             });
     }

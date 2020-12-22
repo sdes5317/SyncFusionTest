@@ -100,7 +100,7 @@ var Test = /** @class */ (function (_super) {
             ]
         };
         _this.selectSettings = {
-            enableSimpleMultiRowSelection: true,
+            enableSimpleMultiRowSelection: false,
             type: 'Multiple'
         };
         _this.indexVal = 1;
@@ -296,7 +296,7 @@ var Test = /** @class */ (function (_super) {
             this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected),
             this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected),
             this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)));
-        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, selectionSettings: this.selectSettings, allowPaging: true, allowSorting: true, frozenRows: 0, frozenColumns: 3, enableHover: false, height: "100%", onClick: this.clickNewPage, beforeDataBound: function (e) { return _this.beforeDataBoundHandle(); }, resizing: function (e) { return _this.resizeHandle(); }, rowSelected: function (e) { return _this.hightHelper.rowSelected(e); }, rowDeselected: function (e) { return _this.hightHelper.rowDeSelected(e); } },
+        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, selectionSettings: this.selectSettings, allowPaging: true, allowSorting: true, frozenRows: 0, frozenColumns: 3, enableHover: false, height: "100%", onClick: this.clickNewPage, beforeDataBound: function (e) { return _this.beforeDataBoundHandle(); }, resizing: function (e) { return _this.resizeHandle(); }, recordDoubleClick: function (e) { return _this.doubleClick(e); } },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'rowNumber', width: '130', textAlign: "Right", valueAccessor: this.rowNumerCal.bind(this) }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'customerId', width: '200', textAlign: 'Left' }),
@@ -316,6 +316,18 @@ var Test = /** @class */ (function (_super) {
         return React.createElement("div", { className: "height90" },
             input,
             grid);
+    };
+    Test.prototype.doubleClick = function (e) {
+        if (e && e.rowIndex) {
+            if (this.gridInstance.getFrozenRowByIndex(e.rowIndex).classList.contains('highLight')) {
+                this.gridInstance.getFrozenRowByIndex(e.rowIndex).classList.remove("highLight");
+                this.gridInstance.getMovableRowByIndex(e.rowIndex).classList.remove("highLight");
+            }
+            else {
+                this.gridInstance.getFrozenRowByIndex(e.rowIndex).classList.add("highLight");
+                this.gridInstance.getMovableRowByIndex(e.rowIndex).classList.add("highLight");
+            }
+        }
     };
     Test.prototype.searchClick = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -357,7 +369,6 @@ var Test = /** @class */ (function (_super) {
                     dto: dto,
                     dropDownEnum: enums
                 }, function () {
-                    console.log(__assign({}, _this.state.dto));
                     _this.searchClick();
                 });
                 return [2 /*return*/];
