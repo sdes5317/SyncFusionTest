@@ -68,12 +68,16 @@ var ej2_react_buttons_1 = require("@syncfusion/ej2-react-buttons");
 var CustomerDto_1 = require("./CustomerDto");
 var DropDownListHelper_1 = require("./DropDownListHelper");
 var ej2_react_dropdowns_1 = require("@syncfusion/ej2-react-dropdowns");
+var FormatHelper_1 = require("./FormatHelper");
+var HightHelper_1 = require("./HightHelper");
 var Test = /** @class */ (function (_super) {
     __extends(Test, _super);
     function Test(props) {
         var _this = _super.call(this, props) || this;
         _this.gridInstance = null;
         _this.helper = new DropDownListHelper_1.DropDownListHelper;
+        _this.formatHelper = new FormatHelper_1.FormatHelper;
+        _this.hightHelper = new HightHelper_1.HightHelper;
         //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
         _this.toolbarOptions = [
             { type: 'Input', template: "#customerId", align: 'Left' },
@@ -105,11 +109,11 @@ var Test = /** @class */ (function (_super) {
             dto: new CustomerDto_1.CustomerDto(),
             dropDownEnum: new DropDownListHelper_1.DropDownEnum()
         };
-        _this.handleInputChange = _this.handleInputChange.bind(_this);
+        _this.inputChangeHandle = _this.inputChangeHandle.bind(_this);
         _this.searchClick = _this.searchClick.bind(_this);
         _this.clearClick = _this.clearClick.bind(_this);
         _this.clickNewPage = _this.clickNewPage.bind(_this);
-        _this.dataBound = _this.dataBound.bind(_this);
+        _this.beforeDataBoundHandle = _this.beforeDataBoundHandle.bind(_this);
         _this.resizeHandle = _this.resizeHandle.bind(_this);
         _this.countrySelected = _this.countrySelected.bind(_this);
         _this.stateSelected = _this.stateSelected.bind(_this);
@@ -185,7 +189,7 @@ var Test = /** @class */ (function (_super) {
         return (React.createElement("div", { id: name },
             React.createElement("label", null,
                 name + ': ',
-                React.createElement(ej2_react_inputs_1.TextBoxComponent, { name: name, value: data, input: function (e) { return _this.handleInputChange(e); }, width: '100' }))));
+                React.createElement(ej2_react_inputs_1.TextBoxComponent, { name: name, value: data, input: function (e) { return _this.inputChangeHandle(e); }, width: '100' }))));
     };
     Test.prototype.dropDownRender = function (name, data, value, selectEvent) {
         return (React.createElement("div", { id: name },
@@ -268,7 +272,7 @@ var Test = /** @class */ (function (_super) {
             });
         }
     };
-    Test.prototype.handleInputChange = function (e) {
+    Test.prototype.inputChangeHandle = function (e) {
         var _a;
         if (e) {
             var name_1 = ((_a = e.event) === null || _a === void 0 ? void 0 : _a.target).name;
@@ -292,7 +296,7 @@ var Test = /** @class */ (function (_super) {
             this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected),
             this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected),
             this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)));
-        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, selectionSettings: this.selectSettings, allowPaging: true, allowSorting: true, frozenRows: 0, frozenColumns: 3, enableHover: false, height: "100%", onClick: this.clickNewPage, dataBound: this.dataBound, beforeDataBound: function (e) { return _this.dataBound(); }, resizing: function (e) { return _this.resizeHandle(); }, rowSelected: function (e) { return _this.rowSelected(e); }, rowDeselected: function (e) { return _this.rowDeSelected(e); } },
+        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, selectionSettings: this.selectSettings, allowPaging: true, allowSorting: true, frozenRows: 0, frozenColumns: 3, enableHover: false, height: "100%", onClick: this.clickNewPage, beforeDataBound: function (e) { return _this.beforeDataBoundHandle(); }, resizing: function (e) { return _this.resizeHandle(); }, rowSelected: function (e) { return _this.hightHelper.rowSelected(e); }, rowDeselected: function (e) { return _this.hightHelper.rowDeSelected(e); } },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'rowNumber', width: '130', textAlign: "Right", valueAccessor: this.rowNumerCal.bind(this) }),
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'customerId', width: '200', textAlign: 'Left' }),
@@ -312,24 +316,6 @@ var Test = /** @class */ (function (_super) {
         return React.createElement("div", { className: "height90" },
             input,
             grid);
-    };
-    Test.prototype.rowDeSelected = function (e) {
-        if (e && (e.row || e.row.classList || e.mRow || e.mRow.classList)) {
-            if (e.row && e.row.classList && e.row.classList.contains('highLight')) {
-                e.row.classList.remove('highLight');
-            }
-            console.log(e);
-            if (e.mRow[0] && e.mRow[0].classList && e.mRow[0].classList.contains('highLight')) {
-                e.mRow[0].classList.remove('highLight');
-            }
-        }
-    };
-    Test.prototype.rowSelected = function (e) {
-        console.log(e);
-        if (e) {
-            e.row.classList.add('highLight');
-            e.mRow.classList.add('highLight');
-        }
     };
     Test.prototype.searchClick = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -386,60 +372,18 @@ var Test = /** @class */ (function (_super) {
         //console.log(this.state.data[0]);
     };
     Test.prototype.formatUpdate = function (customers) {
-        this.dollarFormatUpdate(customers);
-        this.formatTestUpdate1(customers);
-        this.formatTestUpdate2(customers);
-        this.formatTestUpdate3(customers);
-    };
-    Test.prototype.dollarFormatUpdate = function (customers) {
-        var formater = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2
-        });
-        for (var i = 0; i < customers.length; i++) {
-            customers[i].thisYear = formater.format(+customers[i].thisYear).toString();
-            customers[i].lastYear = formater.format(+customers[i].lastYear).toString();
-            customers[i].theYearBeforeLast = formater.format(+customers[i].theYearBeforeLast).toString();
-        }
-    };
-    Test.prototype.formatTestUpdate1 = function (customers) {
-        var formater = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0
-        });
-        for (var i = 0; i < customers.length; i++) {
-            customers[i].number1 = formater.format(+customers[i].number1).toString();
-        }
-    };
-    Test.prototype.formatTestUpdate2 = function (customers) {
-        var formater = new Intl.NumberFormat('en-US', {
-            style: 'percent',
-            minimumFractionDigits: 2
-        });
-        for (var i = 0; i < customers.length; i++) {
-            customers[i].number2 = formater.format(+customers[i].number2 / 100).toString();
-        }
-    };
-    Test.prototype.formatTestUpdate3 = function (customers) {
-        var formater = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2
-        });
-        for (var i = 0; i < customers.length; i++) {
-            customers[i].number3 = formater.format(+customers[i].number3).toString();
-        }
+        this.formatHelper.dollarFormatUpdate(customers);
+        this.formatHelper.formatTestUpdate1(customers);
+        this.formatHelper.formatTestUpdate2(customers);
+        this.formatHelper.formatTestUpdate3(customers);
     };
     //https://www.syncfusion.com/forums/158252/row-number-after-filtering
-    // Grid’s dataBound event handler 
-    // Value accessor method 
+    //每產生一筆，就加一
     Test.prototype.rowNumerCal = function (field, data, column) {
         return this.indexVal++;
     };
     ///每次換頁或是排列，重新計算當下的index
-    Test.prototype.dataBound = function () {
+    Test.prototype.beforeDataBoundHandle = function () {
         // 先取得page 在取得筆數
         // 計算初始值
         if (this.gridInstance) {

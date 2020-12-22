@@ -1,4 +1,4 @@
-﻿import { CellSelectEventArgs, click, ColumnDirective, ColumnModel, ColumnsDirective, DetailDataBoundEventArgs, Filter, FilterSettingsModel, Freeze, Grid, GridComponent, ResizeArgs, RowDataBoundEventArgs, RowDeselectEventArgs, RowSelectEventArgs, RowSelectingEventArgs, SelectionSettingsModel, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
+﻿import { CellSelectEventArgs, click, ColumnDirective, ColumnModel, ColumnsDirective, DetailDataBoundEventArgs, Filter, FilterSettingsModel, Freeze, Grid, GridComponent, ResizeArgs, RowDataBoundEventArgs, RowSelectingEventArgs, SelectionSettingsModel, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
 import { Group, Inject, Page, PageSettingsModel, Sort, SortSettingsModel } from '@syncfusion/ej2-react-grids';
 import { DataManager } from '@syncfusion/ej2-data';
 import * as React from 'react';
@@ -10,8 +10,8 @@ import { CustomerDto } from './CustomerDto';
 import { Customer } from './Customer';
 import { DropDownListHelper, DropDownEnum } from './DropDownListHelper';
 import { ChangeEventArgs, DropDownListComponent, SelectEventArgs } from '@syncfusion/ej2-react-dropdowns';
-
-
+import { FormatHelper } from './FormatHelper';
+import { HightHelper } from './HightHelper';
 
 interface IState {
     data: Customer[];
@@ -24,6 +24,8 @@ export default class Test extends React.Component<{}, IState>{
     public gridInstance: Grid | null = null;
     public state: IState;
     private helper: DropDownListHelper = new DropDownListHelper;
+    private formatHelper: FormatHelper = new FormatHelper;
+    private hightHelper: HightHelper = new HightHelper;
 
     constructor(props: any) {
         super(props);
@@ -35,11 +37,11 @@ export default class Test extends React.Component<{}, IState>{
         };
 
 
-        this.handleInputChange = this.handleInputChange.bind(this);
+        this.inputChangeHandle = this.inputChangeHandle.bind(this);
         this.searchClick = this.searchClick.bind(this);
         this.clearClick = this.clearClick.bind(this);
         this.clickNewPage = this.clickNewPage.bind(this);
-        this.dataBound = this.dataBound.bind(this);
+        this.beforeDataBoundHandle = this.beforeDataBoundHandle.bind(this);
         this.resizeHandle = this.resizeHandle.bind(this);
         this.countrySelected = this.countrySelected.bind(this);
         this.stateSelected = this.stateSelected.bind(this);
@@ -111,7 +113,7 @@ export default class Test extends React.Component<{}, IState>{
         return (
             <div id={name}>
                 <label>{name + ': '}
-                    <TextBoxComponent name={name} value={data} input={e => this.handleInputChange(e)} width='100' />
+                    <TextBoxComponent name={name} value={data} input={e => this.inputChangeHandle(e)} width='100' />
                 </label>
             </div>);
     }
@@ -204,7 +206,7 @@ export default class Test extends React.Component<{}, IState>{
         }
     }
 
-    handleInputChange(e: InputEventArgs | undefined) {
+    inputChangeHandle(e: InputEventArgs | undefined) {
         if (e) {
             const name = (e.event?.target as HTMLInputElement).name;
             const value = e.value;
@@ -246,11 +248,10 @@ export default class Test extends React.Component<{}, IState>{
                 enableHover={false}
                 height="100%"
                 onClick={this.clickNewPage}
-                dataBound={this.dataBound}
-                beforeDataBound={e => this.dataBound()}
+                beforeDataBound={e => this.beforeDataBoundHandle()}
                 resizing={e => this.resizeHandle()}
-                rowSelected={e => this.rowSelected(e)}
-                rowDeselected={e => this.rowDeSelected(e)}
+                rowSelected={e => this.hightHelper.rowSelected(e)}
+                rowDeselected={e => this.hightHelper.rowDeSelected(e)}
             >
                 <ColumnsDirective>
                     <ColumnDirective field='rowNumber' width='130' textAlign="Right" valueAccessor={this.rowNumerCal.bind(this)} />
@@ -277,24 +278,7 @@ export default class Test extends React.Component<{}, IState>{
             {grid}
         </div>
     }
-    rowDeSelected(e: any): void {
-        if (e && (e.row || e.row.classList || e.mRow || e.mRow.classList)) {
-            if (e.row && e.row.classList && e.row.classList.contains('highLight')) {
-                e.row.classList.remove('highLight');
-            }
-            console.log(e);
-            if (e.mRow[0] && e.mRow[0].classList && e.mRow[0].classList.contains('highLight')) {
-                e.mRow[0].classList.remove('highLight');
-            }
-        }
-    }
-    rowSelected(e: any): void {
-        console.log(e);
-        if (e) {
-            e.row.classList.add('highLight');
-            e.mRow.classList.add('highLight');
-        }
-    }
+    
     public async searchClick() {
         this.pageInitial();
         const dto = this.state.dto;
@@ -340,69 +324,22 @@ export default class Test extends React.Component<{}, IState>{
     }
 
     formatUpdate(customers: Customer[]): void {
-        this.dollarFormatUpdate(customers);
-        this.formatTestUpdate1(customers);
-        this.formatTestUpdate2(customers);
-        this.formatTestUpdate3(customers);
+        this.formatHelper.dollarFormatUpdate(customers);
+        this.formatHelper.formatTestUpdate1(customers);
+        this.formatHelper.formatTestUpdate2(customers);
+        this.formatHelper.formatTestUpdate3(customers);
     }
 
-    dollarFormatUpdate(customers: Customer[]): void {
-        const formater = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2
-        } as Intl.NumberFormatOptions);
-
-        for (var i = 0; i < customers.length; i++) {
-            customers[i].thisYear = formater.format(+customers[i].thisYear).toString();
-            customers[i].lastYear = formater.format(+customers[i].lastYear).toString();
-            customers[i].theYearBeforeLast = formater.format(+customers[i].theYearBeforeLast).toString();
-        }
-    }
-    formatTestUpdate1(customers: Customer[]): void {
-        const formater = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0
-        } as Intl.NumberFormatOptions);
-
-        for (var i = 0; i < customers.length; i++) {
-            customers[i].number1 = formater.format(+customers[i].number1).toString();
-        }
-    }
-    formatTestUpdate2(customers: Customer[]): void {
-        const formater = new Intl.NumberFormat('en-US', {
-            style: 'percent',
-            minimumFractionDigits: 2
-        } as Intl.NumberFormatOptions);
-
-        for (var i = 0; i < customers.length; i++) {
-            customers[i].number2 = formater.format(+customers[i].number2 / 100).toString();
-        }
-    }
-    formatTestUpdate3(customers: Customer[]): void {
-        const formater = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2
-        } as Intl.NumberFormatOptions);
-
-        for (var i = 0; i < customers.length; i++) {
-            customers[i].number3 = formater.format(+customers[i].number3).toString();
-        }
-    }
     indexVal: number = 1;
     //https://www.syncfusion.com/forums/158252/row-number-after-filtering
-    // Grid’s dataBound event handler 
-    // Value accessor method 
+    //每產生一筆，就加一
     rowNumerCal(field: string, data: Object, column: ColumnModel) {
         return this.indexVal++;
     }
     ///每次換頁或是排列，重新計算當下的index
-    dataBound() {
+    beforeDataBoundHandle() {
         // 先取得page 在取得筆數
         // 計算初始值
-
         if (this.gridInstance) {
             var pageNow = this.gridInstance.pagerModule.pagerObj.currentPage;
             var pageCount = this.gridInstance.pagerModule.pagerObj.pageSize;
