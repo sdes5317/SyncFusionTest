@@ -1,4 +1,4 @@
-﻿import { CellSelectEventArgs, click, ColumnDirective, ColumnModel, ColumnsDirective, DetailDataBoundEventArgs, Filter, FilterSettingsModel, Freeze, Grid, GridComponent, RecordDoubleClickEventArgs, ResizeArgs, RowDataBoundEventArgs, RowSelectingEventArgs, SelectionSettingsModel, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
+﻿import { CellSelectEventArgs, click, ColumnDirective, ColumnModel, ColumnsDirective, DetailDataBoundEventArgs, Filter, FilterSettingsModel, Freeze, Grid, GridComponent, RecordDoubleClickEventArgs, Resize, ResizeArgs, RowDataBoundEventArgs, RowSelectingEventArgs, SelectionSettingsModel, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
 import { Group, Inject, Page, PageSettingsModel, Sort, SortSettingsModel } from '@syncfusion/ej2-react-grids';
 import { DataManager } from '@syncfusion/ej2-data';
 import * as React from 'react';
@@ -11,7 +11,6 @@ import { Customer } from './Customer';
 import { DropDownListHelper, DropDownEnum } from './DropDownListHelper';
 import { ChangeEventArgs, DropDownListComponent, SelectEventArgs } from '@syncfusion/ej2-react-dropdowns';
 import { FormatHelper } from './FormatHelper';
-import { HightHelper } from './HightHelper';
 
 interface IState {
     data: Customer[];
@@ -25,7 +24,6 @@ export default class Test extends React.Component<{}, IState>{
     public state: IState;
     private dropDownHelper: DropDownListHelper = new DropDownListHelper;
     private formatHelper: FormatHelper = new FormatHelper;
-    private hightHelper: HightHelper = new HightHelper;
 
     constructor(props: any) {
         super(props);
@@ -170,6 +168,8 @@ export default class Test extends React.Component<{}, IState>{
         if (value) {
             let dto = { ...this.state.dto } as CustomerDto;
             dto.state = value;
+            dto.city = null;
+            dto.zip = null;
             this.setState({ dto: dto }, () => {
                 var cityEnum = this.dropDownHelper.findCityDistinct(this.state.dto, this.state.data);
                 let enums = { ...this.state.dropDownEnum } as DropDownEnum;
@@ -185,6 +185,7 @@ export default class Test extends React.Component<{}, IState>{
         if (value) {
             let dto = { ...this.state.dto } as CustomerDto;
             dto.city = value;
+            dto.zip = null;
             this.setState({ dto: dto }, () => {
                 var zipEnum = this.dropDownHelper.findZipDistinct(this.state.dto, this.state.data);
                 let enums = { ...this.state.dropDownEnum } as DropDownEnum;
@@ -240,12 +241,11 @@ export default class Test extends React.Component<{}, IState>{
                 dataSource={this.state.data}
                 pageSettings={this.pageSettings}
                 toolbar={this.toolbarOptions}
-                selectionSettings={this.selectSettings}
+                //selectionSettings={this.selectSettings}
                 allowPaging={true}
                 allowSorting={true}
                 frozenRows={0}
                 frozenColumns={3}
-                enableHover={false}
                 height="100%"
                 onClick={this.clickNewPage}
                 beforeDataBound={e => this.beforeDataBoundHandle()}
@@ -253,22 +253,22 @@ export default class Test extends React.Component<{}, IState>{
                 recordDoubleClick={e => this.doubleClick(e)}
             >
                 <ColumnsDirective>
-                    <ColumnDirective field='rowNumber' width='130' textAlign="Right" valueAccessor={this.rowNumerCal.bind(this)} />
-                    <ColumnDirective field='customerId' width='200' textAlign='Left' />
-                    <ColumnDirective field='name' width='100' textAlign='Left' />
-                    <ColumnDirective field='country' textAlign='Left' />
-                    <ColumnDirective field='state' textAlign='Left' />
-                    <ColumnDirective field='city' textAlign='Left' />
-                    <ColumnDirective field='zip' textAlign='Left' />
-                    <ColumnDirective field='address' textAlign='Left' />
-                    <ColumnDirective field='thisYear' textAlign='Right' />
-                    <ColumnDirective field='lastYear' textAlign='Right' />
-                    <ColumnDirective field='theYearBeforeLast' width='100' textAlign='Right' />
-                    <ColumnDirective field='number1' textAlign='Right' />
-                    <ColumnDirective field='number2' textAlign='Right' />
-                    <ColumnDirective field='number3' textAlign='Right' />
+                    <ColumnDirective field='rowNumber' maxWidth="100" textAlign="Right" valueAccessor={this.rowNumerCal.bind(this)} />
+                    <ColumnDirective field='customerId' maxWidth="200" textAlign='Left' />
+                    <ColumnDirective field='name' maxWidth="100" textAlign='Left' />
+                    <ColumnDirective field='country' autoFit={true} textAlign='Left' />
+                    <ColumnDirective field='state' autoFit={true} textAlign='Left' />
+                    <ColumnDirective field='city' autoFit={true} textAlign='Left' />
+                    <ColumnDirective field='zip' autoFit={true} textAlign='Left' />
+                    <ColumnDirective field='address' autoFit={true} textAlign='Left' />
+                    <ColumnDirective field='thisYear' autoFit={true} textAlign='Right' />
+                    <ColumnDirective field='lastYear' autoFit={true} textAlign='Right' />
+                    <ColumnDirective field='theYearBeforeLast' autoFit={true} width='100' textAlign='Right' />
+                    <ColumnDirective field='number1' autoFit={true} textAlign='Right' />
+                    <ColumnDirective field='number2' autoFit={true} textAlign='Right' />
+                    <ColumnDirective field='number3' autoFit={true} textAlign='Right' />
                 </ColumnsDirective>
-                <Inject services={[Page, Sort, Freeze, Toolbar]} />
+                <Inject services={[Page, Sort, Freeze, Toolbar, Resize]} />
             </GridComponent>
         );
 
@@ -278,7 +278,7 @@ export default class Test extends React.Component<{}, IState>{
         </div>
     }
     doubleClick(e: RecordDoubleClickEventArgs | undefined): void {
-        if (e && e.rowIndex) {
+        if (this.gridInstance && e && (e.rowIndex != undefined)) {
             if (this.gridInstance.getFrozenRowByIndex(e.rowIndex).classList.contains('highLight')) {
                 this.gridInstance.getFrozenRowByIndex(e.rowIndex).classList.remove("highLight");
                 this.gridInstance.getMovableRowByIndex(e.rowIndex).classList.remove("highLight");
@@ -288,11 +288,11 @@ export default class Test extends React.Component<{}, IState>{
             }
         }
     }
-    
+
     public async searchClick() {
         this.pageInitial();
         const dto = this.state.dto;
-        
+
         const check =
             (dto.address == null || dto.address == "") &&
             (dto.city == null || dto.city == "") &&

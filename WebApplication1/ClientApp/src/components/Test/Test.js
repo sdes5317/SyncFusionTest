@@ -69,7 +69,6 @@ var CustomerDto_1 = require("./CustomerDto");
 var DropDownListHelper_1 = require("./DropDownListHelper");
 var ej2_react_dropdowns_1 = require("@syncfusion/ej2-react-dropdowns");
 var FormatHelper_1 = require("./FormatHelper");
-var HightHelper_1 = require("./HightHelper");
 var Test = /** @class */ (function (_super) {
     __extends(Test, _super);
     function Test(props) {
@@ -77,7 +76,6 @@ var Test = /** @class */ (function (_super) {
         _this.gridInstance = null;
         _this.dropDownHelper = new DropDownListHelper_1.DropDownListHelper;
         _this.formatHelper = new FormatHelper_1.FormatHelper;
-        _this.hightHelper = new HightHelper_1.HightHelper;
         //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
         _this.toolbarOptions = [
             { type: 'Input', template: "#customerId", align: 'Left' },
@@ -236,6 +234,8 @@ var Test = /** @class */ (function (_super) {
         if (value) {
             var dto = __assign({}, this.state.dto);
             dto.state = value;
+            dto.city = null;
+            dto.zip = null;
             this.setState({ dto: dto }, function () {
                 var cityEnum = _this.dropDownHelper.findCityDistinct(_this.state.dto, _this.state.data);
                 var enums = __assign({}, _this.state.dropDownEnum);
@@ -252,6 +252,7 @@ var Test = /** @class */ (function (_super) {
         if (value) {
             var dto = __assign({}, this.state.dto);
             dto.city = value;
+            dto.zip = null;
             this.setState({ dto: dto }, function () {
                 var zipEnum = _this.dropDownHelper.findZipDistinct(_this.state.dto, _this.state.data);
                 var enums = __assign({}, _this.state.dropDownEnum);
@@ -296,29 +297,31 @@ var Test = /** @class */ (function (_super) {
             this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected),
             this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected),
             this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)));
-        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, selectionSettings: this.selectSettings, allowPaging: true, allowSorting: true, frozenRows: 0, frozenColumns: 3, enableHover: false, height: "100%", onClick: this.clickNewPage, beforeDataBound: function (e) { return _this.beforeDataBoundHandle(); }, resizing: function (e) { return _this.resizeHandle(); }, recordDoubleClick: function (e) { return _this.doubleClick(e); } },
+        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, 
+            //selectionSettings={this.selectSettings}
+            allowPaging: true, allowSorting: true, frozenRows: 0, frozenColumns: 3, height: "100%", onClick: this.clickNewPage, beforeDataBound: function (e) { return _this.beforeDataBoundHandle(); }, resizing: function (e) { return _this.resizeHandle(); }, recordDoubleClick: function (e) { return _this.doubleClick(e); } },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'rowNumber', width: '130', textAlign: "Right", valueAccessor: this.rowNumerCal.bind(this) }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'customerId', width: '200', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', width: '100', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', textAlign: 'Left' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', textAlign: 'Right' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', textAlign: 'Right' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', width: '100', textAlign: 'Right' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'number1', textAlign: 'Right' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'number2', textAlign: 'Right' }),
-                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'number3', textAlign: 'Right' })),
-            React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Freeze, ej2_react_grids_1.Toolbar] })));
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'rowNumber', maxWidth: "100", textAlign: "Right", valueAccessor: this.rowNumerCal.bind(this) }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'customerId', maxWidth: "200", textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'name', maxWidth: "100", textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'country', autoFit: true, textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'state', autoFit: true, textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'city', autoFit: true, textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'zip', autoFit: true, textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'address', autoFit: true, textAlign: 'Left' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'thisYear', autoFit: true, textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'lastYear', autoFit: true, textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'theYearBeforeLast', autoFit: true, width: '100', textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'number1', autoFit: true, textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'number2', autoFit: true, textAlign: 'Right' }),
+                React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'number3', autoFit: true, textAlign: 'Right' })),
+            React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Freeze, ej2_react_grids_1.Toolbar, ej2_react_grids_1.Resize] })));
         return React.createElement("div", { className: "height90" },
             input,
             grid);
     };
     Test.prototype.doubleClick = function (e) {
-        if (e && e.rowIndex) {
+        if (this.gridInstance && e && (e.rowIndex != undefined)) {
             if (this.gridInstance.getFrozenRowByIndex(e.rowIndex).classList.contains('highLight')) {
                 this.gridInstance.getFrozenRowByIndex(e.rowIndex).classList.remove("highLight");
                 this.gridInstance.getMovableRowByIndex(e.rowIndex).classList.remove("highLight");
