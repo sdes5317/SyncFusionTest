@@ -78,6 +78,64 @@ export default class Test extends React.Component<{}, IState>{
         type: 'Multiple'
     };
 
+    public render() {
+        var input = (
+            <>
+                { this.inputRender("customerId", this.state.dto.customerId)}
+                { this.inputRender("name", this.state.dto.name)}
+                { this.inputRender("address", this.state.dto.address)}
+                { <ButtonComponent id="search" content="Search" onClick={this.searchClick} />}
+                { <ButtonComponent id="clear" content="Clear" onClick={this.clearClick} />}
+                {this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected)}
+                {this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected)}
+                {this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected)}
+                {this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)}
+            </>
+        );
+
+        var grid = (
+            <GridComponent
+                ref={g => this.gridInstance = g}
+                dataSource={this.state.data}
+                pageSettings={this.pageSettings}
+                toolbar={this.toolbarOptions}
+                //selectionSettings={this.selectSettings}
+                allowPaging={true}
+                allowSorting={true}
+                frozenRows={0}
+                frozenColumns={3}
+                height="100%"
+                onClick={this.clickNewPage}
+                beforeDataBound={e => this.beforeDataBoundHandle()}
+                resizing={e => this.resizeHandle()}
+                recordDoubleClick={e => this.doubleClick(e)}
+            >
+                <ColumnsDirective>
+                    <ColumnDirective field='rowNumber' maxWidth="130" textAlign="Right" valueAccessor={this.rowNumerCal.bind(this)} />
+                    <ColumnDirective field='customerId' maxWidth="200" textAlign='Left' />
+                    <ColumnDirective field='name' maxWidth="100" textAlign='Left' />
+                    <ColumnDirective field='country' autoFit={true} textAlign='Left' />
+                    <ColumnDirective field='state' autoFit={true} textAlign='Left' />
+                    <ColumnDirective field='city' autoFit={true} textAlign='Left' />
+                    <ColumnDirective field='zip' autoFit={true} textAlign='Left' />
+                    <ColumnDirective field='address' autoFit={true} textAlign='Left' />
+                    <ColumnDirective field='thisYear' autoFit={true} textAlign='Right' />
+                    <ColumnDirective field='lastYear' autoFit={true} textAlign='Right' />
+                    <ColumnDirective field='theYearBeforeLast' autoFit={true} width='100' textAlign='Right' />
+                    <ColumnDirective field='number1' autoFit={true} textAlign='Right' />
+                    <ColumnDirective field='number2' autoFit={true} textAlign='Right' />
+                    <ColumnDirective field='number3' autoFit={true} textAlign='Right' />
+                </ColumnsDirective>
+                <Inject services={[Page, Sort, Freeze, Toolbar, Resize]} />
+            </GridComponent>
+        );
+
+        return <div className="height90">
+            {input}
+            {grid}
+        </div>
+    }
+
     private async getSelectCustomers(dto: CustomerDto) {
         var res = await fetch('test/GetCustomers', {
             body: JSON.stringify(dto),
@@ -220,63 +278,6 @@ export default class Test extends React.Component<{}, IState>{
         }
     }
 
-    public render() {
-        var input = (
-            <>
-                { this.inputRender("customerId", this.state.dto.customerId)}
-                { this.inputRender("name", this.state.dto.name)}
-                { this.inputRender("address", this.state.dto.address)}
-                { <ButtonComponent id="search" content="Search" onClick={this.searchClick} />}
-                { <ButtonComponent id="clear" content="Clear" onClick={this.clearClick} />}
-                {this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected)}
-                {this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected)}
-                {this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected)}
-                {this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)}
-            </>
-        );
-
-        var grid = (
-            <GridComponent
-                ref={g => this.gridInstance = g}
-                dataSource={this.state.data}
-                pageSettings={this.pageSettings}
-                toolbar={this.toolbarOptions}
-                //selectionSettings={this.selectSettings}
-                allowPaging={true}
-                allowSorting={true}
-                frozenRows={0}
-                frozenColumns={3}
-                height="100%"
-                onClick={this.clickNewPage}
-                beforeDataBound={e => this.beforeDataBoundHandle()}
-                resizing={e => this.resizeHandle()}
-                recordDoubleClick={e => this.doubleClick(e)}
-            >
-                <ColumnsDirective>
-                    <ColumnDirective field='rowNumber' maxWidth="100" textAlign="Right" valueAccessor={this.rowNumerCal.bind(this)} />
-                    <ColumnDirective field='customerId' maxWidth="200" textAlign='Left' />
-                    <ColumnDirective field='name' maxWidth="100" textAlign='Left' />
-                    <ColumnDirective field='country' autoFit={true} textAlign='Left' />
-                    <ColumnDirective field='state' autoFit={true} textAlign='Left' />
-                    <ColumnDirective field='city' autoFit={true} textAlign='Left' />
-                    <ColumnDirective field='zip' autoFit={true} textAlign='Left' />
-                    <ColumnDirective field='address' autoFit={true} textAlign='Left' />
-                    <ColumnDirective field='thisYear' autoFit={true} textAlign='Right' />
-                    <ColumnDirective field='lastYear' autoFit={true} textAlign='Right' />
-                    <ColumnDirective field='theYearBeforeLast' autoFit={true} width='100' textAlign='Right' />
-                    <ColumnDirective field='number1' autoFit={true} textAlign='Right' />
-                    <ColumnDirective field='number2' autoFit={true} textAlign='Right' />
-                    <ColumnDirective field='number3' autoFit={true} textAlign='Right' />
-                </ColumnsDirective>
-                <Inject services={[Page, Sort, Freeze, Toolbar, Resize]} />
-            </GridComponent>
-        );
-
-        return <div className="height90">
-            {input}
-            {grid}
-        </div>
-    }
     doubleClick(e: RecordDoubleClickEventArgs | undefined): void {
         if (this.gridInstance && e && (e.rowIndex != undefined)) {
             if (this.gridInstance.getFrozenRowByIndex(e.rowIndex).classList.contains('highLight')) {
