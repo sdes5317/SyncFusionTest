@@ -3,17 +3,20 @@ import { Group, Inject, Page, PageSettingsModel, Sort, SortSettingsModel } from 
 import { DataManager } from '@syncfusion/ej2-data';
 import * as React from 'react';
 import { ItemModel, ClickEventArgs } from '@syncfusion/ej2-navigations';
-import { InputEventArgs, SelectedEventArgs, TextBox, TextBoxComponent, TextBoxModel } from '@syncfusion/ej2-react-inputs';
+import { InputEventArgs, TextBox, TextBoxComponent, TextBoxModel } from '@syncfusion/ej2-react-inputs';
 import { EmitType } from '@syncfusion/ej2-base'
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { CustomerDto } from './CustomerDto';
 import { Customer } from './Customer';
-import { DropDownListHelper } from './DropDownListHelper';
+import { DropDownListHelper, DropDownEnum } from './DropDownListHelper';
+import { ChangeEventArgs, DropDownListComponent, SelectEventArgs } from '@syncfusion/ej2-react-dropdowns';
+
+
 
 interface IState {
     data: Customer[];
     dto: CustomerDto;
-    dropDownList: string[]
+    dropDownEnum: DropDownEnum;
 }
 
 export default class Test extends React.Component<{}, IState>{
@@ -28,7 +31,7 @@ export default class Test extends React.Component<{}, IState>{
         this.state = {
             data: [],
             dto: new CustomerDto(),
-            dropDownList: ["123", "456"]
+            dropDownEnum: new DropDownEnum()
         };
 
 
@@ -38,6 +41,10 @@ export default class Test extends React.Component<{}, IState>{
         this.clickNewPage = this.clickNewPage.bind(this);
         this.dataBound = this.dataBound.bind(this);
         this.resizeHandle = this.resizeHandle.bind(this);
+        this.countrySelected = this.countrySelected.bind(this);
+        this.stateSelected = this.stateSelected.bind(this);
+        this.citySelected = this.citySelected.bind(this);
+        this.zipSelected = this.zipSelected.bind(this);
     }
 
     async componentDidMount() {
@@ -51,8 +58,8 @@ export default class Test extends React.Component<{}, IState>{
         { type: 'Input', template: "#name", align: 'Left' },
         { type: 'Input', template: "#country", align: 'Left' },
         { type: 'Input', template: "#state", align: 'Left' },
-        { type: 'Input', template: "#zip", align: 'Left' },
         { type: 'Input', template: "#city", align: 'Left' },
+        { type: 'Input', template: "#zip", align: 'Left' },
         { type: 'Input', template: "#address", align: 'Left' },
         { type: 'Button', template: "#search ", align: 'Left' },//text裡的search多一個空格避免使用內建的search
         { type: 'Button', template: "#clear", align: 'Left' },
@@ -84,7 +91,7 @@ export default class Test extends React.Component<{}, IState>{
         const results = (await res.json()) as Customer[];
         this.formatUpdate(results);
 
-        this.setState({ data: results });
+        this.setState({ data: results }, () => this.initDropDownList());
     }
     private async getAllCustomers() {
         var res = await fetch('test/GetAllCustomers', {
@@ -97,7 +104,7 @@ export default class Test extends React.Component<{}, IState>{
         const results = (await res.json()) as Customer[];
         this.formatUpdate(results);
 
-        this.setState({ data: results });
+        this.setState({ data: results }, () => this.initDropDownList());
     }
 
     private inputRender(name: string, data: string) {
@@ -107,6 +114,110 @@ export default class Test extends React.Component<{}, IState>{
                     <TextBoxComponent name={name} value={data} input={e => this.handleInputChange(e)} width='100' />
                 </label>
             </div>);
+    }
+
+    private dropDownListScopes: { key: string, value: DropDownListComponent }[] = [];
+
+    private dropDownRender(
+        name: string, data: string[],
+        value: string | undefined,
+        selectEvent?: (e: SelectEventArgs | undefined) => void) {
+        return (
+            <div id={name}>
+                <label>{name + ': '}
+                    <DropDownListComponent
+                        ref=
+                        {
+                            scope => {
+                                //由於這個控件看起來不完全是controlled component
+                                //因此這裡把scope保存起來方便後面去做狀態的清除
+                                var findScope = this.dropDownListScopes.find(e => e.key == name);
+                                if (!findScope && scope) {
+                                    this.dropDownListScopes.push({ key: name, value: scope });
+                                }
+                            }}
+                        dataSource={data}
+                        value={value}
+                        width='150'
+                        select={e => { if (selectEvent) { selectEvent(e); } }} />
+                </label>
+            </div>);
+    }
+
+    initDropDownList() {
+        const enums = new DropDownEnum();
+        enums.country = this.helper.findCountryDistinct(this.state.data);
+        const dto = new CustomerDto();
+
+        this.setState({
+            dto: dto,
+            dropDownEnum: enums
+        }, () => {
+            for (var i = 0; i < this.dropDownListScopes.length; i++) {
+                this.dropDownListScopes[i].value.clear();
+            }
+        });
+    }
+
+    countrySelected(e: SelectEventArgs | undefined) {
+        if (!e) return;
+        console.log(1111);
+        const value = e.itemData.value as string;
+        if (value) {
+            let dto = { ...this.state.dto } as CustomerDto;
+            dto.country = value;
+            dto.state = null;
+            dto.city = null;
+            dto.zip = null;
+            this.setState({ dto: dto }, () => {
+                var stateEnum = this.helper.findStateDistinct(this.state.dto, this.state.data);
+                let enums = { ...this.state.dropDownEnum } as DropDownEnum;
+                enums.state = stateEnum;
+                this.setState({ dropDownEnum: enums });
+            });
+        }
+    }
+    stateSelected(e: SelectEventArgs | undefined) {
+        if (!e) return;
+
+        const value = e.itemData.value as string;
+        if (value) {
+            let dto = { ...this.state.dto } as CustomerDto;
+            dto.state = value;
+            this.setState({ dto: dto }, () => {
+                var cityEnum = this.helper.findCityDistinct(this.state.dto, this.state.data);
+                let enums = { ...this.state.dropDownEnum } as DropDownEnum;
+                enums.city = cityEnum;
+                this.setState({ dropDownEnum: enums });
+            });
+        }
+    }
+    citySelected(e: SelectEventArgs | undefined) {
+        if (!e) return;
+
+        const value = e.itemData.value as string;
+        if (value) {
+            let dto = { ...this.state.dto } as CustomerDto;
+            dto.city = value;
+            this.setState({ dto: dto }, () => {
+                var zipEnum = this.helper.findZipDistinct(this.state.dto, this.state.data);
+                let enums = { ...this.state.dropDownEnum } as DropDownEnum;
+                enums.zip = zipEnum;
+                this.setState({ dropDownEnum: enums });
+            });
+        }
+    }
+    zipSelected(e: SelectEventArgs | undefined) {
+        if (!e) return;
+
+        const value = e.itemData.value as string;
+        if (value) {
+            let dto = { ...this.state.dto } as CustomerDto;
+            dto.zip = value;
+            this.setState({
+                dto: dto
+            });
+        }
     }
 
     handleInputChange(e: InputEventArgs | undefined) {
@@ -127,13 +238,13 @@ export default class Test extends React.Component<{}, IState>{
             <>
                 { this.inputRender("customerId", this.state.dto.customerId)}
                 { this.inputRender("name", this.state.dto.name)}
-                { this.inputRender("country", this.state.dto.country)}
-                { this.inputRender("state", this.state.dto.state)}
-                { this.inputRender("city", this.state.dto.city)}
-                { this.inputRender("zip", this.state.dto.zip)}
                 { this.inputRender("address", this.state.dto.address)}
                 { <ButtonComponent id="search" content="Search" onClick={this.searchClick} />}
                 { <ButtonComponent id="clear" content="Clear" onClick={this.clearClick} />}
+                {this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected)}
+                {this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected)}
+                {this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected)}
+                {this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)}
             </>
         );
 
@@ -205,53 +316,38 @@ export default class Test extends React.Component<{}, IState>{
         const dto = this.state.dto;
         console.log(dto);
         const check =
-            (dto.address === null || dto.address === "") &&
-            (dto.city === null || dto.city === "") &&
-            (dto.country === null || dto.country === "") &&
-            (dto.customerId === null || dto.customerId === "") &&
-            (dto.name === null || dto.name === "") &&
-            (dto.state === null || dto.state === "") &&
-            (dto.zip === null || dto.zip === "");
+            (dto.address == null || dto.address == "") &&
+            (dto.city == null || dto.city == "") &&
+            (dto.country == null || dto.country == "") &&
+            (dto.customerId == null || dto.customerId == "") &&
+            (dto.name == null || dto.name == "") &&
+            (dto.state == null || dto.state == "") &&
+            (dto.zip == null || dto.zip == "");
+        console.log(this.state.dto);
+
         if (check) {
             await this.getAllCustomers();
         }
         else {
             await this.getSelectCustomers(this.state.dto);
         }
+        console.log(this.state.dto);
+
     }
 
     public async clearClick() {
-        /*
-        Ok
-        var dto = { ...this.state.dto };
-        this.setState({ dto: dto });
-        console.log(dto);
-
-        Ok
-        this.setState(prevState => {
-            let dto = { ...prevState.dto };
-            dto.customerId = '';
-            dto.name = '';
-            dto.country = '';
-            dto.city = '';
-            dto.address = '';
-            dto.state = '';
-            dto.zip = '';
-            return { dto, };
-        });
-
-        Ok
-        this.setState(prevState => {
         let dto = new CustomerDto;
-            return { dto, };
-        });
-         */
+        let enums = new DropDownEnum;
 
-        this.pageInitial();
-        var dto = new CustomerDto;
         this.setState(
-            { dto: dto },
-            () => this.searchClick());
+            {
+                dto: dto,
+                dropDownEnum: enums
+            },
+            () => {
+                console.log({ ...this.state.dto });
+                this.searchClick();
+            });
     }
 
     clickNewPage(e: React.MouseEvent<Element, MouseEvent>) {

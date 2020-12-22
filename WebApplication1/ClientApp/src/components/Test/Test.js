@@ -12,6 +12,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -56,6 +67,7 @@ var ej2_react_inputs_1 = require("@syncfusion/ej2-react-inputs");
 var ej2_react_buttons_1 = require("@syncfusion/ej2-react-buttons");
 var CustomerDto_1 = require("./CustomerDto");
 var DropDownListHelper_1 = require("./DropDownListHelper");
+var ej2_react_dropdowns_1 = require("@syncfusion/ej2-react-dropdowns");
 var Test = /** @class */ (function (_super) {
     __extends(Test, _super);
     function Test(props) {
@@ -68,8 +80,8 @@ var Test = /** @class */ (function (_super) {
             { type: 'Input', template: "#name", align: 'Left' },
             { type: 'Input', template: "#country", align: 'Left' },
             { type: 'Input', template: "#state", align: 'Left' },
-            { type: 'Input', template: "#zip", align: 'Left' },
             { type: 'Input', template: "#city", align: 'Left' },
+            { type: 'Input', template: "#zip", align: 'Left' },
             { type: 'Input', template: "#address", align: 'Left' },
             { type: 'Button', template: "#search ", align: 'Left' },
             { type: 'Button', template: "#clear", align: 'Left' },
@@ -87,11 +99,12 @@ var Test = /** @class */ (function (_super) {
             enableSimpleMultiRowSelection: true,
             type: 'Multiple'
         };
+        _this.dropDownListScopes = [];
         _this.indexVal = 1;
         _this.state = {
             data: [],
             dto: new CustomerDto_1.CustomerDto(),
-            dropDownList: ["123", "456"]
+            dropDownEnum: new DropDownListHelper_1.DropDownEnum()
         };
         _this.handleInputChange = _this.handleInputChange.bind(_this);
         _this.searchClick = _this.searchClick.bind(_this);
@@ -99,6 +112,10 @@ var Test = /** @class */ (function (_super) {
         _this.clickNewPage = _this.clickNewPage.bind(_this);
         _this.dataBound = _this.dataBound.bind(_this);
         _this.resizeHandle = _this.resizeHandle.bind(_this);
+        _this.countrySelected = _this.countrySelected.bind(_this);
+        _this.stateSelected = _this.stateSelected.bind(_this);
+        _this.citySelected = _this.citySelected.bind(_this);
+        _this.zipSelected = _this.zipSelected.bind(_this);
         return _this;
     }
     Test.prototype.componentDidMount = function () {
@@ -117,6 +134,7 @@ var Test = /** @class */ (function (_super) {
     Test.prototype.getSelectCustomers = function (dto) {
         return __awaiter(this, void 0, void 0, function () {
             var res, results;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, fetch('test/GetCustomers', {
@@ -133,7 +151,7 @@ var Test = /** @class */ (function (_super) {
                     case 2:
                         results = (_a.sent());
                         this.formatUpdate(results);
-                        this.setState({ data: results });
+                        this.setState({ data: results }, function () { return _this.initDropDownList(); });
                         return [2 /*return*/];
                 }
             });
@@ -142,6 +160,7 @@ var Test = /** @class */ (function (_super) {
     Test.prototype.getAllCustomers = function () {
         return __awaiter(this, void 0, void 0, function () {
             var res, results;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, fetch('test/GetAllCustomers', {
@@ -156,7 +175,7 @@ var Test = /** @class */ (function (_super) {
                     case 2:
                         results = (_a.sent());
                         this.formatUpdate(results);
-                        this.setState({ data: results });
+                        this.setState({ data: results }, function () { return _this.initDropDownList(); });
                         return [2 /*return*/];
                 }
             });
@@ -168,6 +187,100 @@ var Test = /** @class */ (function (_super) {
             React.createElement("label", null,
                 name + ': ',
                 React.createElement(ej2_react_inputs_1.TextBoxComponent, { name: name, value: data, input: function (e) { return _this.handleInputChange(e); }, width: '100' }))));
+    };
+    Test.prototype.dropDownRender = function (name, data, value, selectEvent) {
+        var _this = this;
+        return (React.createElement("div", { id: name },
+            React.createElement("label", null,
+                name + ': ',
+                React.createElement(ej2_react_dropdowns_1.DropDownListComponent, { ref: function (scope) {
+                        //由於這個控件看起來不完全是controlled component
+                        //因此這裡把scope保存起來方便後面去做狀態的清除
+                        var findScope = _this.dropDownListScopes.find(function (e) { return e.key == name; });
+                        if (!findScope && scope) {
+                            _this.dropDownListScopes.push({ key: name, value: scope });
+                        }
+                    }, dataSource: data, value: value, width: '150', select: function (e) { if (selectEvent) {
+                        selectEvent(e);
+                    } } }))));
+    };
+    Test.prototype.initDropDownList = function () {
+        var _this = this;
+        var enums = new DropDownListHelper_1.DropDownEnum();
+        enums.country = this.helper.findCountryDistinct(this.state.data);
+        var dto = new CustomerDto_1.CustomerDto();
+        this.setState({
+            dto: dto,
+            dropDownEnum: enums
+        }, function () {
+            for (var i = 0; i < _this.dropDownListScopes.length; i++) {
+                _this.dropDownListScopes[i].value.clear();
+            }
+        });
+    };
+    Test.prototype.countrySelected = function (e) {
+        var _this = this;
+        if (!e)
+            return;
+        console.log(1111);
+        var value = e.itemData.value;
+        if (value) {
+            var dto = __assign({}, this.state.dto);
+            dto.country = value;
+            dto.state = null;
+            dto.city = null;
+            dto.zip = null;
+            this.setState({ dto: dto }, function () {
+                var stateEnum = _this.helper.findStateDistinct(_this.state.dto, _this.state.data);
+                var enums = __assign({}, _this.state.dropDownEnum);
+                enums.state = stateEnum;
+                _this.setState({ dropDownEnum: enums });
+            });
+        }
+    };
+    Test.prototype.stateSelected = function (e) {
+        var _this = this;
+        if (!e)
+            return;
+        var value = e.itemData.value;
+        if (value) {
+            var dto = __assign({}, this.state.dto);
+            dto.state = value;
+            this.setState({ dto: dto }, function () {
+                var cityEnum = _this.helper.findCityDistinct(_this.state.dto, _this.state.data);
+                var enums = __assign({}, _this.state.dropDownEnum);
+                enums.city = cityEnum;
+                _this.setState({ dropDownEnum: enums });
+            });
+        }
+    };
+    Test.prototype.citySelected = function (e) {
+        var _this = this;
+        if (!e)
+            return;
+        var value = e.itemData.value;
+        if (value) {
+            var dto = __assign({}, this.state.dto);
+            dto.city = value;
+            this.setState({ dto: dto }, function () {
+                var zipEnum = _this.helper.findZipDistinct(_this.state.dto, _this.state.data);
+                var enums = __assign({}, _this.state.dropDownEnum);
+                enums.zip = zipEnum;
+                _this.setState({ dropDownEnum: enums });
+            });
+        }
+    };
+    Test.prototype.zipSelected = function (e) {
+        if (!e)
+            return;
+        var value = e.itemData.value;
+        if (value) {
+            var dto = __assign({}, this.state.dto);
+            dto.zip = value;
+            this.setState({
+                dto: dto
+            });
+        }
     };
     Test.prototype.handleInputChange = function (e) {
         var _a;
@@ -186,13 +299,13 @@ var Test = /** @class */ (function (_super) {
         var input = (React.createElement(React.Fragment, null,
             this.inputRender("customerId", this.state.dto.customerId),
             this.inputRender("name", this.state.dto.name),
-            this.inputRender("country", this.state.dto.country),
-            this.inputRender("state", this.state.dto.state),
-            this.inputRender("city", this.state.dto.city),
-            this.inputRender("zip", this.state.dto.zip),
             this.inputRender("address", this.state.dto.address),
             React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "search", content: "Search", onClick: this.searchClick }),
-            React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "clear", content: "Clear", onClick: this.clearClick })));
+            React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "clear", content: "Clear", onClick: this.clearClick }),
+            this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected),
+            this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected),
+            this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected),
+            this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)));
         var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, selectionSettings: this.selectSettings, allowPaging: true, allowSorting: true, frozenRows: 0, frozenColumns: 3, enableHover: false, height: "100%", onClick: this.clickNewPage, dataBound: this.dataBound, beforeDataBound: function (e) { return _this.dataBound(); }, resizing: function (e) { return _this.resizeHandle(); }, rowSelected: function (e) { return _this.rowSelected(e); }, rowDeselected: function (e) { return _this.rowDeSelected(e); } },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'rowNumber', width: '130', textAlign: "Right", valueAccessor: this.rowNumerCal.bind(this) }),
@@ -241,13 +354,14 @@ var Test = /** @class */ (function (_super) {
                         this.pageInitial();
                         dto = this.state.dto;
                         console.log(dto);
-                        check = (dto.address === null || dto.address === "") &&
-                            (dto.city === null || dto.city === "") &&
-                            (dto.country === null || dto.country === "") &&
-                            (dto.customerId === null || dto.customerId === "") &&
-                            (dto.name === null || dto.name === "") &&
-                            (dto.state === null || dto.state === "") &&
-                            (dto.zip === null || dto.zip === "");
+                        check = (dto.address == null || dto.address == "") &&
+                            (dto.city == null || dto.city == "") &&
+                            (dto.country == null || dto.country == "") &&
+                            (dto.customerId == null || dto.customerId == "") &&
+                            (dto.name == null || dto.name == "") &&
+                            (dto.state == null || dto.state == "") &&
+                            (dto.zip == null || dto.zip == "");
+                        console.log(this.state.dto);
                         if (!check) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.getAllCustomers()];
                     case 1:
@@ -257,44 +371,27 @@ var Test = /** @class */ (function (_super) {
                     case 3:
                         _a.sent();
                         _a.label = 4;
-                    case 4: return [2 /*return*/];
+                    case 4:
+                        console.log(this.state.dto);
+                        return [2 /*return*/];
                 }
             });
         });
     };
     Test.prototype.clearClick = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var dto;
+            var dto, enums;
             var _this = this;
             return __generator(this, function (_a) {
-                /*
-                Ok
-                var dto = { ...this.state.dto };
-                this.setState({ dto: dto });
-                console.log(dto);
-        
-                Ok
-                this.setState(prevState => {
-                    let dto = { ...prevState.dto };
-                    dto.customerId = '';
-                    dto.name = '';
-                    dto.country = '';
-                    dto.city = '';
-                    dto.address = '';
-                    dto.state = '';
-                    dto.zip = '';
-                    return { dto, };
-                });
-        
-                Ok
-                this.setState(prevState => {
-                let dto = new CustomerDto;
-                    return { dto, };
-                });
-                 */
-                this.pageInitial();
                 dto = new CustomerDto_1.CustomerDto;
-                this.setState({ dto: dto }, function () { return _this.searchClick(); });
+                enums = new DropDownListHelper_1.DropDownEnum;
+                this.setState({
+                    dto: dto,
+                    dropDownEnum: enums
+                }, function () {
+                    console.log(__assign({}, _this.state.dto));
+                    _this.searchClick();
+                });
                 return [2 /*return*/];
             });
         });
