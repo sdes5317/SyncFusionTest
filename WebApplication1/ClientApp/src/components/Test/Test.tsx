@@ -23,7 +23,7 @@ export default class Test extends React.Component<{}, IState>{
 
     public gridInstance: Grid | null = null;
     public state: IState;
-    private helper: DropDownListHelper = new DropDownListHelper;
+    private dropDownHelper: DropDownListHelper = new DropDownListHelper;
     private formatHelper: FormatHelper = new FormatHelper;
     private hightHelper: HightHelper = new HightHelper;
 
@@ -136,7 +136,7 @@ export default class Test extends React.Component<{}, IState>{
 
     initDropDownList() {
         const enums = new DropDownEnum();
-        enums.country = this.helper.findCountryDistinct(this.state.data);
+        enums.country = this.dropDownHelper.findCountryDistinct(this.state.data);
         const dto = new CustomerDto();
 
         this.setState({
@@ -156,7 +156,7 @@ export default class Test extends React.Component<{}, IState>{
             dto.city = null;
             dto.zip = null;
             this.setState({ dto: dto }, () => {
-                var stateEnum = this.helper.findStateDistinct(this.state.dto, this.state.data);
+                var stateEnum = this.dropDownHelper.findStateDistinct(this.state.dto, this.state.data);
                 let enums = { ...this.state.dropDownEnum } as DropDownEnum;
                 enums.state = stateEnum;
                 this.setState({ dropDownEnum: enums });
@@ -171,7 +171,7 @@ export default class Test extends React.Component<{}, IState>{
             let dto = { ...this.state.dto } as CustomerDto;
             dto.state = value;
             this.setState({ dto: dto }, () => {
-                var cityEnum = this.helper.findCityDistinct(this.state.dto, this.state.data);
+                var cityEnum = this.dropDownHelper.findCityDistinct(this.state.dto, this.state.data);
                 let enums = { ...this.state.dropDownEnum } as DropDownEnum;
                 enums.city = cityEnum;
                 this.setState({ dropDownEnum: enums });
@@ -186,7 +186,7 @@ export default class Test extends React.Component<{}, IState>{
             let dto = { ...this.state.dto } as CustomerDto;
             dto.city = value;
             this.setState({ dto: dto }, () => {
-                var zipEnum = this.helper.findZipDistinct(this.state.dto, this.state.data);
+                var zipEnum = this.dropDownHelper.findZipDistinct(this.state.dto, this.state.data);
                 let enums = { ...this.state.dropDownEnum } as DropDownEnum;
                 enums.zip = zipEnum;
                 this.setState({ dropDownEnum: enums });

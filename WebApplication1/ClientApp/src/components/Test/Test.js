@@ -75,7 +75,7 @@ var Test = /** @class */ (function (_super) {
     function Test(props) {
         var _this = _super.call(this, props) || this;
         _this.gridInstance = null;
-        _this.helper = new DropDownListHelper_1.DropDownListHelper;
+        _this.dropDownHelper = new DropDownListHelper_1.DropDownListHelper;
         _this.formatHelper = new FormatHelper_1.FormatHelper;
         _this.hightHelper = new HightHelper_1.HightHelper;
         //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
@@ -201,7 +201,7 @@ var Test = /** @class */ (function (_super) {
     };
     Test.prototype.initDropDownList = function () {
         var enums = new DropDownListHelper_1.DropDownEnum();
-        enums.country = this.helper.findCountryDistinct(this.state.data);
+        enums.country = this.dropDownHelper.findCountryDistinct(this.state.data);
         var dto = new CustomerDto_1.CustomerDto();
         this.setState({
             dto: dto,
@@ -221,7 +221,7 @@ var Test = /** @class */ (function (_super) {
             dto.city = null;
             dto.zip = null;
             this.setState({ dto: dto }, function () {
-                var stateEnum = _this.helper.findStateDistinct(_this.state.dto, _this.state.data);
+                var stateEnum = _this.dropDownHelper.findStateDistinct(_this.state.dto, _this.state.data);
                 var enums = __assign({}, _this.state.dropDownEnum);
                 enums.state = stateEnum;
                 _this.setState({ dropDownEnum: enums });
@@ -237,7 +237,7 @@ var Test = /** @class */ (function (_super) {
             var dto = __assign({}, this.state.dto);
             dto.state = value;
             this.setState({ dto: dto }, function () {
-                var cityEnum = _this.helper.findCityDistinct(_this.state.dto, _this.state.data);
+                var cityEnum = _this.dropDownHelper.findCityDistinct(_this.state.dto, _this.state.data);
                 var enums = __assign({}, _this.state.dropDownEnum);
                 enums.city = cityEnum;
                 _this.setState({ dropDownEnum: enums });
@@ -253,7 +253,7 @@ var Test = /** @class */ (function (_super) {
             var dto = __assign({}, this.state.dto);
             dto.city = value;
             this.setState({ dto: dto }, function () {
-                var zipEnum = _this.helper.findZipDistinct(_this.state.dto, _this.state.data);
+                var zipEnum = _this.dropDownHelper.findZipDistinct(_this.state.dto, _this.state.data);
                 var enums = __assign({}, _this.state.dropDownEnum);
                 enums.zip = zipEnum;
                 _this.setState({ dropDownEnum: enums });
