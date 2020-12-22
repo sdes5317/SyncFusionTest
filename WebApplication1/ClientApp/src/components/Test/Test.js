@@ -78,15 +78,7 @@ var Test = /** @class */ (function (_super) {
         _this.formatHelper = new FormatHelper_1.FormatHelper;
         //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
         _this.toolbarOptions = [
-            { type: 'Input', template: "#customerId", align: 'Left' },
-            { type: 'Input', template: "#name", align: 'Left' },
-            { type: 'Input', template: "#country", align: 'Left' },
-            { type: 'Input', template: "#state", align: 'Left' },
-            { type: 'Input', template: "#city", align: 'Left' },
-            { type: 'Input', template: "#zip", align: 'Left' },
-            { type: 'Input', template: "#address", align: 'Left' },
-            { type: 'Button', template: "#search ", align: 'Left' },
-            { type: 'Button', template: "#clear", align: 'Left' },
+            { type: 'Input', template: "#toolbarElement", align: 'Left' }
         ];
         _this.pageSettings = {
             pageSize: 30,
@@ -134,16 +126,18 @@ var Test = /** @class */ (function (_super) {
     };
     Test.prototype.render = function () {
         var _this = this;
-        var input = (React.createElement(React.Fragment, null,
-            this.inputRender("customerId", this.state.dto.customerId),
-            this.inputRender("name", this.state.dto.name),
-            this.inputRender("address", this.state.dto.address),
-            React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "search", content: "Search", onClick: this.searchClick }),
-            React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "clear", content: "Clear", onClick: this.clearClick }),
-            this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected),
-            this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected),
-            this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected),
-            this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)));
+        var toolbarElement = (React.createElement(React.Fragment, null,
+            React.createElement("div", { id: "toolbarElement" },
+                this.inputRender("customerId", this.state.dto.customerId),
+                this.inputRender("name", this.state.dto.name),
+                this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected),
+                this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected),
+                React.createElement("br", null),
+                this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected),
+                this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected),
+                this.inputRender("address", this.state.dto.address),
+                React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "search", content: "Search", onClick: this.searchClick, className: "toolbar-button" }),
+                React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "clear", content: "Clear", onClick: this.clearClick, className: "toolbar-button" }))));
         var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, 
             //selectionSettings={this.selectSettings}
             allowPaging: true, allowSorting: true, frozenRows: 0, frozenColumns: 3, height: "100%", onClick: this.clickNewPage, beforeDataBound: function (e) { return _this.beforeDataBoundHandle(); }, resizing: function (e) { return _this.resizeHandle(); }, recordDoubleClick: function (e) { return _this.doubleClick(e); } },
@@ -164,7 +158,7 @@ var Test = /** @class */ (function (_super) {
                 React.createElement(ej2_react_grids_1.ColumnDirective, { field: 'number3', autoFit: true, textAlign: 'Right' })),
             React.createElement(ej2_react_grids_2.Inject, { services: [ej2_react_grids_2.Page, ej2_react_grids_2.Sort, ej2_react_grids_1.Freeze, ej2_react_grids_1.Toolbar, ej2_react_grids_1.Resize] })));
         return React.createElement("div", { className: "height90" },
-            input,
+            toolbarElement,
             grid);
     };
     Test.prototype.getSelectCustomers = function (dto) {
@@ -219,13 +213,13 @@ var Test = /** @class */ (function (_super) {
     };
     Test.prototype.inputRender = function (name, data) {
         var _this = this;
-        return (React.createElement("div", { id: name },
+        return (React.createElement("span", { id: name },
             React.createElement("label", null,
                 name + ': ',
                 React.createElement(ej2_react_inputs_1.TextBoxComponent, { name: name, value: data, input: function (e) { return _this.inputChangeHandle(e); }, width: '100' }))));
     };
     Test.prototype.dropDownRender = function (name, data, value, selectEvent) {
-        return (React.createElement("div", { id: name },
+        return (React.createElement("span", { id: name },
             React.createElement("label", null,
                 name + ': ',
                 React.createElement(ej2_react_dropdowns_1.DropDownListComponent, { dataSource: data, value: value, width: '150', select: function (e) { if (selectEvent) {

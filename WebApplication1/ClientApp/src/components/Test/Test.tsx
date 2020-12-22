@@ -1,15 +1,13 @@
-﻿import { CellSelectEventArgs, click, ColumnDirective, ColumnModel, ColumnsDirective, DetailDataBoundEventArgs, Filter, FilterSettingsModel, Freeze, Grid, GridComponent, RecordDoubleClickEventArgs, Resize, ResizeArgs, RowDataBoundEventArgs, RowSelectingEventArgs, SelectionSettingsModel, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
-import { Group, Inject, Page, PageSettingsModel, Sort, SortSettingsModel } from '@syncfusion/ej2-react-grids';
-import { DataManager } from '@syncfusion/ej2-data';
+﻿import { ColumnDirective, ColumnModel, ColumnsDirective, Freeze, Grid, GridComponent, RecordDoubleClickEventArgs, Resize, SelectionSettingsModel, Toolbar, ToolbarItems } from '@syncfusion/ej2-react-grids';
+import { Inject, Page, PageSettingsModel, Sort, SortSettingsModel } from '@syncfusion/ej2-react-grids';
 import * as React from 'react';
-import { ItemModel, ClickEventArgs } from '@syncfusion/ej2-navigations';
-import { InputEventArgs, TextBox, TextBoxComponent, TextBoxModel } from '@syncfusion/ej2-react-inputs';
-import { EmitType } from '@syncfusion/ej2-base'
+import { ItemModel } from '@syncfusion/ej2-navigations';
+import { InputEventArgs, TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { CustomerDto } from './CustomerDto';
 import { Customer } from './Customer';
 import { DropDownListHelper, DropDownEnum } from './DropDownListHelper';
-import { ChangeEventArgs, DropDownListComponent, SelectEventArgs } from '@syncfusion/ej2-react-dropdowns';
+import { DropDownListComponent, SelectEventArgs } from '@syncfusion/ej2-react-dropdowns';
 import { FormatHelper } from './FormatHelper';
 
 interface IState {
@@ -34,7 +32,6 @@ export default class Test extends React.Component<{}, IState>{
             dropDownEnum: new DropDownEnum()
         };
 
-
         this.inputChangeHandle = this.inputChangeHandle.bind(this);
         this.searchClick = this.searchClick.bind(this);
         this.clearClick = this.clearClick.bind(this);
@@ -54,15 +51,7 @@ export default class Test extends React.Component<{}, IState>{
 
     //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
     public toolbarOptions: ToolbarItems[] | ItemModel[] = [
-        { type: 'Input', template: "#customerId", align: 'Left' },
-        { type: 'Input', template: "#name", align: 'Left' },
-        { type: 'Input', template: "#country", align: 'Left' },
-        { type: 'Input', template: "#state", align: 'Left' },
-        { type: 'Input', template: "#city", align: 'Left' },
-        { type: 'Input', template: "#zip", align: 'Left' },
-        { type: 'Input', template: "#address", align: 'Left' },
-        { type: 'Button', template: "#search ", align: 'Left' },//text裡的search多一個空格避免使用內建的search
-        { type: 'Button', template: "#clear", align: 'Left' },
+        { type: 'Input', template: "#toolbarElement", align: 'Left' }
     ];
     public pageSettings: PageSettingsModel = {
         pageSize: 30,
@@ -79,19 +68,22 @@ export default class Test extends React.Component<{}, IState>{
     };
 
     public render() {
-        var input = (
+        var toolbarElement = (
             <>
-                { this.inputRender("customerId", this.state.dto.customerId)}
-                { this.inputRender("name", this.state.dto.name)}
-                { this.inputRender("address", this.state.dto.address)}
-                { <ButtonComponent id="search" content="Search" onClick={this.searchClick} />}
-                { <ButtonComponent id="clear" content="Clear" onClick={this.clearClick} />}
-                {this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected)}
-                {this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected)}
-                {this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected)}
-                {this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)}
+                <div id="toolbarElement">
+                    {this.inputRender("customerId", this.state.dto.customerId)}
+                    {this.inputRender("name", this.state.dto.name)}
+                    {this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected)}
+                    {this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected)}<br />
+                    {this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected)}
+                    {this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)}
+                    {this.inputRender("address", this.state.dto.address)}
+                    {<ButtonComponent id="search" content="Search" onClick={this.searchClick} className={"toolbar-button"} />}
+                    {<ButtonComponent id="clear" content="Clear" onClick={this.clearClick} className={"toolbar-button"} />}
+                </div>
             </>
         );
+
 
         var grid = (
             <GridComponent
@@ -131,7 +123,7 @@ export default class Test extends React.Component<{}, IState>{
         );
 
         return <div className="height90">
-            {input}
+            {toolbarElement}
             {grid}
         </div>
     }
@@ -167,11 +159,11 @@ export default class Test extends React.Component<{}, IState>{
 
     private inputRender(name: string, data: string) {
         return (
-            <div id={name}>
+            <span id={name}>
                 <label>{name + ': '}
                     <TextBoxComponent name={name} value={data} input={e => this.inputChangeHandle(e)} width='100' />
                 </label>
-            </div>);
+            </span>);
     }
 
     private dropDownRender(
@@ -179,7 +171,7 @@ export default class Test extends React.Component<{}, IState>{
         value?: string | null,
         selectEvent?: (e: SelectEventArgs | undefined) => void) {
         return (
-            <div id={name}>
+            <span id={name}>
                 <label>{name + ': '}
                     <DropDownListComponent
                         dataSource={data}
@@ -187,7 +179,7 @@ export default class Test extends React.Component<{}, IState>{
                         width='150'
                         select={e => { if (selectEvent) { selectEvent(e); } }} />
                 </label>
-            </div>);
+            </span>);
     }
 
     initDropDownList() {

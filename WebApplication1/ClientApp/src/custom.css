@@ -58,3 +58,7 @@ container-fluid {
 .highLight{
     background-color:greenyellow;
 }
+
+.toolbar-button{
+    margin-left: 20px;
+}
