@@ -116,28 +116,16 @@ export default class Test extends React.Component<{}, IState>{
             </div>);
     }
 
-    private dropDownListScopes: { key: string, value: DropDownListComponent }[] = [];
-
     private dropDownRender(
         name: string, data: string[],
-        value: string | undefined,
+        value?: string | null,
         selectEvent?: (e: SelectEventArgs | undefined) => void) {
         return (
             <div id={name}>
                 <label>{name + ': '}
                     <DropDownListComponent
-                        ref=
-                        {
-                            scope => {
-                                //由於這個控件看起來不完全是controlled component
-                                //因此這裡把scope保存起來方便後面去做狀態的清除
-                                var findScope = this.dropDownListScopes.find(e => e.key == name);
-                                if (!findScope && scope) {
-                                    this.dropDownListScopes.push({ key: name, value: scope });
-                                }
-                            }}
                         dataSource={data}
-                        value={value}
+                        value={value!}//由於value要歸零必須為null,這裡加!讓ts編譯可過
                         width='150'
                         select={e => { if (selectEvent) { selectEvent(e); } }} />
                 </label>
@@ -152,10 +140,6 @@ export default class Test extends React.Component<{}, IState>{
         this.setState({
             dto: dto,
             dropDownEnum: enums
-        }, () => {
-            for (var i = 0; i < this.dropDownListScopes.length; i++) {
-                this.dropDownListScopes[i].value.clear();
-            }
         });
     }
 
@@ -314,7 +298,7 @@ export default class Test extends React.Component<{}, IState>{
     public async searchClick() {
         this.pageInitial();
         const dto = this.state.dto;
-        console.log(dto);
+        
         const check =
             (dto.address == null || dto.address == "") &&
             (dto.city == null || dto.city == "") &&
@@ -323,7 +307,6 @@ export default class Test extends React.Component<{}, IState>{
             (dto.name == null || dto.name == "") &&
             (dto.state == null || dto.state == "") &&
             (dto.zip == null || dto.zip == "");
-        console.log(this.state.dto);
 
         if (check) {
             await this.getAllCustomers();
@@ -331,8 +314,6 @@ export default class Test extends React.Component<{}, IState>{
         else {
             await this.getSelectCustomers(this.state.dto);
         }
-        console.log(this.state.dto);
-
     }
 
     public async clearClick() {

@@ -99,7 +99,6 @@ var Test = /** @class */ (function (_super) {
             enableSimpleMultiRowSelection: true,
             type: 'Multiple'
         };
-        _this.dropDownListScopes = [];
         _this.indexVal = 1;
         _this.state = {
             data: [],
@@ -189,33 +188,20 @@ var Test = /** @class */ (function (_super) {
                 React.createElement(ej2_react_inputs_1.TextBoxComponent, { name: name, value: data, input: function (e) { return _this.handleInputChange(e); }, width: '100' }))));
     };
     Test.prototype.dropDownRender = function (name, data, value, selectEvent) {
-        var _this = this;
         return (React.createElement("div", { id: name },
             React.createElement("label", null,
                 name + ': ',
-                React.createElement(ej2_react_dropdowns_1.DropDownListComponent, { ref: function (scope) {
-                        //由於這個控件看起來不完全是controlled component
-                        //因此這裡把scope保存起來方便後面去做狀態的清除
-                        var findScope = _this.dropDownListScopes.find(function (e) { return e.key == name; });
-                        if (!findScope && scope) {
-                            _this.dropDownListScopes.push({ key: name, value: scope });
-                        }
-                    }, dataSource: data, value: value, width: '150', select: function (e) { if (selectEvent) {
+                React.createElement(ej2_react_dropdowns_1.DropDownListComponent, { dataSource: data, value: value, width: '150', select: function (e) { if (selectEvent) {
                         selectEvent(e);
                     } } }))));
     };
     Test.prototype.initDropDownList = function () {
-        var _this = this;
         var enums = new DropDownListHelper_1.DropDownEnum();
         enums.country = this.helper.findCountryDistinct(this.state.data);
         var dto = new CustomerDto_1.CustomerDto();
         this.setState({
             dto: dto,
             dropDownEnum: enums
-        }, function () {
-            for (var i = 0; i < _this.dropDownListScopes.length; i++) {
-                _this.dropDownListScopes[i].value.clear();
-            }
         });
     };
     Test.prototype.countrySelected = function (e) {
@@ -353,7 +339,6 @@ var Test = /** @class */ (function (_super) {
                     case 0:
                         this.pageInitial();
                         dto = this.state.dto;
-                        console.log(dto);
                         check = (dto.address == null || dto.address == "") &&
                             (dto.city == null || dto.city == "") &&
                             (dto.country == null || dto.country == "") &&
@@ -361,7 +346,6 @@ var Test = /** @class */ (function (_super) {
                             (dto.name == null || dto.name == "") &&
                             (dto.state == null || dto.state == "") &&
                             (dto.zip == null || dto.zip == "");
-                        console.log(this.state.dto);
                         if (!check) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.getAllCustomers()];
                     case 1:
@@ -371,9 +355,7 @@ var Test = /** @class */ (function (_super) {
                     case 3:
                         _a.sent();
                         _a.label = 4;
-                    case 4:
-                        console.log(this.state.dto);
-                        return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });

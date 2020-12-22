@@ -5,6 +5,10 @@ var CustomerDto = /** @class */ (function () {
     function CustomerDto() {
         this.customerId = "";
         this.name = "";
+        this.country = null;
+        this.state = null;
+        this.zip = null;
+        this.city = null;
         this.address = "";
     }
     return CustomerDto;

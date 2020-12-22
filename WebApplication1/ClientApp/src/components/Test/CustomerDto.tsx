@@ -1,10 +1,10 @@
 ﻿export class CustomerDto {
     customerId: string = "";
     name: string = "";
-    country: string | undefined;
-    state: string | undefined;
-    zip: string | undefined;
-    city: string | undefined;
+    country?: string | null = null;
+    state?: string | null = null;
+    zip?: string | null = null;
+    city?: string | null = null;
     address: string = "";
     [index: string]: any;
 }

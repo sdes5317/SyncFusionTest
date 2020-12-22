@@ -30,11 +30,11 @@ namespace WebApplication1.Model
         {
             Id = customerDto.CustomerId;
             Name = customerDto.Name;
-            Country = customerDto.Country;
-            State = customerDto.State;
+            Country = customerDto.Country ?? "";
+            State = customerDto.State ?? "";
+            City = customerDto.City ?? "";
+            Zip = customerDto.Zip ?? "";
             Address = customerDto.Address;
-            City = customerDto.City;
-            Zip = customerDto.Zip;
         }
     }
 }
