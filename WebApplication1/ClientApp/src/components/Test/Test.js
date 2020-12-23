@@ -95,7 +95,8 @@ var Test = /** @class */ (function (_super) {
         };
         _this.indexVal = 1;
         _this.state = {
-            data: [],
+            searchData: [],
+            totalData: [],
             dto: new CustomerDto_1.CustomerDto(),
             dropDownEnum: new DropDownListHelper_1.DropDownEnum()
         };
@@ -113,12 +114,24 @@ var Test = /** @class */ (function (_super) {
     }
     Test.prototype.componentDidMount = function () {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.getAllCustomers()];
+            var _a;
+            var _b;
+            var _this = this;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4 /*yield*/, this.getAndRefleshAllCustomers()];
                     case 1:
-                        _a.sent();
+                        _c.sent();
                         window.addEventListener("resize", this.resizeHandle);
+                        _a = this.setState;
+                        _b = {};
+                        return [4 /*yield*/, this.getAllCustomers()];
+                    case 2:
+                        _a.apply(this, [(_b.totalData = _c.sent(), _b), function () {
+                                var enums = new DropDownListHelper_1.DropDownEnum();
+                                enums.country = _this.dropDownHelper.findCountryDistinct(_this.state.totalData);
+                                _this.setState({ dropDownEnum: enums });
+                            }]);
                         return [2 /*return*/];
                 }
             });
@@ -130,15 +143,15 @@ var Test = /** @class */ (function (_super) {
             React.createElement("div", { id: "toolbarElement" },
                 this.inputRender("customerId", this.state.dto.customerId),
                 this.inputRender("name", this.state.dto.name),
-                this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected),
-                this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected),
-                React.createElement("br", null),
-                this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected),
-                this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected),
                 this.inputRender("address", this.state.dto.address),
                 React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "search", content: "Search", onClick: this.searchClick, className: "toolbar-button" }),
-                React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "clear", content: "Clear", onClick: this.clearClick, className: "toolbar-button" }))));
-        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.data, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, 
+                React.createElement(ej2_react_buttons_1.ButtonComponent, { id: "clear", content: "Clear", onClick: this.clearClick, className: "toolbar-button" }),
+                React.createElement("br", null),
+                this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected),
+                this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected),
+                this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected),
+                this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected))));
+        var grid = (React.createElement(ej2_react_grids_1.GridComponent, { ref: function (g) { return _this.gridInstance = g; }, dataSource: this.state.searchData, pageSettings: this.pageSettings, toolbar: this.toolbarOptions, 
             //selectionSettings={this.selectSettings}
             allowPaging: true, allowSorting: true, frozenRows: 0, frozenColumns: 3, height: "100%", onClick: this.clickNewPage, beforeDataBound: function (e) { return _this.beforeDataBoundHandle(); }, resizing: function (e) { return _this.resizeHandle(); }, recordDoubleClick: function (e) { return _this.doubleClick(e); } },
             React.createElement(ej2_react_grids_1.ColumnsDirective, null,
@@ -161,10 +174,9 @@ var Test = /** @class */ (function (_super) {
             toolbarElement,
             grid);
     };
-    Test.prototype.getSelectCustomers = function (dto) {
+    Test.prototype.getAndRefleshSelectCustomers = function (dto) {
         return __awaiter(this, void 0, void 0, function () {
             var res, results;
-            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, fetch('test/GetCustomers', {
@@ -181,7 +193,22 @@ var Test = /** @class */ (function (_super) {
                     case 2:
                         results = (_a.sent());
                         this.formatUpdate(results);
-                        this.setState({ data: results }, function () { return _this.initDropDownList(); });
+                        this.setState({ searchData: results });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Test.prototype.getAndRefleshAllCustomers = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var results;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getAllCustomers()];
+                    case 1:
+                        results = _a.sent();
+                        this.formatUpdate(results);
+                        this.setState({ searchData: results });
                         return [2 /*return*/];
                 }
             });
@@ -189,8 +216,7 @@ var Test = /** @class */ (function (_super) {
     };
     Test.prototype.getAllCustomers = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var res, results;
-            var _this = this;
+            var res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, fetch('test/GetAllCustomers', {
@@ -202,11 +228,7 @@ var Test = /** @class */ (function (_super) {
                     case 1:
                         res = _a.sent();
                         return [4 /*yield*/, res.json()];
-                    case 2:
-                        results = (_a.sent());
-                        this.formatUpdate(results);
-                        this.setState({ data: results }, function () { return _this.initDropDownList(); });
-                        return [2 /*return*/];
+                    case 2: return [2 /*return*/, (_a.sent())];
                 }
             });
         });
@@ -216,7 +238,7 @@ var Test = /** @class */ (function (_super) {
         return (React.createElement("span", { id: name },
             React.createElement("label", null,
                 name + ': ',
-                React.createElement(ej2_react_inputs_1.TextBoxComponent, { name: name, value: data, input: function (e) { return _this.inputChangeHandle(e); }, width: '100' }))));
+                React.createElement(ej2_react_inputs_1.TextBoxComponent, { name: name, value: data, input: function (e) { return _this.inputChangeHandle(e); }, width: '130' }))));
     };
     Test.prototype.dropDownRender = function (name, data, value, selectEvent) {
         return (React.createElement("span", { id: name },
@@ -227,11 +249,12 @@ var Test = /** @class */ (function (_super) {
                     } } }))));
     };
     Test.prototype.initDropDownList = function () {
-        var enums = new DropDownListHelper_1.DropDownEnum();
-        enums.country = this.dropDownHelper.findCountryDistinct(this.state.data);
-        var dto = new CustomerDto_1.CustomerDto();
+        var enums = __assign({}, this.state.dropDownEnum);
+        enums.state = [];
+        enums.city = [];
+        enums.zip = [];
         this.setState({
-            dto: dto,
+            dto: new CustomerDto_1.CustomerDto(),
             dropDownEnum: enums
         });
     };
@@ -239,7 +262,6 @@ var Test = /** @class */ (function (_super) {
         var _this = this;
         if (!e)
             return;
-        console.log(1111);
         var value = e.itemData.value;
         if (value) {
             var dto = __assign({}, this.state.dto);
@@ -248,7 +270,7 @@ var Test = /** @class */ (function (_super) {
             dto.city = null;
             dto.zip = null;
             this.setState({ dto: dto }, function () {
-                var stateEnum = _this.dropDownHelper.findStateDistinct(_this.state.dto, _this.state.data);
+                var stateEnum = _this.dropDownHelper.findStateDistinct(_this.state.dto, _this.state.totalData);
                 var enums = __assign({}, _this.state.dropDownEnum);
                 enums.state = stateEnum;
                 _this.setState({ dropDownEnum: enums });
@@ -266,7 +288,7 @@ var Test = /** @class */ (function (_super) {
             dto.city = null;
             dto.zip = null;
             this.setState({ dto: dto }, function () {
-                var cityEnum = _this.dropDownHelper.findCityDistinct(_this.state.dto, _this.state.data);
+                var cityEnum = _this.dropDownHelper.findCityDistinct(_this.state.dto, _this.state.totalData);
                 var enums = __assign({}, _this.state.dropDownEnum);
                 enums.city = cityEnum;
                 _this.setState({ dropDownEnum: enums });
@@ -283,7 +305,7 @@ var Test = /** @class */ (function (_super) {
             dto.city = value;
             dto.zip = null;
             this.setState({ dto: dto }, function () {
-                var zipEnum = _this.dropDownHelper.findZipDistinct(_this.state.dto, _this.state.data);
+                var zipEnum = _this.dropDownHelper.findZipDistinct(_this.state.dto, _this.state.totalData);
                 var enums = __assign({}, _this.state.dropDownEnum);
                 enums.zip = zipEnum;
                 _this.setState({ dropDownEnum: enums });
@@ -342,11 +364,11 @@ var Test = /** @class */ (function (_super) {
                             (dto.state == null || dto.state == "") &&
                             (dto.zip == null || dto.zip == "");
                         if (!check) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.getAllCustomers()];
+                        return [4 /*yield*/, this.getAndRefleshAllCustomers()];
                     case 1:
                         _a.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, this.getSelectCustomers(this.state.dto)];
+                    case 2: return [4 /*yield*/, this.getAndRefleshSelectCustomers(this.state.dto)];
                     case 3:
                         _a.sent();
                         _a.label = 4;
@@ -357,13 +379,13 @@ var Test = /** @class */ (function (_super) {
     };
     Test.prototype.clearClick = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var dto, enums;
+            var enums;
             var _this = this;
             return __generator(this, function (_a) {
-                dto = new CustomerDto_1.CustomerDto;
                 enums = new DropDownListHelper_1.DropDownEnum;
+                enums.country = this.state.dropDownEnum.country;
                 this.setState({
-                    dto: dto,
+                    dto: new CustomerDto_1.CustomerDto,
                     dropDownEnum: enums
                 }, function () {
                     _this.searchClick();

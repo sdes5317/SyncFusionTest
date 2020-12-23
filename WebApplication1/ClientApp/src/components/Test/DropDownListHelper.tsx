@@ -9,7 +9,7 @@ export class DropDownEnum {
 }
 
 export class DropDownListHelper {
-    findCountryDistinct(customers: Customer[]):string[] {
+    findCountryDistinct(customers: Customer[]): string[] {
         var countries = new Set(customers.map(data => data.country));
         return Array.from(countries);
     }

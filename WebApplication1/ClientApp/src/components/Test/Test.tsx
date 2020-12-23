@@ -11,7 +11,8 @@ import { DropDownListComponent, SelectEventArgs } from '@syncfusion/ej2-react-dr
 import { FormatHelper } from './FormatHelper';
 
 interface IState {
-    data: Customer[];
+    searchData: Customer[];
+    totalData: Customer[];
     dto: CustomerDto;
     dropDownEnum: DropDownEnum;
 }
@@ -27,7 +28,8 @@ export default class Test extends React.Component<{}, IState>{
         super(props);
 
         this.state = {
-            data: [],
+            searchData: [],
+            totalData: [],
             dto: new CustomerDto(),
             dropDownEnum: new DropDownEnum()
         };
@@ -45,8 +47,17 @@ export default class Test extends React.Component<{}, IState>{
     }
 
     async componentDidMount() {
-        await this.getAllCustomers();
+        await this.getAndRefleshAllCustomers();
         window.addEventListener("resize", this.resizeHandle);
+
+        this.setState(
+            { totalData: await this.getAllCustomers() },
+            () => {
+                const enums = new DropDownEnum();
+                enums.country = this.dropDownHelper.findCountryDistinct(this.state.totalData);
+                this.setState({ dropDownEnum: enums });
+            }
+        );
     }
 
     //https://ej2.syncfusion.com/react/documentation/toolbar/item-configuration/
@@ -73,22 +84,21 @@ export default class Test extends React.Component<{}, IState>{
                 <div id="toolbarElement">
                     {this.inputRender("customerId", this.state.dto.customerId)}
                     {this.inputRender("name", this.state.dto.name)}
-                    {this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected)}
-                    {this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected)}<br />
-                    {this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected)}
-                    {this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)}
                     {this.inputRender("address", this.state.dto.address)}
                     {<ButtonComponent id="search" content="Search" onClick={this.searchClick} className={"toolbar-button"} />}
-                    {<ButtonComponent id="clear" content="Clear" onClick={this.clearClick} className={"toolbar-button"} />}
+                    {<ButtonComponent id="clear" content="Clear" onClick={this.clearClick} className={"toolbar-button"} />}<br />
+                    {this.dropDownRender("country", this.state.dropDownEnum.country, this.state.dto.country, this.countrySelected)}
+                    {this.dropDownRender("state", this.state.dropDownEnum.state, this.state.dto.state, this.stateSelected)}
+                    {this.dropDownRender("city", this.state.dropDownEnum.city, this.state.dto.city, this.citySelected)}
+                    {this.dropDownRender("zip", this.state.dropDownEnum.zip, this.state.dto.zip, this.zipSelected)}
                 </div>
             </>
         );
 
-
         var grid = (
             <GridComponent
                 ref={g => this.gridInstance = g}
-                dataSource={this.state.data}
+                dataSource={this.state.searchData}
                 pageSettings={this.pageSettings}
                 toolbar={this.toolbarOptions}
                 //selectionSettings={this.selectSettings}
@@ -128,7 +138,7 @@ export default class Test extends React.Component<{}, IState>{
         </div>
     }
 
-    private async getSelectCustomers(dto: CustomerDto) {
+    private async getAndRefleshSelectCustomers(dto: CustomerDto) {
         var res = await fetch('test/GetCustomers', {
             body: JSON.stringify(dto),
             method: 'POST',
@@ -141,9 +151,15 @@ export default class Test extends React.Component<{}, IState>{
         const results = (await res.json()) as Customer[];
         this.formatUpdate(results);
 
-        this.setState({ data: results }, () => this.initDropDownList());
+        this.setState({ searchData: results });
     }
-    private async getAllCustomers() {
+    private async getAndRefleshAllCustomers() {
+        const results = await this.getAllCustomers();
+        this.formatUpdate(results);
+
+        this.setState({ searchData: results });
+    }
+    private async getAllCustomers(): Promise<Customer[]> {
         var res = await fetch('test/GetAllCustomers', {
             method: 'POST',
             headers: {
@@ -151,17 +167,14 @@ export default class Test extends React.Component<{}, IState>{
             }
         });
 
-        const results = (await res.json()) as Customer[];
-        this.formatUpdate(results);
-
-        this.setState({ data: results }, () => this.initDropDownList());
+        return (await res.json()) as Customer[];
     }
 
     private inputRender(name: string, data: string) {
         return (
             <span id={name}>
                 <label>{name + ': '}
-                    <TextBoxComponent name={name} value={data} input={e => this.inputChangeHandle(e)} width='100' />
+                    <TextBoxComponent name={name} value={data} input={e => this.inputChangeHandle(e)} width='130' />
                 </label>
             </span>);
     }
@@ -183,19 +196,20 @@ export default class Test extends React.Component<{}, IState>{
     }
 
     initDropDownList() {
-        const enums = new DropDownEnum();
-        enums.country = this.dropDownHelper.findCountryDistinct(this.state.data);
-        const dto = new CustomerDto();
+        const enums = { ...this.state.dropDownEnum } as DropDownEnum;
+        enums.state = [];
+        enums.city = [];
+        enums.zip = [];
 
         this.setState({
-            dto: dto,
+            dto: new CustomerDto(),
             dropDownEnum: enums
         });
     }
 
     countrySelected(e: SelectEventArgs | undefined) {
         if (!e) return;
-        console.log(1111);
+
         const value = e.itemData.value as string;
         if (value) {
             let dto = { ...this.state.dto } as CustomerDto;
@@ -204,7 +218,7 @@ export default class Test extends React.Component<{}, IState>{
             dto.city = null;
             dto.zip = null;
             this.setState({ dto: dto }, () => {
-                var stateEnum = this.dropDownHelper.findStateDistinct(this.state.dto, this.state.data);
+                var stateEnum = this.dropDownHelper.findStateDistinct(this.state.dto, this.state.totalData);
                 let enums = { ...this.state.dropDownEnum } as DropDownEnum;
                 enums.state = stateEnum;
                 this.setState({ dropDownEnum: enums });
@@ -221,7 +235,7 @@ export default class Test extends React.Component<{}, IState>{
             dto.city = null;
             dto.zip = null;
             this.setState({ dto: dto }, () => {
-                var cityEnum = this.dropDownHelper.findCityDistinct(this.state.dto, this.state.data);
+                var cityEnum = this.dropDownHelper.findCityDistinct(this.state.dto, this.state.totalData);
                 let enums = { ...this.state.dropDownEnum } as DropDownEnum;
                 enums.city = cityEnum;
                 this.setState({ dropDownEnum: enums });
@@ -237,7 +251,7 @@ export default class Test extends React.Component<{}, IState>{
             dto.city = value;
             dto.zip = null;
             this.setState({ dto: dto }, () => {
-                var zipEnum = this.dropDownHelper.findZipDistinct(this.state.dto, this.state.data);
+                var zipEnum = this.dropDownHelper.findZipDistinct(this.state.dto, this.state.totalData);
                 let enums = { ...this.state.dropDownEnum } as DropDownEnum;
                 enums.zip = zipEnum;
                 this.setState({ dropDownEnum: enums });
@@ -296,20 +310,20 @@ export default class Test extends React.Component<{}, IState>{
             (dto.zip == null || dto.zip == "");
 
         if (check) {
-            await this.getAllCustomers();
+            await this.getAndRefleshAllCustomers();
         }
         else {
-            await this.getSelectCustomers(this.state.dto);
+            await this.getAndRefleshSelectCustomers(this.state.dto);
         }
     }
 
     public async clearClick() {
-        let dto = new CustomerDto;
         let enums = new DropDownEnum;
+        enums.country = this.state.dropDownEnum.country;
 
         this.setState(
             {
-                dto: dto,
+                dto: new CustomerDto,
                 dropDownEnum: enums
             },
             () => {
