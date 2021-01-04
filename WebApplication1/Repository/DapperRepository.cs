@@ -32,6 +32,18 @@ namespace WebApplication1.Repository
         {
             return SelectAll();
         }
+
+        private IEnumerable<CustomerWithThreeYearAmount> SelectCustomersByOptions(CustomerDto customerDto)
+        {
+            var selectOptions = new Customer(customerDto);
+
+            using (var con = new SqlConnection(_connectionString))
+            {
+                var cmd = GetSelectCustomersByOptionsCmdString(selectOptions);
+
+                return con.Query<CustomerWithThreeYearAmount>(cmd.ToString(), selectOptions);
+            }
+        }
         /// <summary>
         ///SELECT Customers.Id, 
         ///       NAME, 
@@ -58,15 +70,13 @@ namespace WebApplication1.Repository
         ///               ON Customers.Id = pvt.customerid 
         ///WHERE  Customers.Status = 1 
         /// </summary>
-        /// <param name="customerDto"></param>
+        /// <param name="selectOptions"></param>
         /// <returns></returns>
-        private IEnumerable<CustomerWithThreeYearAmount> SelectCustomersByOptions(CustomerDto customerDto)
+        private string GetSelectCustomersByOptionsCmdString(Customer selectOptions)
         {
             var thisYear = DateTime.Now.Year.ToString();
             var lastYear = DateTime.Now.AddYears(-1).Year.ToString();
             var theYearBeforeLast = DateTime.Now.AddYears(-2).Year.ToString();
-
-            var selectOptions = new Customer(customerDto);
 
             var likeCmdList = new Dictionary<string, string>()
             {
@@ -85,11 +95,8 @@ namespace WebApplication1.Repository
             if (likeCmdList is null || likeCmdList.Count == 0) throw new ArgumentNullException("請至少輸入一個模糊搜尋欄位");
 
             var likeString = string.Join(" and ", likeCmdList);
-
-            using (var con = new SqlConnection(_connectionString))
-            {
-                var cmd = new StringBuilder();
-                cmd.Append($@"SELECT Customers.Id, 
+            var cmd = new StringBuilder();
+            cmd.Append($@"SELECT Customers.Id, 
                                     NAME, 
                                     Country, 
                                     State, 
@@ -116,22 +123,29 @@ namespace WebApplication1.Repository
                                     INNER JOIN Customers 
                                             ON Customers.Id = pvt.customerid 
                              WHERE  Customers.Status = 1 ");
-                cmd.Append($"and (");
-                cmd.Append(likeString);
-                cmd.Append($")");
+            cmd.Append($"and (");
+            cmd.Append(likeString);
+            cmd.Append($")");
 
-                return con.Query<CustomerWithThreeYearAmount>(cmd.ToString(), selectOptions);
+            return cmd.ToString();
+        }
+
+        private IEnumerable<CustomerWithThreeYearAmount> SelectAll()
+        {
+            using (var con = new SqlConnection(_connectionString))
+            {
+                var cmd = GetSelectAllCustomersCmdString();
+                return con.Query<CustomerWithThreeYearAmount>(cmd);
             }
         }
-        private IEnumerable<CustomerWithThreeYearAmount> SelectAll()
+
+        private string GetSelectAllCustomersCmdString()
         {
             var thisYear = DateTime.Now.Year.ToString();
             var lastYear = DateTime.Now.AddYears(-1).Year.ToString();
             var theYearBeforeLast = DateTime.Now.AddYears(-2).Year.ToString();
 
-            using (var con = new SqlConnection(_connectionString))
-            {
-                var cmd = $@"SELECT Customers.Id, 
+            var cmd = $@"SELECT Customers.Id, 
                                     NAME, 
                                     Country, 
                                     State, 
@@ -158,9 +172,10 @@ namespace WebApplication1.Repository
                                     INNER JOIN Customers 
                                             ON Customers.Id = pvt.customerid 
                              WHERE  Customers.Status = 1 ";
-                return con.Query<CustomerWithThreeYearAmount>(cmd);
-            }
+
+            return cmd;
         }
+
         private IEnumerable<CustomerWithThreeYearAmount> SelectAll2()
         {
             var thisYear = DateTime.Now.Year.ToString();
