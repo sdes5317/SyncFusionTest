@@ -1,1 +1,4 @@
 /.vs
+/WebApplication1Tests/bin
+/WebApplication1Tests/obj
+/TestResults
